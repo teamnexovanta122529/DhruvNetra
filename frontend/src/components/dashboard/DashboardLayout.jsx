@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import DashboardHeader from "./DashboardHeader";
 import { useStation } from "../../context/StationContext";
+import "./StationDashboard.css";
 
 export default function DashboardLayout() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

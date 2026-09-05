@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { stationData } from "../../data/stationData";
 
 export default function StationSelector({
     onClose,
@@ -12,11 +13,10 @@ export default function StationSelector({
     // ==========================================
     // OPEN ANIMATION
     // ==========================================
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setVisible(true);
-        }, 50);
+        }, 40);
 
         return () => {
             clearTimeout(timer);
@@ -24,9 +24,8 @@ export default function StationSelector({
     }, []);
 
     // ==========================================
-    // CLOSE
+    // CLOSE HANDLER
     // ==========================================
-
     const handleClose = () => {
         if (closing || selecting) return;
 
@@ -34,31 +33,43 @@ export default function StationSelector({
 
         setTimeout(() => {
             onClose?.();
-        }, 450);
+        }, 400);
     };
+
+    // ==========================================
+    // KEYBOARD ESCAPE LISTENER
+    // ==========================================
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                handleClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [closing, selecting]);
 
     // ==========================================
     // STATION SELECT
     // ==========================================
-
-    const handleStationSelect = (station) => {
+    const handleStationSelect = (stationKey) => {
         if (selecting || closing) return;
 
-        console.log("STATION CLICKED:", station);
+        console.log("STATION CLICKED:", stationKey);
 
         setSelecting(true);
-        setSelectedStation(station);
+        setSelectedStation(stationKey);
 
-        // Selection animation
+        // Transition delay for subtle feedback
         setTimeout(() => {
-            console.log(
-                "SENDING STATION TO LANDING PAGE:",
-                station
-            );
-
-            onSelectStation?.(station);
-        }, 500);
+            console.log("NAVIGATING TO STATION:", stationKey);
+            onSelectStation?.(stationKey);
+        }, 450);
     };
+
+    const maitriData = stationData.MAITRI;
+    const bharatiData = stationData.BHARATI;
 
     return (
         <div
@@ -68,136 +79,121 @@ export default function StationSelector({
                 ${closing ? "station-selector-closing" : ""}
                 ${selecting ? "station-selector-selecting" : ""}
             `}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Select Research Station"
         >
-
-            {/* ==========================================
-                BACKGROUND
-            ========================================== */}
-
+            {/* Background & Atmospheric Overlay */}
             <div className="station-selector-bg" />
-
             <div className="station-scan-line" />
+            <div className="station-ambient-glow" />
 
-
-            {/* ==========================================
-                HEADER
-            ========================================== */}
-
-            <div className="station-selector-header">
-
-                <div>
-
+            {/* Top Navigation & Status Bar */}
+            <header className="station-selector-header">
+                <div className="station-header-branding">
                     <div className="station-selector-kicker">
-                        DHRUVNETRA / SYSTEM ACCESS
+                        <span className="kicker-badge">DHRUVNETRA</span>
+                        <span className="kicker-separator">/</span>
+                        <span>ANTARCTIC DIGITAL TWIN NETWORK</span>
                     </div>
-
-                    <h2>
+                    <h2 className="station-selector-title">
                         SELECT RESEARCH STATION
                     </h2>
-
+                    <p className="station-selector-subtitle">
+                        ACCESS THE DIGITAL TWIN NETWORK
+                    </p>
                 </div>
 
+                <div className="station-header-actions">
+                    <div className="station-network-status">
+                        <span className="status-ping" />
+                        <span className="status-text">NODES ACTIVE [2/2]</span>
+                    </div>
 
-                <button
-                    type="button"
-                    className="station-close"
-                    onClick={handleClose}
-                    disabled={selecting}
-                >
-                    <span>×</span>
-                </button>
+                    <button
+                        type="button"
+                        className="station-close"
+                        onClick={handleClose}
+                        disabled={selecting}
+                        aria-label="Close station selection"
+                        data-cursor="pointer"
+                    >
+                        <span className="close-icon">✕</span>
+                        <span className="close-label">ESC</span>
+                    </button>
+                </div>
+            </header>
 
-            </div>
-
-
-            {/* ==========================================
-                CONTENT
-            ========================================== */}
-
-            <div className="station-selection-content">
-
-                <p className="station-selection-description">
-                    SELECT A STATION TO INITIALIZE ITS DIGITAL TWIN
-                </p>
-
-
-                <div className="station-cards">
-
-                    {/* MAITRI */}
-
-                    <StationCard
-                        station="MAITRI"
-                        location="SCHIRMACHER OASIS · EAST ANTARCTICA"
-                        code="MT"
+            {/* Central Expedition Station Panels */}
+            <main className="station-selection-content">
+                <div className="station-cards-container">
+                    {/* MAITRI PANEL */}
+                    <StationPanel
+                        stationKey="MAITRI"
+                        data={maitriData}
+                        imageSrc="/images/maitri.jpg"
                         index="01"
-                        description="INDIAN ANTARCTIC RESEARCH STATION"
-                        selected={
-                            selectedStation === "MAITRI"
-                        }
+                        code="MT"
+                        sector="SECTOR 70°S"
+                        selected={selectedStation === "MAITRI"}
+                        otherSelected={selecting && selectedStation !== "MAITRI"}
                         disabled={selecting}
-                        onClick={() =>
-                            handleStationSelect("MAITRI")
-                        }
+                        onClick={() => handleStationSelect("MAITRI")}
                     />
 
-
-                    {/* BHARATI */}
-
-                    <StationCard
-                        station="BHARATI"
-                        location="LARSEN ICE SHELF · EAST ANTARCTICA"
-                        code="BH"
+                    {/* BHARATI PANEL */}
+                    <StationPanel
+                        stationKey="BHARATI"
+                        data={bharatiData}
+                        imageSrc="/images/bharati.jpg"
                         index="02"
-                        description="INDIAN ANTARCTIC RESEARCH STATION"
-                        selected={
-                            selectedStation === "BHARATI"
-                        }
+                        code="BH"
+                        sector="SECTOR 69°S"
+                        selected={selectedStation === "BHARATI"}
+                        otherSelected={selecting && selectedStation !== "BHARATI"}
                         disabled={selecting}
-                        onClick={() =>
-                            handleStationSelect("BHARATI")
-                        }
+                        onClick={() => handleStationSelect("BHARATI")}
                     />
+                </div>
+            </main>
 
+            {/* Mission System Footer */}
+            <footer className="station-selector-footer">
+                <div className="footer-meta-left">
+                    <span className="meta-label">GOVERNMENT OF INDIA</span>
+                    <span className="meta-dot">·</span>
+                    <span className="meta-sub">MINISTRY OF EARTH SCIENCES · NCPOR</span>
                 </div>
 
-            </div>
+                <div className="footer-meta-center">
+                    <span className="meta-indicator" />
+                    <span>
+                        {selecting
+                            ? `INITIALIZING ${selectedStation} DIGITAL TWIN...`
+                            : "REAL-TIME TELEMETRY STREAM ONLINE"}
+                    </span>
+                </div>
 
-
-            {/* ==========================================
-                FOOTER
-            ========================================== */}
-
-            <div className="station-selector-footer">
-
-                <span>
-                    DIGITAL TWIN INITIALIZATION
-                </span>
-
-                <span>
-                    {selecting
-                        ? "INITIALIZING STATION..."
-                        : "SELECT STATION TO CONTINUE"
-                    }
-                </span>
-
-            </div>
-
+                <div className="footer-meta-right">
+                    <span>SECURE SATELLITE LINK · SATCOM 256-BIT</span>
+                </div>
+            </footer>
         </div>
     );
 }
 
-
 /* =====================================================
-   STATION CARD
+   STATION EXPEDITION PANEL COMPONENT
 ===================================================== */
-
-function StationCard({
-    station,
-    location,
-    code,
+function StationPanel({
+    stationKey,
+    data,
+    imageSrc,
     index,
-    description,
+    code,
+    sector,
     selected,
+    otherSelected,
     disabled,
     onClick,
 }) {
@@ -205,101 +201,123 @@ function StationCard({
         <button
             type="button"
             className={`
+                station-panel
                 station-card
-                ${selected ? "station-card-selected" : ""}
-                ${
-                    disabled && !selected
-                        ? "station-card-disabled"
-                        : ""
-                }
+                ${selected ? "station-panel-selected" : ""}
+                ${otherSelected ? "station-panel-dimmed" : ""}
             `}
             onClick={onClick}
             disabled={disabled}
+            data-cursor="pointer"
+            aria-label={`Select ${stationKey} Research Station`}
         >
+            {/* Corner Precision Brackets */}
+            <span className="station-bracket bracket-tl" />
+            <span className="station-bracket bracket-tr" />
+            <span className="station-bracket bracket-bl" />
+            <span className="station-bracket bracket-br" />
 
-            {/* ==========================================
-                TOP
-            ========================================== */}
-
-            <div className="station-card-top">
-
-                <span className="station-card-index">
-                    {index}
-                </span>
-
-                <span className="station-status">
-
-                    <i />
-
-                    {selected
-                        ? "INITIALIZING"
-                        : "SYSTEM READY"
-                    }
-
-                </span>
-
-            </div>
-
-
-            {/* ==========================================
-                MAIN
-            ========================================== */}
-
-            <div className="station-card-main">
-
-                <div className="station-symbol">
-                    {code}
+            {/* Panel Top Header Bar */}
+            <div className="panel-header-bar">
+                <div className="panel-id-badge">
+                    <span className="station-code-pill">{code}-{index}</span>
+                    <span className="station-sector-tag">{sector}</span>
                 </div>
 
+                <div className="panel-telemetry-badge">
+                    <span className="telemetry-live-dot" />
+                    <span className="telemetry-live-label">
+                        {selected ? "INITIALIZING..." : "TELEMETRY ACTIVE"}
+                    </span>
+                </div>
+            </div>
 
-                <div>
+            {/* Photographic Viewport */}
+            <div className="station-image-frame">
+                <img
+                    src={imageSrc}
+                    alt={`${data.name} Indian Antarctic Research Station`}
+                    className="station-photo"
+                    loading="eager"
+                />
 
-                    <h3>
-                        {station}
-                    </h3>
+                {/* Subtle Image Vignette & Atmosphere Gradient */}
+                <div className="station-photo-gradient" />
+                <div className="station-photo-top-tint" />
 
-                    <p className="station-location">
-                        {location}
-                    </p>
-
-                    <p className="station-description">
-                        {description}
-                    </p>
-
+                {/* Technical Coordinates Stamp */}
+                <div className="station-coordinate-tag">
+                    <span className="coord-icon">⌖</span>
+                    <span>{data.coordinates}</span>
+                    <span className="coord-divider">|</span>
+                    <span>ELEV {data.elevation}</span>
                 </div>
 
+                {/* Station Establishment Tag */}
+                <div className="station-est-tag">
+                    <span>EST. {data.established}</span>
+                </div>
             </div>
 
+            {/* Station Dossier & Info Deck */}
+            <div className="station-info-deck">
+                <div className="station-name-row">
+                    <div className="station-title-group">
+                        <h3 className="station-name">{data.name}</h3>
+                        <p className="station-subheading">
+                            INDIAN ANTARCTIC RESEARCH STATION
+                        </p>
+                    </div>
 
-            {/* ==========================================
-                BOTTOM
-            ========================================== */}
+                    <div className="station-symbol-badge">
+                        <span>{code}</span>
+                    </div>
+                </div>
 
-            <div className="station-card-bottom">
+                <p className="station-location-text">
+                    <span className="location-pin-icon">📍</span>
+                    {data.location}
+                </p>
 
-                <span>
-                    {selected
-                        ? "INITIALIZING DIGITAL TWIN"
-                        : "INITIALIZE DIGITAL TWIN"
-                    }
-                </span>
-
-                <span className="station-arrow">
-                    →
-                </span>
-
+                {/* Live Micro Telemetry Metrics */}
+                <div className="station-quick-metrics">
+                    <div className="metric-pill">
+                        <span className="metric-label">TEMP</span>
+                        <span className="metric-value">{data.environment}</span>
+                    </div>
+                    <div className="metric-pill">
+                        <span className="metric-label">POWER</span>
+                        <span className="metric-value">{data.power}%</span>
+                    </div>
+                    <div className="metric-pill">
+                        <span className="metric-label">SATCOM</span>
+                        <span className="metric-value">{data.satcomQuality}</span>
+                    </div>
+                    <div className="metric-pill">
+                        <span className="metric-label">HEALTH</span>
+                        <span className="metric-value">{data.health}%</span>
+                    </div>
+                </div>
             </div>
 
+            {/* Mission CTA Control Bar */}
+            <div className="station-cta-bar">
+                <div className="cta-action-content">
+                    <span className="cta-dot" />
+                    <span className="cta-label">
+                        {selected
+                            ? "INITIALIZING DIGITAL TWIN..."
+                            : "ENTER DIGITAL TWIN"}
+                    </span>
+                </div>
 
-            {/* ==========================================
-                CORNERS
-            ========================================== */}
+                <div className="cta-arrow-wrapper">
+                    <span className="cta-arrow">→</span>
+                </div>
+            </div>
 
-            <span className="station-card-corner top-left" />
-            <span className="station-card-corner top-right" />
-            <span className="station-card-corner bottom-left" />
-            <span className="station-card-corner bottom-right" />
-
+            {/* Scanning Glow Border Effect */}
+            <div className="panel-glow-layer" />
         </button>
     );
 }

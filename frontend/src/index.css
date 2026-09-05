@@ -879,7 +879,7 @@ canvas {
 }
 
 /* =========================================================
-   STATION SELECTION SCREEN
+   STATION SELECTION SCREEN (AUTHENTIC ANTARCTIC MISSION)
 ========================================================= */
 
 .station-selector {
@@ -890,13 +890,18 @@ canvas {
     width: 100%;
     height: 100%;
 
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 
     pointer-events: auto;
 
     opacity: 0;
-
-    background: #020a10;
+    background: rgba(2, 11, 18, 0.91);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 
     transition:
         opacity 0.45s ease,
@@ -909,56 +914,64 @@ canvas {
 
 .station-selector-closing {
     opacity: 0;
-    transform: scale(1.025);
+    transform: scale(1.015);
 }
 
+.station-selector-selecting {
+    pointer-events: none;
+}
 
 /* ==========================================
-   BACKGROUND
+   BACKGROUND & ATMOSPHERE
 ========================================== */
 
 .station-selector-bg {
     position: absolute;
     inset: 0;
-
     pointer-events: none;
-
     background:
         radial-gradient(
-            circle at 50% 45%,
-            rgba(40, 130, 155, 0.12),
-            transparent 45%
+            circle at 20% 35%,
+            rgba(30, 115, 145, 0.12),
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 65%,
+            rgba(20, 95, 125, 0.1),
+            transparent 50%
         ),
         radial-gradient(
             circle at 50% 100%,
-            rgba(20, 90, 115, 0.12),
-            transparent 55%
+            rgba(10, 50, 75, 0.28),
+            transparent 65%
         ),
-        #020a10;
+        #020b12;
 }
 
 .station-selector-bg::before {
     content: "";
-
     position: absolute;
     inset: 0;
-
-    opacity: 0.18;
-
+    opacity: 0.14;
     background-image:
         linear-gradient(
-            rgba(120, 220, 235, 0.08) 1px,
+            rgba(107, 226, 242, 0.09) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(120, 220, 235, 0.08) 1px,
+            rgba(107, 226, 242, 0.09) 1px,
             transparent 1px
         );
-
-    background-size: 55px 55px;
+    background-size: 48px 48px;
 }
 
+.station-ambient-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center top, rgba(107, 226, 242, 0.05), transparent 70%);
+}
 
 /* ==========================================
    SCAN LINE
@@ -966,26 +979,21 @@ canvas {
 
 .station-scan-line {
     position: absolute;
-
     left: 0;
     top: -10%;
-
     width: 100%;
     height: 1px;
-
     pointer-events: none;
-
     background: linear-gradient(
         90deg,
-        transparent,
-        rgba(150, 235, 250, 0.7),
-        transparent
+        transparent 0%,
+        rgba(107, 226, 242, 0.1) 15%,
+        rgba(107, 226, 242, 0.65) 50%,
+        rgba(107, 226, 242, 0.1) 85%,
+        transparent 100%
     );
-
-    box-shadow:
-        0 0 18px rgba(100, 220, 240, 0.4);
-
-    animation: stationScan 5s linear infinite;
+    box-shadow: 0 0 16px rgba(107, 226, 242, 0.35);
+    animation: stationScan 6s linear infinite;
 }
 
 @keyframes stationScan {
@@ -993,524 +1001,771 @@ canvas {
         top: -5%;
         opacity: 0;
     }
-
-    10% {
-        opacity: 1;
+    12% {
+        opacity: 0.85;
     }
-
-    90% {
-        opacity: 1;
+    88% {
+        opacity: 0.85;
     }
-
     100% {
         top: 105%;
         opacity: 0;
     }
 }
 
-
 /* ==========================================
    HEADER
 ========================================== */
 
 .station-selector-header {
-    position: absolute;
-
-    top: 34px;
-    left: 42px;
-    right: 42px;
-
+    position: relative;
     z-index: 20;
+    flex-shrink: 0;
 
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding: 28px 48px 12px;
+}
+
+.station-header-branding {
+    display: flex;
+    flex-direction: column;
+}
+
+.station-selector-kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: rgba(160, 225, 240, 0.65);
+}
+
+.kicker-badge {
+    padding: 2px 7px;
+    background: rgba(107, 226, 242, 0.1);
+    border: 1px solid rgba(107, 226, 242, 0.28);
+    border-radius: 2px;
+    color: #6be2f2;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+}
+
+.kicker-separator {
+    color: rgba(107, 226, 242, 0.4);
+}
+
+.station-selector-title {
+    margin: 0;
+    font-size: clamp(20px, 2.2vw, 30px);
+    font-weight: 300;
+    letter-spacing: 0.26em;
+    color: rgba(240, 252, 255, 0.96);
+    text-shadow: 0 0 24px rgba(107, 226, 242, 0.14);
+}
+
+.station-selector-subtitle {
+    margin: 4px 0 0;
+    font-size: 10.5px;
+    letter-spacing: 0.38em;
+    color: rgba(175, 225, 238, 0.52);
+}
+
+.station-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.station-network-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid rgba(107, 226, 242, 0.18);
+    background: rgba(4, 20, 32, 0.55);
+    border-radius: 2px;
+}
+
+.status-ping {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+    50% {
+        transform: scale(1.35);
+        opacity: 1;
+    }
+}
+
+.status-text {
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    color: rgba(200, 240, 248, 0.75);
+}
+
+/* Close Button */
+.station-close {
+    position: relative;
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    height: 42px;
+    padding: 0 16px;
+
+    border: 1px solid rgba(150, 230, 245, 0.25);
+    background: rgba(4, 22, 34, 0.65);
+    color: rgba(220, 248, 255, 0.75);
+
+    cursor: pointer;
+    border-radius: 2px;
+    backdrop-filter: blur(8px);
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.close-icon {
+    font-size: 15px;
+    line-height: 1;
+    color: rgba(160, 235, 250, 0.85);
+    transition: transform 0.3s ease;
+}
+
+.close-label {
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    font-weight: 500;
+}
+
+.station-close:hover {
+    color: #ffffff;
+    background: rgba(20, 60, 85, 0.4);
+    border-color: rgba(107, 226, 242, 0.6);
+    box-shadow: 0 0 20px rgba(107, 226, 242, 0.15);
+}
+
+.station-close:hover .close-icon {
+    transform: rotate(90deg);
+}
+
+.station-close:active {
+    transform: scale(0.96);
+}
+
+/* ==========================================
+   MAIN CONTENT AREA
+========================================== */
+
+.station-selection-content {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px 48px 24px;
+    min-height: 0;
+}
+
+.station-cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(380px, 540px));
+    gap: 36px;
+    width: min(1140px, 100%);
+    perspective: 1200px;
+}
+
+/* ==========================================
+   STATION EXPEDITION PANEL
+========================================== */
+
+.station-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid rgba(135, 215, 235, 0.2);
+    background: linear-gradient(
+        175deg,
+        rgba(8, 28, 42, 0.76) 0%,
+        rgba(3, 14, 24, 0.94) 100%
+    );
+
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    overflow: hidden;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    transform: translateY(28px);
+    opacity: 0;
+
+    animation: stationPanelReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    transition:
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.35s ease,
+        box-shadow 0.4s ease,
+        opacity 0.4s ease,
+        filter 0.4s ease;
+}
+
+.station-panel:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.station-selector-visible .station-panel {
+    opacity: 1;
+}
+
+@keyframes stationPanelReveal {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover effect */
+.station-panel:hover {
+    transform: translateY(-6px);
+    border-color: rgba(107, 226, 242, 0.55);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        0 0 35px rgba(107, 226, 242, 0.12);
+}
+
+.station-panel:hover .station-photo {
+    transform: scale(1.03);
+    filter: brightness(1.02) contrast(1.06) saturate(1.02);
+}
+
+.station-panel:hover .station-cta-bar {
+    background: rgba(18, 54, 78, 0.7);
+    border-top-color: rgba(107, 226, 242, 0.38);
+    color: #ffffff;
+}
+
+.station-panel:hover .cta-arrow {
+    transform: translateX(6px);
+    color: #6be2f2;
+}
+
+.station-panel:hover .station-bracket {
+    border-color: rgba(107, 226, 242, 0.9);
+}
+
+/* Selected state */
+.station-panel-selected {
+    border-color: rgba(107, 226, 242, 0.85);
+    box-shadow:
+        0 0 60px rgba(107, 226, 242, 0.28),
+        inset 0 0 30px rgba(107, 226, 242, 0.08);
+    transform: scale(1.015);
+}
+
+.station-panel-selected .station-cta-bar {
+    background: rgba(15, 65, 95, 0.85);
+    border-top-color: rgba(107, 226, 242, 0.7);
+}
+
+.station-panel-selected .cta-dot {
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+    animation: statusPulse 1s ease-in-out infinite;
+}
+
+/* Dimmed state when the other panel is selected */
+.station-panel-dimmed {
+    opacity: 0.3;
+    filter: grayscale(35%) blur(1px);
+    transform: scale(0.985);
+    pointer-events: none;
+}
+
+/* Corner Precision Brackets */
+.station-bracket {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 15;
+    transition: border-color 0.3s ease;
+}
+
+.bracket-tl {
+    top: 0;
+    left: 0;
+    border-top: 2px solid rgba(140, 225, 242, 0.65);
+    border-left: 2px solid rgba(140, 225, 242, 0.65);
+}
+
+.bracket-tr {
+    top: 0;
+    right: 0;
+    border-top: 2px solid rgba(140, 225, 242, 0.65);
+    border-right: 2px solid rgba(140, 225, 242, 0.65);
+}
+
+.bracket-bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid rgba(140, 225, 242, 0.65);
+    border-left: 2px solid rgba(140, 225, 242, 0.65);
+}
+
+.bracket-br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid rgba(140, 225, 242, 0.65);
+    border-right: 2px solid rgba(140, 225, 242, 0.65);
+}
+
+/* ==========================================
+   PANEL HEADER BAR
+========================================== */
+
+.panel-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(4, 18, 28, 0.6);
+    border-bottom: 1px solid rgba(120, 210, 230, 0.12);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    z-index: 5;
+}
+
+.panel-id-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.station-code-pill {
+    font-weight: 600;
+    color: #6be2f2;
+    background: rgba(107, 226, 242, 0.1);
+    border: 1px solid rgba(107, 226, 242, 0.25);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+}
+
+.station-sector-tag {
+    color: rgba(175, 225, 238, 0.55);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+}
+
+.panel-telemetry-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.telemetry-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+    animation: statusPulse 2.5s ease-in-out infinite;
+}
+
+.telemetry-live-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: rgba(190, 235, 248, 0.7);
+}
+
+/* ==========================================
+   PHOTOGRAPHIC FRAME
+========================================== */
+
+.station-image-frame {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: #01070d;
+}
+
+.station-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    filter: brightness(0.92) contrast(1.04) saturate(0.95);
+    transition:
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.45s ease;
+}
+
+.station-photo-gradient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(2, 11, 18, 0.05) 0%,
+        rgba(2, 11, 18, 0.15) 45%,
+        rgba(3, 14, 24, 0.92) 100%
+    );
+}
+
+.station-photo-top-tint {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at center, transparent 55%, rgba(1, 8, 14, 0.4) 100%);
+    mix-blend-mode: multiply;
+}
+
+.station-coordinate-tag {
+    position: absolute;
+    bottom: 12px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 9px;
+    background: rgba(2, 12, 20, 0.75);
+    border: 1px solid rgba(107, 226, 242, 0.2);
+    border-radius: 2px;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    color: rgba(210, 245, 252, 0.85);
+    backdrop-filter: blur(6px);
+}
+
+.coord-icon {
+    color: #6be2f2;
+    font-size: 11px;
+}
+
+.coord-divider {
+    color: rgba(107, 226, 242, 0.35);
+}
+
+.station-est-tag {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    padding: 3px 8px;
+    background: rgba(2, 12, 20, 0.75);
+    border: 1px solid rgba(107, 226, 242, 0.2);
+    border-radius: 2px;
+    font-size: 8.5px;
+    letter-spacing: 0.2em;
+    color: rgba(190, 235, 245, 0.75);
+    backdrop-filter: blur(6px);
+}
+
+/* ==========================================
+   STATION INFO DECK
+========================================== */
+
+.station-info-deck {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 24px 16px;
+    flex: 1;
+}
+
+.station-name-row {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
 }
 
-.station-selector-kicker {
-    margin-bottom: 10px;
-
-    font-size: 9px;
-    letter-spacing: 0.4em;
-
-    color: rgba(180, 235, 245, 0.5);
-}
-
-.station-selector-header h2 {
-    margin: 0;
-
-    font-size: clamp(18px, 2vw, 28px);
-    font-weight: 300;
-
-    letter-spacing: 0.22em;
-
-    color: rgba(230, 250, 255, 0.9);
-}
-
-
-/* ==========================================
-   CLOSE BUTTON
-========================================== */
-
-.station-close {
-    position: relative;
-
-    z-index: 100;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 48px;
-    height: 48px;
-
-    padding: 0;
-
-    border: 1px solid rgba(170, 235, 245, 0.25);
-
-    background: rgba(5, 25, 34, 0.65);
-
-    color: rgba(220, 250, 255, 0.75);
-
-    cursor: pointer;
-
-    pointer-events: auto;
-
-    font-size: 27px;
-    font-weight: 200;
-
-    line-height: 1;
-
-    backdrop-filter: blur(10px);
-
-    transition:
-        color 0.3s ease,
-        background 0.3s ease,
-        border-color 0.3s ease,
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-.station-close span {
-    display: block;
-
-    transform: translateY(-1px);
-
-    transition:
-        transform 0.3s ease;
-}
-
-.station-close:hover {
-    color: white;
-
-    background: rgba(50, 130, 150, 0.2);
-
-    border-color: rgba(170, 240, 250, 0.75);
-
-    box-shadow:
-        0 0 25px rgba(80, 210, 235, 0.12),
-        inset 0 0 15px rgba(80, 210, 235, 0.05);
-
-    transform: rotate(90deg);
-}
-
-.station-close:hover span {
-    transform: translateY(-1px) scale(1.1);
-}
-
-.station-close:active {
-    transform: rotate(90deg) scale(0.92);
-}
-
-
-/* ==========================================
-   CONTENT
-========================================== */
-
-.station-selection-content {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 10;
-
+.station-title-group {
     display: flex;
     flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 100px 40px 80px;
 }
 
-.station-selection-description {
-    margin: 0 0 42px;
+.station-name {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 0.24em;
+    color: #ffffff;
+    line-height: 1.1;
+    text-shadow: 0 0 20px rgba(107, 226, 242, 0.18);
+}
 
-    font-size: 9px;
+.station-subheading {
+    margin: 4px 0 0;
+    font-size: 8.5px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    color: rgba(160, 220, 238, 0.58);
+}
 
-    letter-spacing: 0.35em;
+.station-symbol-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(107, 226, 242, 0.25);
+    background: rgba(107, 226, 242, 0.05);
+    border-radius: 2px;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: rgba(220, 248, 255, 0.85);
+}
 
-    color: rgba(190, 235, 242, 0.45);
+.station-location-text {
+    margin: 10px 0 16px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(185, 235, 245, 0.78);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
+.location-pin-icon {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Live Quick Metrics */
+.station-quick-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: auto;
+}
+
+.metric-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 7px 8px;
+    background: rgba(4, 20, 32, 0.5);
+    border: 1px solid rgba(107, 226, 242, 0.12);
+    border-radius: 2px;
     text-align: center;
 }
 
-
-/* ==========================================
-   CARDS
-========================================== */
-
-.station-cards {
-    display: grid;
-
-    grid-template-columns: repeat(2, minmax(280px, 430px));
-
-    gap: 28px;
-
-    width: min(900px, 100%);
-
-    perspective: 1200px;
+.metric-label {
+    font-size: 7.5px;
+    letter-spacing: 0.22em;
+    color: rgba(160, 220, 235, 0.5);
 }
 
-.station-card {
-    position: relative;
-
-    min-height: 330px;
-
-    padding: 26px;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(160, 230, 240, 0.18);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(15, 50, 62, 0.42),
-            rgba(3, 16, 24, 0.78)
-        );
-
-    color: white;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    pointer-events: auto;
-
-    backdrop-filter: blur(14px);
-
-    transform: translateY(40px) rotateX(8deg);
-
-    opacity: 0;
-
-    animation:
-        stationCardReveal
-        1s
-        cubic-bezier(0.16, 1, 0.3, 1)
-        forwards;
-
-    transition:
-        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-        border-color 0.35s ease,
-        background 0.35s ease,
-        box-shadow 0.35s ease;
-}
-
-.station-card:nth-child(2) {
-    animation-delay: 0.15s;
-}
-
-.station-selector-visible .station-card {
-    opacity: 1;
-}
-
-@keyframes stationCardReveal {
-    from {
-        opacity: 0;
-        transform: translateY(80px) rotateX(12deg);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) rotateX(0);
-    }
-}
-
-.station-card:hover {
-    transform: translateY(-8px);
-
-    border-color: rgba(170, 240, 250, 0.55);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(20, 70, 85, 0.5),
-            rgba(4, 23, 32, 0.85)
-        );
-
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 35px rgba(70, 200, 225, 0.08);
-}
-
-.station-card-selected {
-    border-color: rgba(170, 240, 250, 0.75);
-
-    box-shadow:
-        0 0 45px rgba(70, 210, 235, 0.1),
-        inset 0 0 30px rgba(80, 210, 230, 0.035);
-}
-
-
-/* ==========================================
-   CARD CONTENT
-========================================== */
-
-.station-card-index {
-    position: absolute;
-
-    top: 20px;
-    right: 24px;
-
-    font-size: 9px;
-
-    letter-spacing: 0.2em;
-
-    color: rgba(180, 235, 245, 0.3);
-}
-
-.station-card-top {
-    display: flex;
-
-    justify-content: space-between;
-
-    padding-bottom: 16px;
-
-    border-bottom: 1px solid rgba(170, 235, 245, 0.1);
-
-    font-size: 7px;
-
-    letter-spacing: 0.25em;
-
-    color: rgba(180, 235, 245, 0.4);
-}
-
-.station-card-main {
-    display: flex;
-
-    align-items: center;
-
-    gap: 22px;
-
-    margin-top: 55px;
-}
-
-.station-symbol {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    width: 72px;
-    height: 72px;
-
-    border: 1px solid rgba(170, 235, 245, 0.3);
-
-    color: rgba(220, 250, 255, 0.85);
-
-    font-size: 19px;
-
-    letter-spacing: 0.12em;
-
-    background: rgba(90, 200, 220, 0.04);
-
-    box-shadow:
-        inset 0 0 20px rgba(100, 220, 240, 0.03);
-}
-
-.station-card h3 {
-    margin: 0 0 8px;
-
-    font-size: 27px;
-
-    font-weight: 300;
-
-    letter-spacing: 0.25em;
-}
-
-.station-location {
-    margin: 0;
-
-    font-size: 7px;
-
-    letter-spacing: 0.16em;
-
-    color: rgba(185, 235, 242, 0.5);
-}
-
-.station-description {
-    margin-top: 10px;
-
-    font-size: 8px;
-
+.metric-value {
+    font-size: 11.5px;
+    font-weight: 500;
     letter-spacing: 0.1em;
-
-    color: rgba(185, 235, 242, 0.32);
+    color: rgba(230, 250, 255, 0.95);
+    font-variant-numeric: tabular-nums;
 }
 
-.station-card-bottom {
-    position: absolute;
+/* ==========================================
+   MISSION CTA CONTROL BAR
+========================================== */
 
-    left: 26px;
-    right: 26px;
-    bottom: 24px;
-
+.station-cta-bar {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
-    font-size: 7px;
-
-    letter-spacing: 0.2em;
-
-    color: rgba(190, 235, 242, 0.42);
+    padding: 14px 24px;
+    background: rgba(4, 20, 32, 0.6);
+    border-top: 1px solid rgba(120, 210, 230, 0.15);
+    font-size: 10.5px;
+    letter-spacing: 0.26em;
+    color: rgba(210, 245, 255, 0.82);
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease,
+        color 0.3s ease;
 }
 
-.station-card-arrow {
-    font-size: 18px;
+.cta-action-content {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
 
+.cta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6be2f2;
+    box-shadow: 0 0 8px rgba(107, 226, 242, 0.8);
+}
+
+.cta-label {
+    font-weight: 500;
+}
+
+.cta-arrow-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.cta-arrow {
+    font-size: 15px;
+    line-height: 1;
+    color: rgba(180, 235, 245, 0.7);
     transition:
         transform 0.3s ease,
         color 0.3s ease;
 }
 
-.station-card:hover .station-card-arrow {
-    transform: translateX(6px);
-
-    color: rgba(220, 250, 255, 0.9);
-}
-
-
 /* ==========================================
-   CARD CORNERS
-========================================== */
-
-.station-card-corner {
-    position: absolute;
-
-    width: 12px;
-    height: 12px;
-
-    pointer-events: none;
-}
-
-.station-corner-tl {
-    top: 0;
-    left: 0;
-
-    border-top: 1px solid rgba(180, 240, 250, 0.7);
-    border-left: 1px solid rgba(180, 240, 250, 0.7);
-}
-
-.station-corner-tr {
-    top: 0;
-    right: 0;
-
-    border-top: 1px solid rgba(180, 240, 250, 0.7);
-    border-right: 1px solid rgba(180, 240, 250, 0.7);
-}
-
-.station-corner-bl {
-    bottom: 0;
-    left: 0;
-
-    border-bottom: 1px solid rgba(180, 240, 250, 0.7);
-    border-left: 1px solid rgba(180, 240, 250, 0.7);
-}
-
-.station-corner-br {
-    bottom: 0;
-    right: 0;
-
-    border-bottom: 1px solid rgba(180, 240, 250, 0.7);
-    border-right: 1px solid rgba(180, 240, 250, 0.7);
-}
-
-
-/* ==========================================
-   FOOTER
+   FOOTER BAR
 ========================================== */
 
 .station-selector-footer {
-    position: absolute;
-
-    left: 42px;
-    right: 42px;
-    bottom: 30px;
-
+    position: relative;
     z-index: 20;
+    flex-shrink: 0;
 
     display: flex;
-
+    align-items: center;
     justify-content: space-between;
 
-    font-size: 7px;
+    padding: 14px 48px 24px;
 
-    letter-spacing: 0.25em;
-
-    color: rgba(180, 230, 240, 0.3);
+    font-size: 8.5px;
+    letter-spacing: 0.24em;
+    color: rgba(160, 220, 235, 0.42);
+    border-top: 1px solid rgba(107, 226, 242, 0.08);
 }
 
+.footer-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.meta-label {
+    font-weight: 600;
+    color: rgba(180, 235, 248, 0.65);
+}
+
+.meta-dot {
+    opacity: 0.5;
+}
+
+.footer-meta-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(180, 235, 248, 0.6);
+}
+
+.meta-indicator {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #6be2f2;
+    box-shadow: 0 0 6px rgba(107, 226, 242, 0.8);
+}
+
+.footer-meta-right {
+    color: rgba(160, 220, 235, 0.45);
+}
 
 /* ==========================================
-   MOBILE
+   RESPONSIVE LAYOUT
 ========================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 960px) {
     .station-selector-header {
-        top: 24px;
-        left: 22px;
-        right: 22px;
+        padding: 20px 24px 10px;
     }
 
-    .station-selector-header h2 {
-        font-size: 15px;
-    }
-
-    .station-close {
-        width: 42px;
-        height: 42px;
+    .station-selector-title {
+        font-size: 18px;
     }
 
     .station-selection-content {
-        padding: 90px 20px 70px;
+        padding: 12px 24px 20px;
     }
 
-    .station-cards {
+    .station-cards-container {
         grid-template-columns: 1fr;
-
-        gap: 16px;
-
-        overflow-y: auto;
-
-        max-height: 65vh;
+        gap: 20px;
+        max-width: 560px;
     }
 
-    .station-card {
-        min-height: 270px;
+    .station-image-frame {
+        height: 200px;
     }
 
     .station-selector-footer {
-        left: 22px;
-        right: 22px;
-        bottom: 20px;
+        padding: 12px 24px 18px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
     }
 }
+
+@media (max-width: 560px) {
+    .station-selector-header {
+        padding: 16px 16px 8px;
+    }
+
+    .station-header-actions .station-network-status {
+        display: none;
+    }
+
+    .station-selection-content {
+        padding: 8px 16px 16px;
+    }
+
+    .station-cards-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .station-image-frame {
+        height: 170px;
+    }
+
+    .station-quick-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 
 
 /* =========================================================
@@ -1625,6 +1880,9 @@ canvas {
 .dashboard-body {
   height: calc(100vh - 74px);
   display: flex;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
 /* =========================================
@@ -2011,18 +2269,16 @@ canvas {
 .dashboard-sidebar {
   width: 255px;
   height: 100%;
+  max-height: 100%;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   border-right: 1px solid rgba(135, 220, 240, 0.12);
   background: linear-gradient(180deg, rgba(3, 14, 23, 0.96) 0%, rgba(2, 9, 16, 0.98) 100%);
   backdrop-filter: blur(24px);
   transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(100, 210, 230, 0.15) transparent;
+  overflow: hidden;
   position: relative;
   z-index: 50;
 }
@@ -2113,12 +2369,25 @@ canvas {
 
 /* NAVIGATION SECTIONS */
 .sidebar-navigation {
-  padding: 10px 8px;
-  flex: 1;
+  padding: 10px 8px 16px;
+  flex: 1 1 0%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 210, 230, 0.2) transparent;
+}
+
+.sidebar-navigation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-navigation::-webkit-scrollbar-thumb {
+  background: rgba(100, 210, 230, 0.2);
+  border-radius: 4px;
 }
 
 .sidebar-section {
@@ -2239,12 +2508,17 @@ canvas {
 /* SIDEBAR FOOTER */
 .sidebar-footer {
   padding: 12px 12px 14px;
-  border-top: 1px solid rgba(135, 220, 240, 0.08);
-  background: rgba(2, 9, 16, 0.7);
+  border-top: 1px solid rgba(135, 220, 240, 0.12);
+  background: rgba(2, 9, 16, 0.92);
+  backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
   flex-shrink: 0;
+  position: relative !important;
+  bottom: auto !important;
+  z-index: 10;
+  margin-top: auto;
 }
 
 .sidebar-station-card {

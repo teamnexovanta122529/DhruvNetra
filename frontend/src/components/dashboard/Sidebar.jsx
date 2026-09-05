@@ -83,6 +83,7 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
           className="sidebar-collapse-btn"
           onClick={onToggle}
           title={collapsed ? "Expand Sidebar (»)" : "Collapse Sidebar («)"}
+          data-cursor="pointer"
         >
           <span>{collapsed ? "»" : "«"}</span>
         </button>
@@ -115,6 +116,7 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
                     `dashboard-nav-item ${isActive ? "active" : ""}`
                   }
                   title={collapsed ? `${section.title} / ${item.label}` : undefined}
+                  data-cursor="pointer"
                 >
                   <span className="nav-icon">{item.icon}</span>
 
@@ -179,6 +181,7 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
           className="sidebar-landing-btn"
           onClick={handleBackToLanding}
           title="Return to Landing Page (/)"
+          data-cursor="pointer"
         >
           <span className="landing-btn-icon">←</span>
           {!collapsed && <span>LANDING PAGE</span>}
