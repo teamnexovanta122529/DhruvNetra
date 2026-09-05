@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import CustomCursor from "./CustomCursor";
 import AntarcticaBackground from "./AntarcticaBackground";
 import AtmosphericEffects from "./AtmosphericEffects";
 import SnowOverlay from "./SnowOverlay";
@@ -10,6 +10,9 @@ import StationSelector from "./StationSelector";
 
 export default function LandingPage() {
     const mouse = useRef({ x: 0, y: 0 });
+    const navigatingRef = useRef(false);
+
+    const navigate = useNavigate();
 
     const [loaded, setLoaded] = useState(false);
     const [showStations, setShowStations] = useState(false);
@@ -20,7 +23,7 @@ export default function LandingPage() {
     // ==========================================
 
     const handleEnterSystem = () => {
-        if (zooming) return;
+        if (zooming || showStations) return;
 
         setZooming(true);
 
@@ -28,6 +31,33 @@ export default function LandingPage() {
             setShowStations(true);
             setZooming(false);
         }, 1500);
+    };
+
+    // ==========================================
+    // STATION SELECTED
+    // ==========================================
+
+    const handleStationSelect = (station) => {
+        if (navigatingRef.current) return;
+
+        navigatingRef.current = true;
+
+        console.log("STATION SELECTED:", station);
+
+        // Save selected station
+        sessionStorage.setItem(
+            "selectedStation",
+            station
+        );
+
+        // Close selector
+        setShowStations(false);
+        setZooming(false);
+
+        // Open dashboard
+        navigate("/dashboard/overview", {
+            replace: true,
+        });
     };
 
     // ==========================================
@@ -42,11 +72,13 @@ export default function LandingPage() {
         let currentY = 0;
 
         let animationFrame;
-        let zoomTimeout;
 
         const handleMouseMove = (event) => {
-            targetX = event.clientX / window.innerWidth - 0.5;
-            targetY = event.clientY / window.innerHeight - 0.5;
+            targetX =
+                event.clientX / window.innerWidth - 0.5;
+
+            targetY =
+                event.clientY / window.innerHeight - 0.5;
         };
 
         const handleEscape = (event) => {
@@ -57,35 +89,52 @@ export default function LandingPage() {
         };
 
         const animate = () => {
-            currentX += (targetX - currentX) * 0.035;
-            currentY += (targetY - currentY) * 0.035;
+            currentX +=
+                (targetX - currentX) * 0.035;
+
+            currentY +=
+                (targetY - currentY) * 0.035;
 
             mouse.current.x = currentX;
             mouse.current.y = currentY;
 
-            animationFrame = requestAnimationFrame(animate);
+            animationFrame =
+                requestAnimationFrame(animate);
         };
 
-        window.addEventListener("mousemove", handleMouseMove);
-        window.addEventListener("keydown", handleEscape);
+        window.addEventListener(
+            "mousemove",
+            handleMouseMove
+        );
 
-        animationFrame = requestAnimationFrame(animate);
+        window.addEventListener(
+            "keydown",
+            handleEscape
+        );
+
+        animationFrame =
+            requestAnimationFrame(animate);
 
         const loadTimer = setTimeout(() => {
             setLoaded(true);
         }, 150);
 
         return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("keydown", handleEscape);
+            window.removeEventListener(
+                "mousemove",
+                handleMouseMove
+            );
 
-            cancelAnimationFrame(animationFrame);
+            window.removeEventListener(
+                "keydown",
+                handleEscape
+            );
+
+            cancelAnimationFrame(
+                animationFrame
+            );
 
             clearTimeout(loadTimer);
-
-            if (zoomTimeout) {
-                clearTimeout(zoomTimeout);
-            }
         };
     }, []);
 
@@ -94,6 +143,8 @@ export default function LandingPage() {
     // ==========================================
 
     const handleCloseStations = () => {
+        if (navigatingRef.current) return;
+
         setShowStations(false);
         setZooming(false);
     };
@@ -104,8 +155,17 @@ export default function LandingPage() {
 
     return (
         <main
-            className={`landing-page relative h-screen w-full overflow-hidden bg-[#020b12] text-white ${loaded ? "page-loaded" : ""
-                } ${zooming ? "system-zooming" : ""}`}
+            className={`
+                landing-page
+                relative
+                h-screen
+                w-full
+                overflow-hidden
+                bg-[#020b12]
+                text-white
+                ${loaded ? "page-loaded" : ""}
+                ${zooming ? "system-zooming" : ""}
+            `}
         >
 
             {/* ==========================================
@@ -113,7 +173,9 @@ export default function LandingPage() {
             ========================================== */}
 
             <div className="cinematic-layer cinematic-background">
-                <AntarcticaBackground mouse={mouse} />
+                <AntarcticaBackground
+                    mouse={mouse}
+                />
             </div>
 
 
@@ -123,7 +185,10 @@ export default function LandingPage() {
 
             <div className="cinematic-layer cinematic-atmosphere">
                 <AuroraEffect />
-                <AtmosphericEffects mouse={mouse} />
+
+                <AtmosphericEffects
+                    mouse={mouse}
+                />
             </div>
 
 
@@ -132,7 +197,9 @@ export default function LandingPage() {
             ========================================== */}
 
             <div className="cinematic-layer cinematic-snow">
-                <SnowOverlay mouse={mouse} />
+                <SnowOverlay
+                    mouse={mouse}
+                />
             </div>
 
 
@@ -141,7 +208,9 @@ export default function LandingPage() {
             ========================================== */}
 
             <div className="cinematic-layer cinematic-ice">
-                <AtmosphereCanvas mouse={mouse} />
+                <AtmosphereCanvas
+                    mouse={mouse}
+                />
             </div>
 
 
@@ -198,6 +267,7 @@ export default function LandingPage() {
                     justify-center
                 "
             >
+
                 <div className="hero-content text-center">
 
                     {/* Eyebrow */}
@@ -237,9 +307,14 @@ export default function LandingPage() {
 
                     <button
                         type="button"
-                        className="enter-system pointer-events-auto"
+                        className="
+                            enter-system
+                            pointer-events-auto
+                        "
                         onClick={handleEnterSystem}
+                        disabled={zooming || showStations}
                     >
+
                         <span className="enter-dot" />
 
                         <span>
@@ -249,9 +324,11 @@ export default function LandingPage() {
                         <span className="enter-arrow">
                             →
                         </span>
+
                     </button>
 
                 </div>
+
             </section>
 
 
@@ -278,15 +355,9 @@ export default function LandingPage() {
             {showStations && (
                 <StationSelector
                     onClose={handleCloseStations}
+                    onSelectStation={handleStationSelect}
                 />
             )}
-
-
-            {/* ==========================================
-                CUSTOM CURSOR
-            ========================================== */}
-
-            <CustomCursor />
 
         </main>
     );
@@ -431,4 +502,8 @@ function LandingHUD() {
         </>
     );
 }
+
+
+
+
 

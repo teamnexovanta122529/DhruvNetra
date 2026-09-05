@@ -1,0 +1,1705 @@
+/* =====================================================
+   DASHBOARD ROOT
+===================================================== */
+
+.station-dashboard {
+    position: fixed;
+    inset: 0;
+
+    z-index: 3000;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(20, 70, 90, 0.16),
+            transparent 40%
+        ),
+        #020a12;
+
+    color: rgba(225, 247, 252, 0.9);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        sans-serif;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.dashboard-header {
+    height: 88px;
+
+    display: grid;
+
+    grid-template-columns:
+        260px
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 30px;
+
+    padding: 0 32px;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.12);
+
+    background:
+        rgba(2, 12, 20, 0.86);
+
+    backdrop-filter: blur(18px);
+}
+
+
+.dashboard-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dashboard-brand-mark {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid rgba(130, 220, 240, 0.4);
+
+    color: #bceff7;
+
+    font-size: 17px;
+}
+
+.dashboard-brand h1 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 400;
+
+    letter-spacing: 0.16em;
+}
+
+.dashboard-brand p {
+    margin: 3px 0 0;
+
+    font-size: 7px;
+
+    letter-spacing: 0.22em;
+
+    color: rgba(180, 225, 235, 0.42);
+}
+
+
+.dashboard-station-title span {
+    font-size: 7px;
+
+    letter-spacing: 0.25em;
+
+    color: rgba(180, 225, 235, 0.42);
+}
+
+.dashboard-station-title h2 {
+    margin: 3px 0;
+
+    font-size: 20px;
+
+    font-weight: 300;
+
+    letter-spacing: 0.08em;
+}
+
+.dashboard-station-title p {
+    margin: 0;
+
+    font-size: 7px;
+
+    letter-spacing: 0.13em;
+
+    color: rgba(185, 230, 240, 0.42);
+}
+
+
+.dashboard-header-status {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.online-status {
+    padding: 9px 13px;
+
+    border:
+        1px solid rgba(40, 220, 125, 0.3);
+
+    color: rgba(65, 235, 140, 0.9);
+
+    font-size: 8px;
+
+    letter-spacing: 0.08em;
+}
+
+.online-dot {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 7px;
+
+    border-radius: 50%;
+
+    background: #35dc82;
+
+    box-shadow:
+        0 0 10px rgba(50, 230, 130, 0.8);
+}
+
+.header-status-item {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.header-status-item span {
+    font-size: 6px;
+
+    letter-spacing: 0.2em;
+
+    color: rgba(180, 225, 235, 0.38);
+}
+
+.header-status-item strong {
+    font-size: 8px;
+
+    font-weight: 400;
+
+    color: rgba(210, 242, 248, 0.75);
+}
+
+
+/* =====================================================
+   BODY
+===================================================== */
+
+.dashboard-body {
+    height: calc(100vh - 88px);
+
+    display: grid;
+
+    grid-template-columns: 220px 1fr;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.dashboard-sidebar {
+    position: relative;
+
+    border-right:
+        1px solid rgba(150, 225, 240, 0.1);
+
+    background:
+        rgba(2, 12, 20, 0.72);
+}
+
+.dashboard-nav {
+    padding-top: 18px;
+}
+
+.dashboard-nav-item {
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 13px 20px;
+
+    border: 0;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.045);
+
+    background: transparent;
+
+    color: rgba(190, 225, 235, 0.55);
+
+    text-align: left;
+
+    font-size: 8px;
+
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+.dashboard-nav-item:hover,
+.dashboard-nav-item.active {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(50, 140, 175, 0.17),
+            transparent
+        );
+
+    color: rgba(225, 250, 255, 0.95);
+}
+
+.dashboard-nav-item.active::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 2px;
+
+    background: rgba(90, 220, 240, 0.8);
+
+    box-shadow:
+        0 0 12px rgba(70, 210, 235, 0.5);
+}
+
+.nav-icon {
+    width: 20px;
+
+    color: rgba(130, 215, 235, 0.65);
+
+    font-size: 15px;
+
+    text-align: center;
+}
+
+.alert-count {
+    margin-left: auto;
+
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(210, 60, 50, 0.85);
+
+    color: white;
+
+    font-size: 7px;
+}
+
+.sidebar-footer {
+    position: absolute;
+
+    left: 20px;
+    right: 20px;
+    bottom: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    font-size: 6px;
+
+    letter-spacing: 0.16em;
+
+    color: rgba(170, 220, 230, 0.3);
+}
+
+.sidebar-footer strong {
+    color: rgba(200, 240, 248, 0.55);
+
+    font-size: 8px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.dashboard-main {
+    min-width: 0;
+
+    overflow-y: auto;
+
+    padding: 14px;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(100, 200, 220, 0.2)
+        transparent;
+}
+
+.dashboard-main-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(500px, 1fr)
+        330px;
+
+    gap: 12px;
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.dashboard-panel,
+.digital-twin-panel {
+    position: relative;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(150, 225, 240, 0.12);
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8, 29, 40, 0.75),
+            rgba(2, 14, 22, 0.82)
+        );
+
+    box-shadow:
+        inset 0 0 30px rgba(70, 190, 215, 0.015);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 15px;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.08);
+}
+
+.panel-title h3 {
+    margin: 0;
+
+    font-size: 9px;
+
+    font-weight: 400;
+
+    letter-spacing: 0.12em;
+}
+
+.panel-title span {
+    font-size: 6px;
+
+    letter-spacing: 0.15em;
+
+    color: rgba(70, 205, 235, 0.7);
+}
+
+
+/* =====================================================
+   DIGITAL TWIN
+===================================================== */
+
+.digital-twin-panel {
+    min-height: 460px;
+}
+
+.panel-heading {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 10;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(2, 12, 20, 0.7),
+            transparent
+        );
+}
+
+.panel-kicker {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 6px;
+
+    letter-spacing: 0.2em;
+
+    color: rgba(180, 225, 235, 0.45);
+}
+
+.panel-heading h3 {
+    margin: 0;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    letter-spacing: 0.12em;
+}
+
+.panel-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.panel-controls button {
+    width: 30px;
+    height: 30px;
+
+    border:
+        1px solid rgba(170, 230, 240, 0.16);
+
+    background:
+        rgba(5, 25, 34, 0.55);
+
+    color: rgba(205, 242, 248, 0.6);
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   3D STAGE
+===================================================== */
+
+.station-3d-stage {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    perspective: 900px;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 55%,
+            rgba(50, 150, 175, 0.2),
+            transparent 50%
+        ),
+        linear-gradient(
+            180deg,
+            #102d3b,
+            #071822
+        );
+}
+
+.stage-grid {
+    position: absolute;
+    inset: 0;
+
+    opacity: 0.25;
+
+    background-image:
+        linear-gradient(
+            rgba(120, 220, 235, 0.07) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(120, 220, 235, 0.07) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    transform:
+        perspective(500px)
+        rotateX(62deg)
+        translateY(150px)
+        scale(1.6);
+
+    transform-origin: center bottom;
+}
+
+.station-glow {
+    position: absolute;
+
+    width: 55%;
+    height: 40%;
+
+    left: 22%;
+    top: 30%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(80, 210, 230, 0.25),
+            transparent 70%
+        );
+
+    filter: blur(30px);
+}
+
+
+/* =====================================================
+   TEMPORARY STATION MODEL
+===================================================== */
+
+.station-model {
+    position: absolute;
+
+    left: 50%;
+    top: 55%;
+
+    width: 360px;
+    height: 220px;
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(58deg)
+        rotateZ(-5deg)
+        skewX(-8deg);
+
+    transform-style: preserve-3d;
+
+    filter:
+        drop-shadow(
+            0 30px 30px
+            rgba(0, 0, 0, 0.45)
+        );
+}
+
+.station-building {
+    position: absolute;
+
+    border:
+        1px solid rgba(120, 220, 235, 0.35);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(25, 75, 90, 0.9),
+            rgba(7, 28, 38, 0.95)
+        );
+
+    box-shadow:
+        inset 0 0 20px rgba(100, 220, 235, 0.06);
+}
+
+.building-one {
+    left: 30px;
+    bottom: 50px;
+
+    width: 230px;
+    height: 90px;
+}
+
+.building-two {
+    right: 10px;
+    bottom: 75px;
+
+    width: 110px;
+    height: 60px;
+}
+
+.building-three {
+    left: 95px;
+    bottom: 140px;
+
+    width: 90px;
+    height: 50px;
+}
+
+.station-building span {
+    display: inline-block;
+
+    width: 12px;
+    height: 6px;
+
+    margin: 12px 5px;
+
+    background:
+        rgba(90, 220, 240, 0.4);
+
+    box-shadow:
+        0 0 8px rgba(80, 210, 230, 0.3);
+}
+
+.station-tower {
+    position: absolute;
+
+    right: 65px;
+    bottom: 135px;
+
+    width: 4px;
+    height: 100px;
+
+    background:
+        rgba(170, 235, 245, 0.35);
+}
+
+.station-tower i {
+    position: absolute;
+
+    left: -10px;
+
+    width: 24px;
+    height: 1px;
+
+    background:
+        rgba(160, 235, 245, 0.35);
+}
+
+.station-tower i:nth-child(1) {
+    top: 20px;
+}
+
+.station-tower i:nth-child(2) {
+    top: 45px;
+}
+
+.station-tower i:nth-child(3) {
+    top: 70px;
+}
+
+.station-road {
+    position: absolute;
+
+    left: -50px;
+    bottom: 15px;
+
+    width: 460px;
+    height: 2px;
+
+    background:
+        rgba(180, 235, 245, 0.2);
+
+    transform: rotate(-7deg);
+}
+
+
+/* =====================================================
+   HOTSPOTS
+===================================================== */
+
+.twin-hotspot {
+    position: absolute;
+
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    animation:
+        hotspotPulse
+        3s
+        ease-in-out
+        infinite;
+}
+
+.hotspot-label {
+    min-width: 100px;
+
+    padding: 7px 9px;
+
+    border:
+        1px solid rgba(150, 230, 240, 0.2);
+
+    background:
+        rgba(2, 18, 27, 0.78);
+
+    backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.hotspot-label strong {
+    display: block;
+
+    font-size: 7px;
+
+    font-weight: 400;
+
+    letter-spacing: 0.08em;
+}
+
+.hotspot-label span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 5px;
+
+    letter-spacing: 0.1em;
+
+    color: rgba(70, 225, 140, 0.75);
+}
+
+.hotspot-label i {
+    display: inline-block;
+
+    width: 4px;
+    height: 4px;
+
+    margin-right: 4px;
+
+    border-radius: 50%;
+
+    background: #43dd87;
+}
+
+.hotspot-line {
+    width: 25px;
+    height: 1px;
+
+    background:
+        rgba(130, 225, 240, 0.45);
+}
+
+.hotspot-power {
+    left: 8%;
+    top: 38%;
+}
+
+.hotspot-living {
+    left: 40%;
+    top: 27%;
+}
+
+.hotspot-hvac {
+    right: 8%;
+    top: 36%;
+}
+
+.hotspot-water {
+    right: 5%;
+    bottom: 29%;
+}
+
+.hotspot-lab {
+    left: 12%;
+    bottom: 27%;
+}
+
+@keyframes hotspotPulse {
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.stage-instructions {
+    position: absolute;
+
+    left: 18px;
+    bottom: 14px;
+
+    font-size: 6px;
+
+    letter-spacing: 0.15em;
+
+    color: rgba(190, 230, 240, 0.38);
+}
+
+
+/* =====================================================
+   RIGHT COLUMN
+===================================================== */
+
+.dashboard-right-column {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* =====================================================
+   HEALTH
+===================================================== */
+
+.health-content {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 14px;
+}
+
+.health-ring {
+    width: 112px;
+    height: 112px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            #35d982 0deg,
+            #35d982 var(--health),
+            rgba(100, 190, 210, 0.08) var(--health),
+            rgba(100, 190, 210, 0.08) 360deg
+        );
+
+    position: relative;
+}
+
+.health-ring::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 9px;
+
+    border-radius: 50%;
+
+    background: #06151e;
+}
+
+.health-ring strong,
+.health-ring span {
+    position: relative;
+
+    z-index: 1;
+}
+
+.health-ring strong {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.health-ring span {
+    margin-top: 3px;
+
+    font-size: 5px;
+
+    letter-spacing: 0.08em;
+
+    color: rgba(190, 230, 240, 0.4);
+}
+
+.health-list {
+    flex: 1;
+}
+
+.health-row {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 5px 0;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.05);
+
+    font-size: 7px;
+}
+
+.health-row span {
+    color: rgba(185, 225, 235, 0.5);
+}
+
+.health-row strong {
+    color: rgba(70, 225, 140, 0.85);
+    font-weight: 400;
+}
+
+
+/* =====================================================
+   ALERTS
+===================================================== */
+
+.alert-item {
+    display: grid;
+
+    grid-template-columns: 25px 1fr auto;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 13px;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.06);
+}
+
+.alert-symbol {
+    font-size: 13px;
+}
+
+.alert-item strong {
+    display: block;
+
+    font-size: 6px;
+
+    letter-spacing: 0.12em;
+}
+
+.alert-item p {
+    margin: 3px 0 0;
+
+    font-size: 7px;
+}
+
+.alert-item time {
+    font-size: 5px;
+
+    color: rgba(180, 225, 235, 0.4);
+}
+
+.alert-item.critical {
+    color: rgba(245, 95, 85, 0.95);
+}
+
+.alert-item.warning {
+    color: rgba(245, 175, 55, 0.95);
+}
+
+.alert-item p {
+    color: rgba(220, 240, 245, 0.75);
+}
+
+
+/* =====================================================
+   WEATHER
+===================================================== */
+
+.weather-main {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 13px;
+}
+
+.temperature {
+    font-size: 28px;
+
+    font-weight: 300;
+}
+
+.weather-main strong {
+    display: block;
+
+    font-size: 7px;
+
+    font-weight: 400;
+}
+
+.weather-main span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 5px;
+
+    color: rgba(180, 225, 235, 0.4);
+}
+
+.weather-details {
+    padding: 0 13px;
+}
+
+.weather-row {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 5px 0;
+
+    font-size: 6px;
+
+    border-bottom:
+        1px solid rgba(150, 225, 240, 0.04);
+}
+
+.weather-row span {
+    color: rgba(180, 225, 235, 0.4);
+}
+
+.weather-row strong {
+    font-weight: 400;
+}
+
+.blizzard-status {
+    padding: 12px 13px;
+}
+
+.blizzard-status > span {
+    font-size: 5px;
+
+    letter-spacing: 0.1em;
+
+    color: rgba(180, 225, 235, 0.4);
+}
+
+.blizzard-status > strong {
+    float: right;
+
+    font-size: 6px;
+
+    color: rgba(245, 90, 80, 0.9);
+}
+
+.blizzard-status > div {
+    clear: both;
+
+    height: 5px;
+
+    margin-top: 8px;
+
+    background:
+        rgba(150, 225, 240, 0.08);
+}
+
+.blizzard-status i {
+    display: block;
+
+    width: 75%;
+    height: 100%;
+
+    background:
+        rgba(230, 75, 65, 0.75);
+}
+
+
+/* =====================================================
+   KPI
+===================================================== */
+
+.kpi-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+.kpi-card {
+    min-width: 0;
+
+    padding: 13px;
+
+    border:
+        1px solid rgba(150, 225, 240, 0.1);
+
+    border-radius: 7px;
+
+    background:
+        rgba(6, 24, 33, 0.78);
+}
+
+.kpi-title {
+    font-size: 6px;
+
+    letter-spacing: 0.08em;
+
+    color: rgba(180, 225, 235, 0.48);
+}
+
+.kpi-value {
+    display: block;
+
+    margin-top: 9px;
+
+    font-size: 22px;
+
+    font-weight: 300;
+}
+
+.kpi-subtitle {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 5px;
+
+    color: rgba(180, 225, 235, 0.4);
+}
+
+.mini-chart {
+    display: flex;
+
+    align-items: end;
+
+    gap: 3px;
+
+    height: 30px;
+
+    margin-top: 9px;
+}
+
+.mini-chart i {
+    flex: 1;
+
+    height: 35%;
+
+    background:
+        rgba(70, 205, 230, 0.5);
+}
+
+.mini-chart i:nth-child(2) {
+    height: 55%;
+}
+
+.mini-chart i:nth-child(3) {
+    height: 42%;
+}
+
+.mini-chart i:nth-child(4) {
+    height: 72%;
+}
+
+.mini-chart i:nth-child(5) {
+    height: 50%;
+}
+
+.mini-chart i:nth-child(6) {
+    height: 80%;
+}
+
+.mini-chart i:nth-child(7) {
+    height: 62%;
+}
+
+
+/* =====================================================
+   LOWER GRID
+===================================================== */
+
+.dashboard-lower-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1.25fr
+        1.25fr;
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+.generator-row {
+    display: grid;
+
+    grid-template-columns:
+        1.6fr
+        1fr
+        .8fr
+        .6fr;
+
+    gap: 5px;
+
+    align-items: center;
+
+    margin: 0 10px 7px;
+
+    padding: 10px;
+
+    border-left:
+        2px solid rgba(55, 220, 135, 0.8);
+
+    background:
+        rgba(60, 200, 160, 0.035);
+
+    font-size: 6px;
+}
+
+.generator-row strong {
+    display: block;
+
+    font-size: 7px;
+
+    font-weight: 400;
+}
+
+.generator-row span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: rgba(60, 225, 140, 0.8);
+}
+
+.generator-warning {
+    border-left-color:
+        rgba(230, 75, 65, 0.8);
+}
+
+.generator-warning span {
+    color: rgba(240, 85, 75, 0.85);
+}
+
+.generator-standby {
+    border-left-color:
+        rgba(170, 190, 200, 0.5);
+}
+
+
+/* =====================================================
+   CHARTS
+===================================================== */
+
+.fake-chart {
+    display: flex;
+
+    height: 145px;
+
+    padding: 12px;
+}
+
+.chart-y {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    padding-right: 7px;
+
+    font-size: 5px;
+
+    color: rgba(180, 225, 235, 0.35);
+}
+
+.fake-chart svg {
+    flex: 1;
+
+    color: rgba(65, 205, 235, 0.8);
+}
+
+
+/* =====================================================
+   FUEL CHART
+===================================================== */
+
+.fuel-chart {
+    height: 145px;
+
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-around;
+
+    gap: 8px;
+
+    padding: 15px;
+}
+
+.fuel-bar-wrapper {
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: end;
+
+    align-items: center;
+
+    gap: 7px;
+
+    flex: 1;
+}
+
+.fuel-bar {
+    width: 100%;
+
+    max-width: 28px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(45, 130, 205, 0.8),
+            rgba(65, 185, 235, 0.5)
+        );
+
+    border-radius: 2px 2px 0 0;
+}
+
+.fuel-bar-wrapper span {
+    font-size: 5px;
+
+    color: rgba(180, 225, 235, 0.35);
+}
+
+
+/* =====================================================
+   SATCOM
+===================================================== */
+
+.satcom-panel {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1.2fr;
+
+    align-items: center;
+
+    gap: 25px;
+
+    margin-top: 12px;
+
+    padding: 15px;
+}
+
+.satcom-panel .panel-title {
+    padding: 0 0 10px;
+    border: 0;
+}
+
+.satcom-status {
+    display: flex;
+    align-items: center;
+
+    margin-top: 8px;
+
+    color: rgba(55, 225, 135, 0.9);
+
+    font-size: 9px;
+}
+
+.satcom-metrics {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.satcom-metric {
+    display: grid;
+
+    grid-template-columns: 70px 50px 1fr;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 6px;
+}
+
+.satcom-metric span {
+    color: rgba(180, 225, 235, 0.42);
+}
+
+.satcom-metric strong {
+    font-weight: 400;
+}
+
+.metric-bar {
+    height: 4px;
+
+    background:
+        rgba(150, 225, 240, 0.08);
+}
+
+.metric-bar i {
+    display: block;
+
+    height: 100%;
+
+    background:
+        rgba(50, 215, 130, 0.75);
+}
+
+.sync-button {
+    height: 38px;
+
+    border:
+        1px solid rgba(70, 170, 240, 0.5);
+
+    background:
+        rgba(30, 100, 170, 0.12);
+
+    color:
+        rgba(170, 225, 250, 0.85);
+
+    font-size: 7px;
+
+    letter-spacing: 0.12em;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.sync-button:hover {
+    background:
+        rgba(40, 120, 190, 0.25);
+
+    border-color:
+        rgba(100, 200, 250, 0.8);
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+.recent-activity {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    min-height: 42px;
+
+    margin-top: 10px;
+
+    padding: 0 14px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    border:
+        1px solid rgba(150, 225, 240, 0.1);
+
+    border-radius: 7px;
+
+    background:
+        rgba(5, 20, 29, 0.7);
+
+    font-size: 6px;
+
+    color: rgba(190, 225, 235, 0.48);
+}
+
+.recent-activity > span {
+    color: rgba(210, 245, 250, 0.75);
+
+    letter-spacing: 0.12em;
+}
+
+.recent-activity div {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.recent-activity i {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+}
+
+.activity-green {
+    background: #3bdc87;
+}
+
+.activity-red {
+    background: #e34e46;
+}
+
+.activity-orange {
+    background: #eca13e;
+}
+
+.activity-yellow {
+    background: #e7ce38;
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.dashboard-back {
+    position: fixed;
+
+    left: 245px;
+    bottom: 18px;
+
+    z-index: 4000;
+
+    padding: 7px 10px;
+
+    border:
+        1px solid rgba(150, 225, 240, 0.14);
+
+    background:
+        rgba(2, 15, 23, 0.8);
+
+    color:
+        rgba(185, 225, 235, 0.45);
+
+    font-size: 6px;
+
+    letter-spacing: 0.12em;
+
+    cursor: pointer;
+}
+
+.dashboard-back:hover {
+    color: rgba(220, 250, 255, 0.85);
+
+    border-color:
+        rgba(150, 230, 240, 0.4);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .dashboard-header {
+        grid-template-columns:
+            220px
+            1fr;
+    }
+
+    .dashboard-header-status {
+        display: none;
+    }
+
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-right-column {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .kpi-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .dashboard-header {
+        height: 70px;
+
+        padding: 0 15px;
+    }
+
+    .dashboard-brand p {
+        display: none;
+    }
+
+    .dashboard-station-title {
+        display: none;
+    }
+
+    .dashboard-body {
+        grid-template-columns: 1fr;
+
+        height: calc(100vh - 70px);
+    }
+
+    .dashboard-sidebar {
+        display: none;
+    }
+
+    .dashboard-right-column {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-lower-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .satcom-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-back {
+        left: 15px;
+        bottom: 15px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .digital-twin-panel {
+        min-height: 350px;
+    }
+
+    .station-model {
+        transform:
+            translate(-50%, -50%)
+            scale(0.7)
+            rotateX(58deg)
+            rotateZ(-5deg)
+            skewX(-8deg);
+    }
+
+}

@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 
-export default function StationSelector({ onClose }) {
+export default function StationSelector({
+    onClose,
+    onSelectStation,
+}) {
     const [visible, setVisible] = useState(false);
     const [closing, setClosing] = useState(false);
     const [selectedStation, setSelectedStation] = useState(null);
+    const [selecting, setSelecting] = useState(false);
 
     // ==========================================
     // OPEN ANIMATION
@@ -14,20 +18,22 @@ export default function StationSelector({ onClose }) {
             setVisible(true);
         }, 50);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+        };
     }, []);
 
     // ==========================================
-    // CLOSE WITH ANIMATION
+    // CLOSE
     // ==========================================
 
     const handleClose = () => {
-        if (closing) return;
+        if (closing || selecting) return;
 
         setClosing(true);
 
         setTimeout(() => {
-            onClose();
+            onClose?.();
         }, 450);
     };
 
@@ -36,9 +42,22 @@ export default function StationSelector({ onClose }) {
     // ==========================================
 
     const handleStationSelect = (station) => {
+        if (selecting || closing) return;
+
+        console.log("STATION CLICKED:", station);
+
+        setSelecting(true);
         setSelectedStation(station);
 
-        console.log(`Selected station: ${station}`);
+        // Selection animation
+        setTimeout(() => {
+            console.log(
+                "SENDING STATION TO LANDING PAGE:",
+                station
+            );
+
+            onSelectStation?.(station);
+        }, 500);
     };
 
     return (
@@ -47,6 +66,7 @@ export default function StationSelector({ onClose }) {
                 station-selector
                 ${visible ? "station-selector-visible" : ""}
                 ${closing ? "station-selector-closing" : ""}
+                ${selecting ? "station-selector-selecting" : ""}
             `}
         >
 
@@ -55,11 +75,6 @@ export default function StationSelector({ onClose }) {
             ========================================== */}
 
             <div className="station-selector-bg" />
-
-
-            {/* ==========================================
-                SCAN LINE
-            ========================================== */}
 
             <div className="station-scan-line" />
 
@@ -71,6 +86,7 @@ export default function StationSelector({ onClose }) {
             <div className="station-selector-header">
 
                 <div>
+
                     <div className="station-selector-kicker">
                         DHRUVNETRA / SYSTEM ACCESS
                     </div>
@@ -78,18 +94,15 @@ export default function StationSelector({ onClose }) {
                     <h2>
                         SELECT RESEARCH STATION
                     </h2>
+
                 </div>
 
-
-                {/* ==========================================
-                    CLOSE BUTTON
-                ========================================== */}
 
                 <button
                     type="button"
                     className="station-close"
                     onClick={handleClose}
-                    aria-label="Close station selection"
+                    disabled={selecting}
                 >
                     <span>×</span>
                 </button>
@@ -98,7 +111,7 @@ export default function StationSelector({ onClose }) {
 
 
             {/* ==========================================
-                MAIN CONTENT
+                CONTENT
             ========================================== */}
 
             <div className="station-selection-content">
@@ -108,11 +121,9 @@ export default function StationSelector({ onClose }) {
                 </p>
 
 
-                {/* ==========================================
-                    STATION CARDS
-                ========================================== */}
-
                 <div className="station-cards">
+
+                    {/* MAITRI */}
 
                     <StationCard
                         station="MAITRI"
@@ -120,10 +131,17 @@ export default function StationSelector({ onClose }) {
                         code="MT"
                         index="01"
                         description="INDIAN ANTARCTIC RESEARCH STATION"
-                        selected={selectedStation === "MAITRI"}
-                        onClick={() => handleStationSelect("MAITRI")}
+                        selected={
+                            selectedStation === "MAITRI"
+                        }
+                        disabled={selecting}
+                        onClick={() =>
+                            handleStationSelect("MAITRI")
+                        }
                     />
 
+
+                    {/* BHARATI */}
 
                     <StationCard
                         station="BHARATI"
@@ -131,8 +149,13 @@ export default function StationSelector({ onClose }) {
                         code="BH"
                         index="02"
                         description="INDIAN ANTARCTIC RESEARCH STATION"
-                        selected={selectedStation === "BHARATI"}
-                        onClick={() => handleStationSelect("BHARATI")}
+                        selected={
+                            selectedStation === "BHARATI"
+                        }
+                        disabled={selecting}
+                        onClick={() =>
+                            handleStationSelect("BHARATI")
+                        }
                     />
 
                 </div>
@@ -151,7 +174,10 @@ export default function StationSelector({ onClose }) {
                 </span>
 
                 <span>
-                    SELECT STATION TO CONTINUE
+                    {selecting
+                        ? "INITIALIZING STATION..."
+                        : "SELECT STATION TO CONTINUE"
+                    }
                 </span>
 
             </div>
@@ -161,9 +187,9 @@ export default function StationSelector({ onClose }) {
 }
 
 
-/* =========================================================
+/* =====================================================
    STATION CARD
-========================================================= */
+===================================================== */
 
 function StationCard({
     station,
@@ -172,6 +198,7 @@ function StationCard({
     index,
     description,
     selected,
+    disabled,
     onClick,
 }) {
     return (
@@ -180,33 +207,43 @@ function StationCard({
             className={`
                 station-card
                 ${selected ? "station-card-selected" : ""}
+                ${
+                    disabled && !selected
+                        ? "station-card-disabled"
+                        : ""
+                }
             `}
             onClick={onClick}
+            disabled={disabled}
         >
 
-            {/* INDEX */}
-
-            <div className="station-card-index">
-                {index}
-            </div>
-
-
-            {/* TOP */}
+            {/* ==========================================
+                TOP
+            ========================================== */}
 
             <div className="station-card-top">
 
-                <span>
-                    DHRUVNETRA
+                <span className="station-card-index">
+                    {index}
                 </span>
 
-                <span>
-                    DIGITAL TWIN
+                <span className="station-status">
+
+                    <i />
+
+                    {selected
+                        ? "INITIALIZING"
+                        : "SYSTEM READY"
+                    }
+
                 </span>
 
             </div>
 
 
-            {/* MAIN */}
+            {/* ==========================================
+                MAIN
+            ========================================== */}
 
             <div className="station-card-main">
 
@@ -234,29 +271,35 @@ function StationCard({
             </div>
 
 
-            {/* BOTTOM */}
+            {/* ==========================================
+                BOTTOM
+            ========================================== */}
 
             <div className="station-card-bottom">
 
                 <span>
-                    INITIALIZE 3D MODEL
+                    {selected
+                        ? "INITIALIZING DIGITAL TWIN"
+                        : "INITIALIZE DIGITAL TWIN"
+                    }
                 </span>
 
-                <span className="station-card-arrow">
+                <span className="station-arrow">
                     →
                 </span>
 
             </div>
 
 
-            {/* CORNERS */}
+            {/* ==========================================
+                CORNERS
+            ========================================== */}
 
-            <span className="station-card-corner station-corner-tl" />
-            <span className="station-card-corner station-corner-tr" />
-            <span className="station-card-corner station-corner-bl" />
-            <span className="station-card-corner station-corner-br" />
+            <span className="station-card-corner top-left" />
+            <span className="station-card-corner top-right" />
+            <span className="station-card-corner bottom-left" />
+            <span className="station-card-corner bottom-right" />
 
         </button>
     );
 }
-
