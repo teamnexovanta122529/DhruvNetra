@@ -285,7 +285,7 @@ export default function LandingPage() {
                     {/* Eyebrow */}
 
                     <p className="hero-eyebrow">
-                        INDIAN ANTARCTIC RESEARCH NETWORK
+                        The Eye of Polar Region
                     </p>
 
 
