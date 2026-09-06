@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useStation } from "../../context/StationContext";
 
 import AntarcticaBackground from "./AntarcticaBackground";
 import AtmosphericEffects from "./AtmosphericEffects";
@@ -13,6 +15,8 @@ export default function LandingPage() {
     const navigatingRef = useRef(false);
 
     const navigate = useNavigate();
+    const { isAuthenticated, setSelectedStation } = useAuth();
+    const { setStation } = useStation();
 
     const [loaded, setLoaded] = useState(false);
     const [showStations, setShowStations] = useState(false);
@@ -44,20 +48,28 @@ export default function LandingPage() {
 
         console.log("STATION SELECTED:", station);
 
-        // Save selected station
-        sessionStorage.setItem(
-            "selectedStation",
-            station
-        );
+        // Save selected station in auth & station contexts
+        setSelectedStation(station);
+        setStation(station);
 
         // Close selector
         setShowStations(false);
         setZooming(false);
 
-        // Open dashboard
-        navigate("/dashboard/overview", {
-            replace: true,
-        });
+        // If authenticated -> go to dashboard; else -> go to secure login portal
+        if (isAuthenticated) {
+            navigate("/dashboard/overview", {
+                replace: true,
+            });
+        } else {
+            navigate("/login", {
+                replace: true,
+                state: {
+                    station,
+                    from: { pathname: "/dashboard/overview" },
+                },
+            });
+        }
     };
 
     // ==========================================

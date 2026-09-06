@@ -1,7 +1,9 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useStation } from "../../context/StationContext";
+import { useAuth } from "../../context/AuthContext";
+import { ADMIN_ONLY_ROUTES } from "../../data/authData";
 
-const navigationSections = [
+const rawNavigationSections = [
   {
     title: "MAIN",
     items: [
@@ -24,14 +26,14 @@ const navigationSections = [
     items: [
       { path: "/dashboard/logistics", label: "Logistics", icon: "▣", badge: null },
       { path: "/dashboard/alerts", label: "Alerts", icon: "!", badge: "3", alert: true },
-      { path: "/dashboard/what-if", label: "What-If Analysis", icon: "⌁", badge: null },
+      { path: "/dashboard/what-if", label: "What-If Analysis", icon: "⌁", badge: null, adminOnly: true },
     ],
   },
   {
     title: "ADMINISTRATION",
     items: [
-      { path: "/dashboard/government", label: "Government Command", icon: "⛨", badge: null },
-      { path: "/dashboard/reports", label: "Reports", icon: "▤", badge: null },
+      { path: "/dashboard/government", label: "Government Command", icon: "⛨", badge: null, adminOnly: true },
+      { path: "/dashboard/reports", label: "Reports", icon: "▤", badge: null, adminOnly: true },
     ],
   },
 ];
@@ -39,6 +41,7 @@ const navigationSections = [
 export default function Sidebar({ collapsed, onToggle, onItemClick }) {
   const navigate = useNavigate();
   const { station, stationInfo } = useStation();
+  const { user, role, isAdmin } = useAuth();
 
   const handleNavClick = () => {
     if (onItemClick) {
@@ -52,6 +55,23 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
     }
     navigate("/");
   };
+
+  // Filter sections and items based on role
+  const filteredSections = rawNavigationSections
+    .map((section) => {
+      const allowedItems = section.items.filter((item) => {
+        if (item.adminOnly || ADMIN_ONLY_ROUTES.includes(item.path)) {
+          return isAdmin;
+        }
+        return true;
+      });
+
+      return {
+        ...section,
+        items: allowedItems,
+      };
+    })
+    .filter((section) => section.items.length > 0);
 
   return (
     <aside className={`dashboard-sidebar ${collapsed ? "is-collapsed" : ""}`}>
@@ -92,11 +112,11 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
 
 
       {/* =========================================
-          NAVIGATION SECTIONS
+          NAVIGATION SECTIONS (FILTERED BY ROLE)
       ========================================= */}
       <div className="sidebar-navigation">
 
-        {navigationSections.map((section) => (
+        {filteredSections.map((section) => (
           <div key={section.title} className="sidebar-section">
 
             {!collapsed && (
@@ -164,11 +184,37 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
             <div className="sidebar-station-coords">
               {stationInfo?.coordinates || "SCHIRMACHER OASIS"}
             </div>
+
+            {/* Role & User Badge in Card */}
+            {user && (
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  paddingTop: "0.4rem",
+                  borderTop: "1px solid rgba(107, 226, 242, 0.12)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  fontSize: "0.65rem",
+                  fontFamily: "monospace",
+                }}
+              >
+                <span style={{ color: "#6be2f2" }}>USER: {user.username}</span>
+                <span
+                  style={{
+                    color: isAdmin ? "#ffb84d" : "#00f0ff",
+                    fontWeight: 700,
+                  }}
+                >
+                  [{role}]
+                </span>
+              </div>
+            )}
           </div>
         ) : (
           <div
             className="sidebar-station-collapsed"
-            title={`${station} Station · Online (${stationInfo?.coordinates || ""})`}
+            title={`${station} Station · Online (${stationInfo?.coordinates || ""}) · User: ${user?.username || ""} [${role || ""}]`}
           >
             <span className="station-dot-pulse" />
             <span>{stationInfo?.code || "MT"}</span>

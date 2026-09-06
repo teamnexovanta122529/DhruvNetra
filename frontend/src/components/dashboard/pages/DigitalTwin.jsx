@@ -3,9 +3,11 @@ import PageHeader from "../common/PageHeader";
 import StatusBadge from "../common/StatusBadge";
 import StationScene from "../3d/StationScene";
 import { useStation } from "../../../context/StationContext";
+import { useEnvironment } from "../../../context/EnvironmentContext";
 
 export default function DigitalTwin() {
     const { station, stationInfo } = useStation();
+    const { environment, isLoading, isUnavailable, timeSinceUpdate } = useEnvironment();
     const [resetCount, setResetCount] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const panelRef = useRef(null);
@@ -249,25 +251,37 @@ export default function DigitalTwin() {
                         <div className="panel-heading">
                             <span>WEATHER SNAPSHOT</span>
 
-                            <span className="weather-live">
-                                ● LIVE
+                            <span className={isUnavailable ? "weather-live offline" : "weather-live"}>
+                                {isUnavailable ? "● OFFLINE" : "● LIVE"}
                             </span>
                         </div>
 
                         <div className="weather-main">
 
                             <div className="weather-temperature">
-                                {stationInfo.environment ? stationInfo.environment.replace("°C", "") : "−21"}°
+                                {isLoading
+                                    ? "..."
+                                    : isUnavailable
+                                    ? "N/A"
+                                    : environment?.current?.temperature_c !== null && environment?.current?.temperature_c !== undefined
+                                    ? `${environment.current.temperature_c > 0 ? "+" : ""}${environment.current.temperature_c}`
+                                    : "−"}°
                                 <small>C</small>
                             </div>
 
                             <div className="weather-condition">
                                 <strong>
-                                    POLAR CONDITIONS
+                                    {isLoading
+                                        ? "FETCHING METEOROLOGY..."
+                                        : isUnavailable
+                                        ? "DATA UNAVAILABLE"
+                                        : (environment?.conditions?.weather || "POLAR CONDITIONS").toUpperCase()}
                                 </strong>
 
                                 <span>
-                                    {stationInfo.location}
+                                    {environment?.polar_indices?.wind_chill_c !== null && environment?.polar_indices?.wind_chill_c !== undefined
+                                        ? `Wind Chill: ${environment.polar_indices.wind_chill_c}°C · ${stationInfo.location}`
+                                        : stationInfo.location}
                                 </span>
                             </div>
 
@@ -278,27 +292,57 @@ export default function DigitalTwin() {
 
                             <WeatherItem
                                 label="WIND"
-                                value={stationInfo.windSpeed ? stationInfo.windSpeed.replace(" km/h", "") : "34"}
+                                value={
+                                    isLoading
+                                        ? "..."
+                                        : isUnavailable
+                                        ? "N/A"
+                                        : environment?.current?.wind_speed_kmh ?? "—"
+                                }
                                 unit="KM/H"
                             />
 
                             <WeatherItem
                                 label="DIRECTION"
-                                value={stationInfo.windDirection || "NW"}
+                                value={
+                                    isLoading
+                                        ? "..."
+                                        : isUnavailable
+                                        ? "N/A"
+                                        : environment?.current?.wind_direction_cardinal || "—"
+                                }
                             />
 
                             <WeatherItem
                                 label="PRESSURE"
-                                value={stationInfo.pressure ? stationInfo.pressure.replace(" hPa", "") : "982"}
+                                value={
+                                    isLoading
+                                        ? "..."
+                                        : isUnavailable
+                                        ? "N/A"
+                                        : environment?.current?.pressure_hpa ?? "—"
+                                }
                                 unit="HPA"
                             />
 
                             <WeatherItem
                                 label="HUMIDITY"
-                                value={stationInfo.humidity ? stationInfo.humidity.replace("%", "") : "71"}
+                                value={
+                                    isLoading
+                                        ? "..."
+                                        : isUnavailable
+                                        ? "N/A"
+                                        : environment?.current?.humidity_percent ?? "—"
+                                }
                                 unit="%"
                             />
 
+                        </div>
+
+                        {/* SOURCE ATTRIBUTION FOOTER */}
+                        <div style={{ marginTop: "12px", paddingTop: "8px", borderTop: "1px solid rgba(255,255,255,0.06)", fontSize: "10px", color: "rgba(160,200,220,0.6)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span>SOURCE: OPEN-METEO POLAR NWP</span>
+                            <span>{timeSinceUpdate}</span>
                         </div>
 
                     </section>

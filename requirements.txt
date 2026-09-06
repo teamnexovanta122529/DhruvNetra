@@ -1,0 +1,3 @@
+# DHRUVNETRA - Antarctic Digital Twin & What-If Engine
+# Python Dependencies for FastAPI Backend, Physics Simulation & XGBoost ML Engine
+-r backend/requirements.txt

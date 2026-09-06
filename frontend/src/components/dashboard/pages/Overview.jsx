@@ -2,9 +2,11 @@ import PageHeader from "../common/PageHeader";
 import MetricCard from "../common/MetricCard";
 import StatusBadge from "../common/StatusBadge";
 import { useStation } from "../../../context/StationContext";
+import { useEnvironment } from "../../../context/EnvironmentContext";
 
 export default function Overview() {
     const { station, stationInfo } = useStation();
+    const { environment, isLoading, isUnavailable } = useEnvironment();
 
     return (
         <div className="dashboard-page">
@@ -106,9 +108,29 @@ export default function Overview() {
 
                     <SystemStatus
                         name="ENVIRONMENT"
-                        value="−21°C"
-                        detail="BLIZZARD RISK LOW"
-                        status="WARNING"
+                        value={
+                            isLoading
+                                ? "..."
+                                : isUnavailable
+                                ? "OFFLINE"
+                                : environment?.current?.temperature_c !== null && environment?.current?.temperature_c !== undefined
+                                ? `${environment.current.temperature_c > 0 ? "+" : ""}${environment.current.temperature_c}°C`
+                                : "N/A"
+                        }
+                        detail={
+                            isLoading
+                                ? "FETCHING LIVE..."
+                                : isUnavailable
+                                ? "DATA UNAVAILABLE"
+                                : `BLIZZARD ${environment?.polar_indices?.blizzard_risk || "LOW"} · ${environment?.conditions?.weather || "POLAR"}`.toUpperCase()
+                        }
+                        status={
+                            isUnavailable
+                                ? "WARNING"
+                                : environment?.alert?.level === "CRITICAL" || environment?.alert?.level === "WARNING"
+                                ? "WARNING"
+                                : "NORMAL"
+                        }
                     />
 
                     <SystemStatus

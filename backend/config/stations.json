@@ -1,0 +1,29 @@
+{
+  "stations": {
+    "MAITRI": {
+      "name": "Maitri",
+      "code": "MT",
+      "tagline": "INDIAN ANTARCTIC RESEARCH STATION",
+      "region": "Schirmacher Oasis, Queen Maud Land, East Antarctica",
+      "latitude": -70.7661,
+      "longitude": 11.7358,
+      "elevation_m": 117.0,
+      "established_year": 1989,
+      "sensor_telemetry_connected": false,
+      "telemetry_source_mode": "EXTERNAL_NUMERICAL_WEATHER_MODEL"
+    },
+    "BHARATI": {
+      "name": "Bharati",
+      "code": "BH",
+      "tagline": "INDIAN ANTARCTIC RESEARCH STATION",
+      "region": "Larsemann Hills, Princess Elizabeth Land, East Antarctica",
+      "latitude": -69.4078,
+      "longitude": 76.1872,
+      "elevation_m": 35.0,
+      "established_year": 2012,
+      "sensor_telemetry_connected": false,
+      "telemetry_source_mode": "EXTERNAL_NUMERICAL_WEATHER_MODEL"
+    }
+  },
+  "default_station": "MAITRI"
+}

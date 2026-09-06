@@ -12,6 +12,7 @@ export function StationProvider({ children }) {
     const validStation = stationData[newStation] ? newStation : "MAITRI";
     setStationState(validStation);
     sessionStorage.setItem("selectedStation", validStation);
+    window.dispatchEvent(new CustomEvent("dhruvnetra_station_change", { detail: validStation }));
   };
 
   useEffect(() => {
@@ -20,8 +21,17 @@ export function StationProvider({ children }) {
         setStationState(e.newValue);
       }
     };
+    const handleLocalStationChange = (e) => {
+      if (e.detail && stationData[e.detail]) {
+        setStationState(e.detail);
+      }
+    };
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("dhruvnetra_station_change", handleLocalStationChange);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("dhruvnetra_station_change", handleLocalStationChange);
+    };
   }, []);
 
   const stationInfo = stationData[station] || stationData.MAITRI;

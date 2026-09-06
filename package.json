@@ -1,0 +1,17 @@
+{
+  "name": "dhruvnetra",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DHRUVNETRA: Digital Platform for Remote Management of Indian Antarctic Stations (Maitri & Bharati)",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "python backend/run.py",
+    "build": "npm --prefix frontend run build",
+    "install:all": "npm --prefix frontend install && pip install -r backend/requirements.txt",
+    "test:backend": "python backend/app/test_api.py",
+    "test:simulation": "python backend/simulation/test_simulation.py",
+    "test:environment": "python backend/services/environment/test_environment.py",
+    "test:audit": "python backend/audit_system.py"
+  }
+}

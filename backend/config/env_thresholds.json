@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "title": "DHRUVNETRA Antarctic Environmental Thresholds & Operational Rules",
+    "version": "1.0.0",
+    "description": "Configurable polar meteorological thresholds for station safety, outdoor operations, and blizzard contingency planning."
+  },
+  "temperature": {
+    "extreme_cold_critical_c": -35.0,
+    "severe_cold_warning_c": -25.0,
+    "cold_watch_c": -15.0,
+    "nominal_c": 0.0
+  },
+  "wind_speed_ms": {
+    "hurricane_force_critical_ms": 32.7,
+    "storm_force_warning_ms": 24.5,
+    "gale_watch_ms": 17.2,
+    "moderate_ms": 10.8
+  },
+  "wind_gust_ms": {
+    "critical_ms": 38.0,
+    "warning_ms": 28.0,
+    "watch_ms": 20.0
+  },
+  "wind_chill_c": {
+    "extreme_danger_critical_c": -45.0,
+    "severe_danger_warning_c": -35.0,
+    "caution_watch_c": -25.0
+  },
+  "pressure_hpa": {
+    "extreme_low_critical_hpa": 950.0,
+    "low_warning_hpa": 970.0,
+    "nominal_hpa": 985.0
+  },
+  "visibility_km": {
+    "zero_whiteout_critical_km": 0.2,
+    "restricted_warning_km": 1.0,
+    "reduced_watch_km": 5.0
+  },
+  "blizzard_triggers": {
+    "min_wind_speed_ms": 15.0,
+    "max_visibility_km": 1.0,
+    "requires_precipitation_or_snow": true
+  }
+}

@@ -21,8 +21,8 @@ export default function GovernmentCommand() {
 
   // Transmission simulation states
   const [isTransmitting, setIsTransmitting] = useState(false);
-  const [transmitStep, setTransmitStep] = useState(0); // 0: Idle, 1: Encrypting, 2: Uplink, 3: Delivered
-  const [showCriticalConfirm, setShowCriticalConfirm] = useState(false);
+  const [transmitStep, setTransmitStep] = useState(0); // 0: Idle, 1: Auth, 2: Channel, 3: Transmitting, 4: Delivered
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [successToast, setSuccessToast] = useState(null);
 
   // Filter state for history
@@ -38,31 +38,30 @@ export default function GovernmentCommand() {
     setMessage(tpl.text);
   };
 
-  // Initiate send flow
+  // Initiate send flow -> Always trigger confirmation modal
   const handleInitiateSend = (e) => {
     e?.preventDefault();
     if (!message.trim() || !title.trim() || isTransmitting) return;
-
-    if (priority === "CRITICAL") {
-      setShowCriticalConfirm(true);
-    } else {
-      executeTransmission();
-    }
+    setShowConfirmModal(true);
   };
 
   // Perform multi-stage transmission animation
   const executeTransmission = () => {
-    setShowCriticalConfirm(false);
+    setShowConfirmModal(false);
     setIsTransmitting(true);
-    setTransmitStep(1); // Encrypting
+    setTransmitStep(1); // 1. Authenticating
 
     setTimeout(() => {
-      setTransmitStep(2); // Satcom Uplink
-    }, 450);
+      setTransmitStep(2); // 2. Secure Channel Established
+    }, 400);
 
     setTimeout(() => {
-      setTransmitStep(3); // Delivered
-    }, 900);
+      setTransmitStep(3); // 3. Transmitting
+    }, 800);
+
+    setTimeout(() => {
+      setTransmitStep(4); // 4. Delivered
+    }, 1200);
 
     setTimeout(() => {
       const newCmd = {
@@ -78,8 +77,8 @@ export default function GovernmentCommand() {
         priority: priority,
         status: "DELIVERED",
         statusDetail: `Delivered to Terminal ${targetStation === "ALL" ? "BROADCAST-ALL" : targetStation + "-COMM-1"}`,
-        sender: "NCPOR Mission Control · New Delhi / Goa",
-        transmission: "INSAT-4CR Satcom (Encrypted 256-bit)",
+        sender: "NCPOR Mission Control · Polar Command Directorate",
+        transmission: "INSAT-4CR Satcom (Encrypted AES-256-GCM)",
         receivedAt: new Date().toLocaleTimeString("en-IN", {
           hour: "2-digit",
           minute: "2-digit",
@@ -100,7 +99,7 @@ export default function GovernmentCommand() {
       setTimeout(() => {
         setSuccessToast(null);
       }, 4500);
-    }, 1350);
+    }, 1600);
   };
 
   // Filtered history list
@@ -118,6 +117,33 @@ export default function GovernmentCommand() {
         description="Transmit verified operational directives, maintenance orders, and emergency broadcast protocols to Indian Antarctic Stations via encrypted Satcom."
         status="SECURE CHANNEL ONLINE"
       />
+
+      {/* PROTOTYPE SECURITY & SIMULATION NOTICE */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "rgba(255, 184, 77, 0.08)",
+          border: "1px solid rgba(255, 184, 77, 0.25)",
+          borderRadius: 6,
+          padding: "0.6rem 1rem",
+          marginBottom: "1.25rem",
+          fontSize: "0.75rem",
+          fontFamily: "monospace",
+          color: "#ffb84d",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <span>⚠</span>
+          <strong>SIMULATED SATCOM TRANSMISSION — PROTOTYPE</strong>
+        </div>
+        <span style={{ color: "#a0c4dc", fontSize: "0.7rem" }}>
+          Decision-support & polar telemetry interface. No direct electrical hardware actuation.
+        </span>
+      </div>
 
       {/* SECURITY & CRYPTOGRAPHIC GATEWAY STRIP */}
       <section className="gov-security-strip">
@@ -296,15 +322,18 @@ export default function GovernmentCommand() {
             {/* TRANSMISSION PROGRESS INDICATOR */}
             {isTransmitting && (
               <div className="transmission-progress-box">
-                <div className="tx-step-labels">
+                <div className="tx-step-labels" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", fontSize: "0.65rem" }}>
                   <span className={transmitStep >= 1 ? "step-active" : ""}>
-                    1. ENCRYPTING (AES-256)
+                    1. AUTHENTICATING...
                   </span>
                   <span className={transmitStep >= 2 ? "step-active" : ""}>
-                    2. SATCOM UPLINK
+                    2. SECURE CHANNEL ESTABLISHED
                   </span>
                   <span className={transmitStep >= 3 ? "step-active" : ""}>
-                    3. DELIVERED
+                    3. TRANSMITTING...
+                  </span>
+                  <span className={transmitStep >= 4 ? "step-active" : ""}>
+                    4. DELIVERED
                   </span>
                 </div>
                 <div className="tx-bar-track">
@@ -313,9 +342,11 @@ export default function GovernmentCommand() {
                     style={{
                       width:
                         transmitStep === 1
-                          ? "35%"
+                          ? "25%"
                           : transmitStep === 2
-                          ? "75%"
+                          ? "55%"
+                          : transmitStep === 3
+                          ? "85%"
                           : "100%",
                     }}
                   />
@@ -341,7 +372,7 @@ export default function GovernmentCommand() {
                 <span>
                   {isTransmitting
                     ? "TRANSMITTING..."
-                    : `TRANSMIT DIRECTIVE TO ${targetStation} →`}
+                    : `Authorize & Transmit →`}
                 </span>
               </button>
             </div>
@@ -512,52 +543,60 @@ export default function GovernmentCommand() {
         </div>
       </section>
 
-      {/* CRITICAL COMMAND SAFETY CONFIRMATION MODAL */}
-      {showCriticalConfirm && (
-        <div className="modal-backdrop">
-          <div className="modal-dialog critical-confirm-modal">
-            <div className="modal-header">
-              <span className="warning-icon">⚠</span>
-              <h3>CRITICAL DIRECTIVE CONFIRMATION</h3>
-            </div>
+      {/* AUTHORIZED MISSION DIRECTIVE CONFIRMATION MODAL */}
+      {showConfirmModal && (
+        <div className="modal-backdrop-gov" onClick={() => setShowConfirmModal(false)}>
+          <div
+            className="modal-card-gov"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="auth-bracket tl" />
+            <span className="auth-bracket tr" />
+            <span className="auth-bracket bl" />
+            <span className="auth-bracket br" />
 
-            <div className="modal-body">
-              <p className="modal-alert-text">
-                You are about to transmit a <strong>CRITICAL EMERGENCY DIRECTIVE</strong> to{" "}
-                <strong>{targetStation}</strong>.
-              </p>
-              <div className="confirm-summary-box">
-                <div>
-                  <span>TITLE:</span> <strong>{title}</strong>
+            <div className="modal-gov-header">
+              <span className="modal-gov-icon">🔒</span>
+              <div>
+                <div style={{ fontFamily: "monospace", fontSize: "0.65rem", color: "#6be2f2", letterSpacing: "0.12em" }}>
+                  NCPOR MISSION DIRECTIVE AUTHORIZATION
                 </div>
-                <div>
-                  <span>TARGET:</span> <strong>{targetStation}</strong>
-                </div>
-                <div>
-                  <span>PRIORITY:</span> <strong className="text-red">CRITICAL OVERRIDE</strong>
-                </div>
+                <h3 className="modal-gov-title">AUTHORIZED COMMAND</h3>
               </div>
-              <p className="modal-note">
-                This will trigger an immediate emergency alert on station terminals and notify on-duty emergency officers.
-              </p>
             </div>
 
-            <div className="modal-footer">
+            <div className="modal-gov-body">
+              <p style={{ margin: "0 0 0.5rem 0", color: "#e2f1f8", fontWeight: 600 }}>
+                Are you sure you want to transmit this mission directive?
+              </p>
+              <p style={{ margin: "0 0 0.75rem 0", fontSize: "0.8rem", color: "#8bb0c9" }}>
+                This will simulate dispatching an authenticated cryptographic directive package over the INSAT Satcom telemetry channel.
+              </p>
+
+              <div className="modal-gov-summary-box">
+                <div><span style={{ color: "#6be2f2" }}>TARGET STATION:</span> <strong>{targetStation} STATION</strong></div>
+                <div><span style={{ color: "#6be2f2" }}>CLASSIFICATION:</span> <strong>{commandType}</strong></div>
+                <div><span style={{ color: "#6be2f2" }}>PRIORITY:</span> <strong style={{ color: priority === "CRITICAL" ? "#ff6b6b" : priority === "HIGH" ? "#ffb84d" : "#00f0ff" }}>{priority}</strong></div>
+                <div><span style={{ color: "#6be2f2" }}>DIRECTIVE SUBJECT:</span> <span>{title}</span></div>
+              </div>
+            </div>
+
+            <div className="modal-gov-actions">
               <button
                 type="button"
-                className="btn-modal-cancel"
-                onClick={() => setShowCriticalConfirm(false)}
+                className="btn-cancel-gov"
+                onClick={() => setShowConfirmModal(false)}
                 data-cursor="pointer"
               >
-                CANCEL
+                Cancel
               </button>
               <button
                 type="button"
-                className="btn-modal-confirm-critical"
+                className="btn-confirm-gov"
                 onClick={executeTransmission}
                 data-cursor="pointer"
               >
-                CONFIRM & TRANSMIT NOW
+                Confirm & Transmit
               </button>
             </div>
           </div>

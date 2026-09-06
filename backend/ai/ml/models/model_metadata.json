@@ -1,0 +1,28 @@
+{
+  "dataset_records": 17520,
+  "fuel_model": {
+    "features": [
+      "station_maitri",
+      "total_power_demand_kw",
+      "active_generators_count",
+      "outdoor_temp_celsius",
+      "wind_speed_kmh"
+    ],
+    "mae": 0.1167,
+    "rmse": 0.1529,
+    "r2": 0.9976
+  },
+  "temp_model": {
+    "features": [
+      "station_maitri",
+      "outdoor_temp_celsius",
+      "wind_speed_kmh",
+      "hvac_power_kw",
+      "glycol_pump_load_pct",
+      "total_power_demand_kw"
+    ],
+    "mae": 0.2042,
+    "rmse": 0.2534,
+    "r2": 0.8078
+  }
+}

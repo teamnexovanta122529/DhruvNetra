@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStation } from "../../context/StationContext";
+import { useAuth } from "../../context/AuthContext";
 
 const pageNames = {
   overview: "OVERVIEW",
@@ -21,6 +22,7 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { station, setStation, stationInfo, availableStations, stationData } = useStation();
+  const { user, role, isAdmin, logout, setSelectedStation, isStationAuthorized } = useAuth();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -61,8 +63,14 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
     pageNames[currentPage] || "DASHBOARD";
 
   const handleSelectStation = (stName) => {
+    setSelectedStation(stName);
     setStation(stName);
     setDropdownOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/", { replace: true });
   };
 
   const handleBackToLanding = () => {
@@ -140,6 +148,7 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
               {availableStations.map((stKey) => {
                 const info = stationData[stKey];
                 const isActive = station === stKey;
+                const isPermitted = isStationAuthorized(stKey);
 
                 return (
                   <button
@@ -164,7 +173,7 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
 
                     <div className="station-item-badge">
                       <span className="status-dot" style={{ width: 5, height: 5 }} />
-                      {isActive ? "ACTIVE" : "ONLINE"}
+                      {isActive ? "ACTIVE" : isPermitted ? "ONLINE" : "RESTRICTED"}
                     </div>
                   </button>
                 );
@@ -183,23 +192,35 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
 
 
       {/* =========================================
-          RIGHT: STATUS, CLOCK & BACK TO LANDING
+          RIGHT: STATUS, SECURITY BADGE & LOGOUT
       ========================================= */}
       <div className="dashboard-header-right">
 
-        <div className="header-status">
-          <span className="status-dot" />
-          <div>
-            <strong>STATION ONLINE</strong>
-            <small>SATCOM {stationInfo?.satcom || "CONNECTED"}</small>
+        {/* SECURITY SESSION BADGE */}
+        <div
+          className="header-security-badge"
+          title={`Active Session: ${user?.name || user?.username || "Authenticated"} | Clearance: ${user?.clearance || role || "OPERATOR"}`}
+        >
+          <span className="security-dot-live" />
+          <div className="security-badge-text">
+            <span className="security-session-label">SECURE SESSION</span>
+            <span className="security-role-label">
+              <span className={isAdmin ? "role-pill-admin" : "role-pill-operator"}>
+                {role || "OPERATOR"}
+              </span>
+              <span style={{ opacity: 0.45, margin: "0 4px" }}>·</span>
+              <span>{station}</span>
+            </span>
           </div>
         </div>
 
+        {/* LIVE CLOCK */}
         <div className="header-sync">
           <span>LIVE TELEMETRY</span>
           <strong>{utcTime || "02:14:36 UTC"}</strong>
         </div>
 
+        {/* ALERTS QUICK-TRIGGER */}
         <button
           className="header-notification"
           type="button"
@@ -212,6 +233,18 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
           </span>
         </button>
 
+        {/* LOGOUT BUTTON */}
+        <button
+          type="button"
+          className="header-logout-btn"
+          onClick={handleLogout}
+          title="Secure Logout from DHRUVNETRA session"
+          data-cursor="pointer"
+        >
+          <span>⏻</span>
+          <span>LOGOUT</span>
+        </button>
+
         {/* BACK TO LANDING PAGE BUTTON */}
         <button
           type="button"
@@ -220,7 +253,7 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
           title="Return to Landing Page"
         >
           <span className="btn-arrow">←</span>
-          <span>LANDING PAGE</span>
+          <span>LANDING</span>
         </button>
 
       </div>

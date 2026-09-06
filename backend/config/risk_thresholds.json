@@ -1,0 +1,106 @@
+{
+  "_disclaimer": "PROTOTYPE ASSUMPTIONS: These risk thresholds, safety boundaries, and score weightings are engineering heuristics configured for SIH 2026 prototype evaluation. They must be validated and calibrated against official NCPOR (National Centre for Polar and Ocean Research) Antarctic Operational Directives prior to real-world mission deployment.",
+  "version": "1.0.0-prototype",
+  "risk_scale": {
+    "LOW": {
+      "min_score": 0,
+      "max_score": 30,
+      "color": "green",
+      "default_recommendation": "RECOMMENDED"
+    },
+    "MEDIUM": {
+      "min_score": 31,
+      "max_score": 60,
+      "color": "yellow",
+      "default_recommendation": "CAUTION ADVISED"
+    },
+    "HIGH": {
+      "min_score": 61,
+      "max_score": 85,
+      "color": "orange",
+      "default_recommendation": "ACTION REQUIRED — PROTOCOL 4B"
+    },
+    "CRITICAL": {
+      "min_score": 86,
+      "max_score": 100,
+      "color": "red",
+      "default_recommendation": "EMERGENCY SAFETY INTERVENTION"
+    }
+  },
+  "thresholds": {
+    "power_deficit": {
+      "name": "Microgrid Power Deficit",
+      "unit": "kW",
+      "critical_deficit_kw": 0.1,
+      "max_penalty": 70,
+      "description": "Unmet electrical demand causing blackout or mandatory load shedding."
+    },
+    "generator_loading": {
+      "name": "Generator Operating Load Factor",
+      "unit": "%",
+      "nominal_range_pct": [50.0, 80.0],
+      "overload_warning_pct": 85.0,
+      "overload_critical_pct": 95.0,
+      "underload_warning_pct": 35.0,
+      "penalties": {
+        "overload_critical": 35,
+        "overload_warning": 20,
+        "underload_fouling": 10
+      },
+      "description": "Generator engine operating outside optimum thermal and mechanical window."
+    },
+    "generator_redundancy": {
+      "name": "N-1 Spinning & Standby Redundancy",
+      "penalties": {
+        "zero_running_reserve_with_warm_standby": 10,
+        "zero_running_reserve_no_standby": 30,
+        "single_generator_active": 15
+      },
+      "description": "Exposure to single-point-of-failure if largest active generator trips."
+    },
+    "battery_soc": {
+      "name": "BESS Battery State of Charge",
+      "unit": "%",
+      "critical_floor_pct": 30.0,
+      "warning_floor_pct": 60.0,
+      "penalties": {
+        "critical_soc": 40,
+        "warning_soc": 18
+      },
+      "description": "Buffer depletion reducing ride-through time during generator switchover."
+    },
+    "fuel_reserves": {
+      "name": "Bulk Fuel Runway & Tank Level",
+      "unit": "days",
+      "critical_runway_days": 5.0,
+      "warning_runway_days": 15.0,
+      "critical_tank_pct": 20.0,
+      "warning_tank_pct": 35.0,
+      "penalties": {
+        "critical_runway": 45,
+        "warning_runway": 20
+      },
+      "description": "Station fuel endurance before required supply replenishment."
+    },
+    "indoor_temperature": {
+      "name": "Habitat Interior Thermal Retention",
+      "unit": "°C",
+      "target_temp_c": 19.0,
+      "crew_comfort_floor_c": 12.0,
+      "freeze_hazard_floor_c": 4.0,
+      "penalties": {
+        "pipe_freeze_danger": 55,
+        "crew_discomfort": 20
+      },
+      "description": "Habitability and internal water pipe freeze risk."
+    },
+    "hvac_availability": {
+      "name": "HVAC & Thermal Loop Availability",
+      "penalties": {
+        "hvac_offline_subzero": 45,
+        "glycol_pump_overload": 15
+      },
+      "description": "Status of primary forced air and glycol thermal distribution circuits."
+    }
+  }
+}

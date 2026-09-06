@@ -1,5 +1,6 @@
 import "./StationDashboard.css";
 import { useState } from "react";
+import { useEnvironment } from "../../context/EnvironmentContext";
 
 const stationData = {
     MAITRI: {
@@ -557,6 +558,30 @@ function Alert({
 ===================================================== */
 
 function WeatherSnapshot({ data }) {
+    let envData = null;
+    try {
+        const envContext = useEnvironment();
+        envData = envContext?.environment;
+    } catch {
+        // Fallback if rendered outside EnvironmentProvider
+    }
+
+    const tempDisplay = envData?.current?.temperature_c !== null && envData?.current?.temperature_c !== undefined
+        ? `${envData.current.temperature_c > 0 ? "+" : ""}${envData.current.temperature_c}°C`
+        : data?.temperature || "−21°C";
+
+    const conditionDisplay = (envData?.conditions?.weather || "POLAR CONDITIONS").toUpperCase();
+    const windDisplay = envData?.current?.wind_speed_kmh !== null && envData?.current?.wind_speed_kmh !== undefined
+        ? `${envData.current.wind_speed_kmh} km/h`
+        : data?.wind || "34 km/h";
+    const windDir = envData?.current?.wind_direction_cardinal || "SE";
+    const humidityDisplay = envData?.current?.humidity_percent !== null && envData?.current?.humidity_percent !== undefined
+        ? `${envData.current.humidity_percent}%`
+        : data?.humidity || "71%";
+    const pressureDisplay = envData?.current?.pressure_hpa !== null && envData?.current?.pressure_hpa !== undefined
+        ? `${envData.current.pressure_hpa} hPa`
+        : data?.pressure || "982 hPa";
+    const blizzardRisk = envData?.polar_indices?.blizzard_risk || "LOW";
 
     return (
         <div className="dashboard-panel weather-panel">
@@ -566,12 +591,12 @@ function WeatherSnapshot({ data }) {
             <div className="weather-main">
 
                 <div className="temperature">
-                    {data.temperature}
+                    {tempDisplay}
                 </div>
 
                 <div>
                     <strong>
-                        LIGHT SNOW
+                        {conditionDisplay}
                     </strong>
 
                     <span>
@@ -584,10 +609,10 @@ function WeatherSnapshot({ data }) {
 
             <div className="weather-details">
 
-                <WeatherRow label="WIND SPEED" value={data.wind} />
-                <WeatherRow label="WIND DIRECTION" value="SE" />
-                <WeatherRow label="HUMIDITY" value={data.humidity} />
-                <WeatherRow label="PRESSURE" value={data.pressure} />
+                <WeatherRow label="WIND SPEED" value={windDisplay} />
+                <WeatherRow label="WIND DIRECTION" value={windDir} />
+                <WeatherRow label="HUMIDITY" value={humidityDisplay} />
+                <WeatherRow label="PRESSURE" value={pressureDisplay} />
 
             </div>
 
@@ -599,7 +624,7 @@ function WeatherSnapshot({ data }) {
                 </span>
 
                 <strong>
-                    HIGH
+                    {blizzardRisk}
                 </strong>
 
                 <div>

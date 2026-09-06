@@ -99,6 +99,33 @@ export default function Reports() {
         status="REPORTING ENGINE ONLINE"
       />
 
+      {/* CLASSIFICATION & ACCESS LEVEL STRIP */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "rgba(0, 240, 255, 0.06)",
+          border: "1px solid rgba(0, 240, 255, 0.22)",
+          borderRadius: 6,
+          padding: "0.6rem 1rem",
+          marginBottom: "1.25rem",
+          fontSize: "0.75rem",
+          fontFamily: "monospace",
+          color: "#e2f1f8",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          <span style={{ color: "#ffb84d", fontWeight: 700 }}>🔒 RESTRICTED RECORDS</span>
+          <span style={{ color: "#6be2f2" }}>CLASSIFICATION: OFFICIAL POLAR DOSSIER / NCPOR DIRECTORATE</span>
+        </div>
+        <span style={{ color: "#00f0ff", fontSize: "0.7rem" }}>
+          CLEARANCE LEVEL: LEVEL-4 POLAR COMMAND (ADMIN ONLY)
+        </span>
+      </div>
+
       {/* TOP REPORT METRICS STRIP */}
       <section className="reports-kpi-strip">
         <div className="kpi-card">
