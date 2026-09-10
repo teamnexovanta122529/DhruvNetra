@@ -1,4 +1,4 @@
-// What-If Simulation Mock Data & Scenario Models for DHRUVNETRA
+// What-If Simulation Data & Scenario Models for DHRUVNETRA (SIH 2026)
 
 export const quickScenarios = [
   {
@@ -6,190 +6,319 @@ export const quickScenarios = [
     title: "Generator 1 Shutdown (7 hrs)",
     category: "POWER",
     query: "What if Generator 1 is turned off for 7 hours for maintenance?",
+    health: {
+      baseline_score: 100.0,
+      projected_score: 73.0,
+      delta: -27.0,
+      status: "OPTIMAL",
+      deductions: [
+        { penalty: 20.0, reason: "Loss of N-1 Redundancy", metric: "Active fleet: G2 only" },
+        { penalty: 7.0, reason: "High Generator Operating Load", metric: "G2 at 98.3% rating" },
+      ],
+    },
     impact: {
       fuelSaved: "42 L",
       fuelBurnChange: "-6.0 L/h",
       currentConsumption: "28.5 L/h",
       projectedConsumption: "22.5 L/h",
-      currentLoad: "82 kW (68%)",
-      projectedLoad: "82 kW (92% on Gen 2)",
+      currentLoad: "98 kW (68%)",
+      projectedLoad: "98 kW (98% on Gen 2)",
       backupLoad: "Gen 3 Standby (+18% dependency)",
-      riskLevel: "LOW",
-      riskScore: 24,
-      recommendation: "RECOMMENDED",
+      riskLevel: "MEDIUM",
+      riskScore: 55,
+      healthScore: 73.0,
+      healthDelta: -27.0,
+      recommendation: "CAUTION ADVISED",
       recommendationText:
-        "Shutdown can be executed safely under current ambient temperature (−24°C). Generator 2 has sufficient capacity to handle base load. Maintain Generator 3 on pre-heated warm standby.",
+        "Shutdown can be executed safely under current ambient temperature (−24°C). Generator 2 carries base electrical load. Spin up secondary generator to restore N-1 redundancy.",
       systemsAffected: [
         { name: "Gen 1 (Diesel 125kVA)", status: "OFFLINE (MAINTENANCE)" },
-        { name: "Gen 2 (Diesel 125kVA)", status: "ACTIVE (92% LOAD)" },
-        { name: "Gen 3 (Standby 100kVA)", status: "ARMED STANDBY" },
+        { name: "Gen 2 (Diesel 125kVA)", status: "ACTIVE (98% LOAD)" },
+        { name: "Gen 3 (Standby 100kVA)", status: "WARM STANDBY READY" },
         { name: "Main Life Support Bus", status: "NOMINAL (230V STABLE)" },
       ],
       chartData: {
         labels: ["T-0", "T+1h", "T+2h", "T+4h", "T+6h", "T+7h"],
         currentFuel: [28.5, 28.5, 29.0, 28.5, 29.2, 28.5],
         projectedFuel: [28.5, 22.5, 22.4, 22.6, 22.5, 28.5],
-        currentPower: [82, 82, 84, 83, 85, 82],
-        projectedPower: [82, 82, 84, 83, 85, 82],
+        currentPower: [98, 98, 98, 98, 98, 98],
+        projectedPower: [98, 98, 98, 98, 98, 98],
+        indoorTemp: [21.4, 21.8, 22.5, 23.2, 24.1, 24.6],
+        waterReserve: [18200, 18100, 17950, 17700, 17500, 17350],
+        healthScore: [100, 78, 75, 74, 73, 73],
       },
     },
+    cascadingEffects: [
+      { step: 1, system: "PRIMARY_TRIGGER", title: "Generator G1 Outage", description: "Generator G1 isolated from primary 415V busbar", severity: "MEDIUM", trigger_time: "T+0m", mitigation_target: "G3 Standby Start" },
+      { step: 2, system: "MICROGRID_BUS", title: "Single Generator Dispatch", description: "Generator G2 absorbs total demand (98.3 kW)", severity: "MEDIUM", trigger_time: "T+10s", mitigation_target: "Class-2 Load Shedding" },
+      { step: 3, system: "BESS_STORAGE", title: "BESS Trickle Charging Buffer", description: "BESS buffer remains active at 94.2% SOC", severity: "LOW", trigger_time: "T+1m", mitigation_target: "BESS Peak Shaving" },
+    ],
+    thresholdBreaches: [],
+    mitigationStrategies: [
+      { strategy_id: "STRAT-A", name: "Standby Unit Fast-Start", description: "Spin up Generator 3 (80 kW warm standby) to share load", power_deficit_kw: 0.0, delivered_power_kw: 98.0, active_generators: ["G2", "G3"], fuel_delta: "+1.2 L", risk_level: "LOW", risk_score: 20, health_score: 95.0, is_recommended: true, action_steps: ["Verify G3 block heaters", "Close synchronized vacuum breaker"] },
+      { strategy_id: "STRAT-B", name: "Class-2 Non-Critical Shedding", description: "Shed 20 kW of non-essential lab heaters", power_deficit_kw: 0.0, delivered_power_kw: 78.0, active_generators: ["G2"], fuel_delta: "-4.0 L", risk_level: "MEDIUM", risk_score: 40, health_score: 82.0, is_recommended: false, action_steps: ["Shed snow melter electrical coil", "Throttle auxiliary bay heaters"] },
+    ],
     aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
 
-Analyzing current station conditions at Schirmacher Oasis...
+Station: MAITRI | Scenario: G1 SHUTDOWN | Duration: 7.0 hours
+Calculated Risk: MEDIUM (Index: 55/100) | Redundancy: N-0 / SINGLE POINT OF FAILURE
 
-Generator 1 shutdown for 7.0 hours simulation results:
-• Projected Fuel Conservation: ~42.0 Litres of Arctic Grade High-Speed Diesel (HSD-A).
-• Base Electrical Load will shift entirely to Generator 2, increasing its load from 46% to 92%.
-• Temperature drop inside the generator housing: Minimal (~1.4°C over 7 hours).
-• Critical life support and research laboratory power buses remain at 100% nominal voltage.
+## POWER IMPACT
+• Current Demand: 98.3 kW | Remaining Generation: 100.0 kW
+• Net Power Deficit: 0.0 kW (Load supportable by remaining fleet).
+• Active Generators: G2 (Operating load: 98.3%).
 
-OVERALL OPERATIONAL RISK: LOW
-RECOMMENDATION: RECOMMENDED. Ensure secondary generator fuel filters are primed before executing shutdown.`,
+## SUBSYSTEM IMPACTS
+• Fuel Consumption: Projected delta -0.6 L (Extra Burn) (Rate: 26.9 L/h vs 26.8 L/h baseline).
+• Battery BESS Buffer: Projected reserve SOC at 94.2% (TRICKLE_CHARGING).
+• Thermal Profile: Indoor temperature shifts by +3.2°C (Est: 24.6°C).
+• Station Health: Baseline 100/100 -> Projected 73/100 (Δ -27 pts).
+
+OPERATIONAL DIRECTIVE:
+CAUTION ADVISED. Spin up secondary synchronized generator to share microgrid load. Verify static transfer switch (STS) and standby jacket water heaters are active.`,
   },
   {
-    id: "fuel_opt_24h",
-    title: "Fuel Optimization Mode (24 hrs)",
-    category: "FUEL",
-    query: "What if we engage Fuel Optimization Mode for the next 24 hours across non-critical zones?",
+    id: "dual_gen_outage",
+    title: "Dual Gen Outage (G1 + G2 Off)",
+    category: "POWER",
+    query: "What if I turned the generator 1 and 2 off?",
+    health: {
+      baseline_score: 100.0,
+      projected_score: 5.0,
+      delta: -95.0,
+      status: "CRITICAL",
+      deductions: [
+        { penalty: 50.0, reason: "Severe Power Deficit", metric: "Unserved Load: 98.3 kW" },
+        { penalty: 20.0, reason: "Complete Loss of Redundancy", metric: "Active fleet: 0 units" },
+        { penalty: 15.0, reason: "BESS Rapid Depletion", metric: "UPS runtime: <1.8h" },
+        { penalty: 10.0, reason: "Life Support Thermal Drift", metric: "Indoor Temp drops to -8°C" },
+      ],
+    },
     impact: {
-      fuelSaved: "118 L",
-      fuelBurnChange: "-4.9 L/h",
-      currentConsumption: "28.5 L/h",
-      projectedConsumption: "23.6 L/h",
-      currentLoad: "82 kW (68%)",
-      projectedLoad: "64 kW (53%)",
-      backupLoad: "All systems buffered",
-      riskLevel: "LOW",
-      riskScore: 16,
-      recommendation: "HIGHLY RECOMMENDED",
+      fuelSaved: "187.6 L",
+      fuelBurnChange: "-26.8 L/h",
+      currentConsumption: "26.8 L/h",
+      projectedConsumption: "0.0 L/h",
+      currentLoad: "98 kW (68%)",
+      projectedLoad: "0 kW",
+      backupLoad: "DEFICIT: 98.3 kW",
+      riskLevel: "CRITICAL",
+      riskScore: 98,
+      healthScore: 5.0,
+      healthDelta: -95.0,
+      recommendation: "CRITICAL RISK: REJECTED",
       recommendationText:
-        "Non-critical laboratory heaters, auxiliary corridors, and snow melter pre-heaters throttled to eco-band. Substantially extends winter stock endurance by +3.8 days.",
+        "Total loss of primary generation capacity. Station electrical load cannot be served by zero active generators. Emergency BESS buffer provides maximum 1.8 hours before black start failure.",
       systemsAffected: [
-        { name: "Main Accommodation Heating", status: "NOMINAL (+19°C)" },
-        { name: "Non-Critical Storage Labs", status: "ECO-BAND (+8°C)" },
-        { name: "Snow Melting Facility", status: "BATCH CYCLE (NIGHT)" },
-        { name: "Secondary Battery Banks", status: "TRICKLE CHARGE" },
+        { name: "Generator 1 (Primary)", status: "SIMULATED OFFLINE" },
+        { name: "Generator 2 (Secondary)", status: "SIMULATED OFFLINE" },
+        { name: "Microgrid 415V Bus", status: "CRITICAL BLACKOUT THREAT" },
+        { name: "BESS Inverter System", status: "DISCHARGING BUFFER (1.8h RUNTIME)" },
       ],
       chartData: {
-        labels: ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
-        currentFuel: [28.5, 27.8, 30.2, 31.0, 29.5, 28.5],
-        projectedFuel: [23.6, 22.8, 24.5, 25.1, 24.0, 23.6],
-        currentPower: [82, 78, 88, 92, 86, 82],
-        projectedPower: [64, 60, 68, 71, 66, 64],
+        labels: ["T-0", "T+0.5h", "T+1.0h", "T+2.0h", "T+4.0h"],
+        currentFuel: [26.8, 26.8, 26.8, 26.8, 26.8],
+        projectedFuel: [26.8, 0.0, 0.0, 0.0, 0.0],
+        currentPower: [98, 98, 98, 98, 98],
+        projectedPower: [98, 0, 0, 0, 0],
+        indoorTemp: [21.4, 18.2, 14.5, 8.2, -1.5],
+        waterReserve: [18200, 18200, 18200, 18100, 18000],
+        healthScore: [100, 25, 12, 8, 5],
       },
     },
+    cascadingEffects: [
+      { step: 1, system: "PRIMARY_TRIGGER", title: "Dual Generator Outage", description: "Both primary generators disconnected from microgrid", severity: "CRITICAL", trigger_time: "T+0m", mitigation_target: "Emergency Standby G3" },
+      { step: 2, system: "MICROGRID_BUS", title: "Bus De-energization", description: "Microgrid voltage drops to 0V. Static transfer to BESS", severity: "CRITICAL", trigger_time: "T+10s", mitigation_target: "Class-1 Isolation" },
+      { step: 3, system: "BESS_STORAGE", title: "Emergency BESS Discharge", description: "Battery buffer discharges at maximum C-rate (1.8h floor)", severity: "HIGH", trigger_time: "T+1m", mitigation_target: "Shed non-critical loads" },
+      { step: 4, system: "LIFE_SUPPORT_HVAC", title: "HVAC Thermal Decay", description: "Living quarters temperature decays toward ambient (-24°C)", severity: "HIGH", trigger_time: "T+15m", mitigation_target: "Seal perimeter bulkheads" },
+    ],
+    thresholdBreaches: [
+      { metric: "POWER_DEFICIT", threshold: "> 0.0 kW", breach_time: "T+0.0h (IMMEDIATE)", criticality: "CRITICAL", description: "Generation shortfall of 98.3 kW begins immediately upon shutdown." },
+      { metric: "BATTERY_UPS_FLOOR", threshold: "< 30.0% SOC", breach_time: "T+1.8h", criticality: "CRITICAL", description: "Station backup UPS drops to 0.0%, exceeding 30% emergency threshold." },
+    ],
+    mitigationStrategies: [
+      { strategy_id: "STRAT-A", name: "Emergency Standby Start", description: "Fast-start Generator 3 to deliver 80 kW", power_deficit_kw: 18.3, delivered_power_kw: 80.0, active_generators: ["G3"], fuel_delta: "-6.2 L", risk_level: "HIGH", risk_score: 70, health_score: 45.0, is_recommended: false, action_steps: ["Emergency crank G3", "Load shed non-essential scientific circuits"] },
+      { strategy_id: "STRAT-C", name: "Standby Start + 20 kW Load Shedding", description: "Engage G3 (80 kW) and shed non-critical loads (20 kW) to balance grid", power_deficit_kw: 0.0, delivered_power_kw: 78.3, active_generators: ["G3"], fuel_delta: "-6.5 L", risk_level: "LOW", risk_score: 25, health_score: 92.0, is_recommended: true, action_steps: ["Spin up G3", "Shed secondary thermal coils", "Maintain living block life support"] },
+    ],
     aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
 
-Simulating 24-Hour Fuel Conservation Protocol:
-• Fuel Savings: ~118 Litres (extends station fuel reserve window by +3.8 days).
-• Non-essential thermal loops (unoccupied bays and cold-storage docks) throttled to +8°C.
-• Water melter operations rescheduled to off-peak night cycles.
-• Primary living quarters maintain comfortable +19°C with zero disruption to crew welfare.
+Station: MAITRI | Scenario: G1 + G2 SHUTDOWN | Duration: 7.0 hours
+Calculated Risk: CRITICAL (Index: 98/100) | Redundancy: ZERO ACTIVE FLEET
 
-OVERALL OPERATIONAL RISK: LOW
-RECOMMENDATION: HIGHLY RECOMMENDED for storm preparation or extended resupply delay contingency.`,
+## POWER IMPACT
+• Current Demand: 98.3 kW | Remaining Generation: 0.0 kW
+• Net Power Deficit: 98.3 kW (UNSERVED ELECTRICAL LOAD).
+• Active Generators: None (100% capacity loss).
+
+## SUBSYSTEM IMPACTS
+• Fuel Consumption: Projected delta 187.6 L saved, BUT microgrid is unpowered.
+• Battery BESS Buffer: Projected runtime 1.8 hours before complete depletion.
+• Thermal Profile: Indoor temperature drops from +21.4°C to -1.5°C over 4 hours.
+• Station Health: Baseline 100/100 -> Projected 5/100 (Δ -95 pts).
+
+OPERATIONAL DIRECTIVE:
+CRITICAL RISK: REJECTED. Emergency safety intervention required. Must start Generator 3 immediately and shed Class-2 loads.`,
   },
   {
-    id: "hvac_setback_6h",
-    title: "HVAC Setback to −22°C External (6 hrs)",
-    category: "HVAC",
-    query: "What if outside temperature plunges to −38°C and HVAC thermal setback is applied for 6 hours?",
+    id: "water_purification_outage",
+    title: "Water Purification Plant Outage (24 hrs)",
+    category: "WATER",
+    query: "What if water purification plant fails for 24 hours?",
+    health: {
+      baseline_score: 100.0,
+      projected_score: 75.0,
+      delta: -25.0,
+      status: "OPTIMAL",
+      deductions: [
+        { penalty: 25.0, reason: "Water Purification Plant Offline", metric: "Reserve depletion: 1,450 L/day" },
+      ],
+    },
     impact: {
-      fuelSaved: "−28 L (Extra Burn)",
-      fuelBurnChange: "+4.6 L/h",
-      currentConsumption: "28.5 L/h",
-      projectedConsumption: "33.1 L/h",
-      currentLoad: "82 kW (68%)",
-      projectedLoad: "96 kW (80%)",
-      backupLoad: "Glycol auxiliary heaters engaged",
+      fuelSaved: "0 L",
+      fuelBurnChange: "0.0 L/h",
+      currentConsumption: "26.8 L/h",
+      projectedConsumption: "26.8 L/h",
+      currentLoad: "98 kW",
+      projectedLoad: "92 kW (Melter Offline)",
+      backupLoad: "Reservoir Buffer Active",
       riskLevel: "MEDIUM",
-      riskScore: 54,
+      riskScore: 48,
+      healthScore: 75.0,
+      healthDelta: -25.0,
       recommendation: "CAUTION ADVISED",
       recommendationText:
-        "Severe external cold delta requires auxiliary glycol loop circulation. Thermal retention in living block remains stable, but perimeter airlocks require active trace heating.",
+        "Potable water reserve currently stands at 18,200 Litres (12.6 days buffer). A 24-hour outage consumes 1,450 L (8.0% of reserve), safely above critical threshold.",
       systemsAffected: [
-        { name: "Living Quarters HVAC", status: "TARGET +18°C STABLE" },
-        { name: "Perimeter Airlocks", status: "TRACE HEATING ACTIVE" },
-        { name: "Glycol Loop Pump 2", status: "HIGH SPEED (100%)" },
-        { name: "Ventilation Heat Exchanger", status: "DE-ICE CYCLE ENGAGED" },
+        { name: "RO Water Purification Unit", status: "OFFLINE_FAULT" },
+        { name: "Priyadarshini Lake Pipeline", status: "STANDBY TRACE HEATING" },
+        { name: "Potable Storage Tanks", status: "16,750 L REMAINING (92%)" },
       ],
       chartData: {
-        labels: ["T-0", "T+1h", "T+2h", "T+3h", "T+4h", "T+6h"],
-        currentFuel: [28.5, 28.5, 29.0, 29.0, 28.5, 28.5],
-        projectedFuel: [28.5, 31.2, 33.0, 33.5, 33.1, 32.8],
-        currentPower: [82, 82, 84, 84, 82, 82],
-        projectedPower: [82, 90, 95, 96, 95, 94],
+        labels: ["T-0", "T+6h", "T+12h", "T+18h", "T+24h"],
+        currentFuel: [26.8, 26.8, 26.8, 26.8, 26.8],
+        projectedFuel: [26.8, 26.8, 26.8, 26.8, 26.8],
+        currentPower: [98, 98, 98, 98, 98],
+        projectedPower: [92, 92, 92, 92, 92],
+        indoorTemp: [21.4, 21.4, 21.4, 21.4, 21.4],
+        waterReserve: [18200, 17837, 17475, 17112, 16750],
+        healthScore: [100, 85, 80, 78, 75],
       },
     },
+    cascadingEffects: [
+      { step: 1, system: "PRIMARY_TRIGGER", title: "Purification Plant Fault", description: "Water purification unit tripped offline", severity: "MEDIUM", trigger_time: "T+0m", mitigation_target: "Engage backup filters" },
+      { step: 2, system: "WATER_SYSTEM", title: "Storage Reservoir Drawdown", description: "Station draws from 18,200 L potable tank", severity: "LOW", trigger_time: "T+1h", mitigation_target: "Ration non-essential galley wash" },
+    ],
+    thresholdBreaches: [],
+    mitigationStrategies: [
+      { strategy_id: "STRAT-A", name: "Backup Snow Melter Cycle", description: "Engage secondary thermal snow melter to replenish buffer", power_deficit_kw: 0.0, delivered_power_kw: 98.0, active_generators: ["G1", "G2"], fuel_delta: "+8.0 L", risk_level: "LOW", risk_score: 20, health_score: 95.0, is_recommended: true, action_steps: ["Ignite melter glycol circuit", "Feed clean snow hopper"] },
+    ],
     aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
 
-Simulating Extreme Temperature Drop (−38°C Ambient with 45 km/h katabatic winds):
-• Thermal loss through peripheral skin increases by 34%.
-• Auxiliary glycol heaters will automatically cycle on, adding +14 kW electrical draw.
-• Fuel consumption will rise by ~4.6 L/h to counteract thermal gradient.
-• Airlock seal integrity must be visually confirmed to prevent ice crystallization.
+Station: MAITRI | Scenario: WATER PURIFICATION OUTAGE | Duration: 24.0 hours
+Calculated Risk: MEDIUM (Index: 48/100) | Potable Reserve: 16,750 L Remaining
 
-OVERALL OPERATIONAL RISK: MEDIUM
-RECOMMENDATION: CAUTION. Ensure glycol loop expansion vessel pressure is at 1.8 bar prior to temperature drop.`,
+## WATER SUBSYSTEM IMPACT
+• Initial Reserve: 18,200 L | Projected Reserve: 16,750 L (−1,450 L).
+• Runway: 11.6 days of remaining potable buffer at standard consumption.
+• Station Health: Baseline 100/100 -> Projected 75/100 (Δ -25 pts).
+
+OPERATIONAL DIRECTIVE:
+CAUTION ADVISED. Isolate faulted RO membrane filter and activate secondary snow melter batch cycle.`,
   },
   {
-    id: "water_melting_reduce_12h",
-    title: "Water Melting Reduced 40% (12 hrs)",
-    category: "WATER",
-    query: "What if snow melter operation is throttled by 40% for the next 12 hours?",
+    id: "logistics_delay_7d",
+    title: "Supply Ship Delivery Delayed (7 Days)",
+    category: "LOGISTICS",
+    query: "What if fuel delivery is delayed by 7 days?",
+    health: {
+      baseline_score: 100.0,
+      projected_score: 82.0,
+      delta: -18.0,
+      status: "OPTIMAL",
+      deductions: [
+        { penalty: 18.0, reason: "Logistics Resupply Delay", metric: "Safety margin: 119.8 days remaining" },
+      ],
+    },
     impact: {
-      fuelSaved: "31 L",
-      fuelBurnChange: "-2.6 L/h",
-      currentConsumption: "28.5 L/h",
-      projectedConsumption: "25.9 L/h",
-      currentLoad: "82 kW (68%)",
-      projectedLoad: "71 kW (59%)",
-      backupLoad: "Main reservoir 91% (18,200 L)",
+      fuelSaved: "0 L",
+      fuelBurnChange: "0.0 L/h",
+      currentConsumption: "26.8 L/h",
+      projectedConsumption: "26.8 L/h",
+      currentLoad: "98 kW",
+      projectedLoad: "98 kW",
+      backupLoad: "Bulk Storage Active",
       riskLevel: "LOW",
-      riskScore: 18,
-      recommendation: "RECOMMENDED",
+      riskScore: 28,
+      healthScore: 82.0,
+      healthDelta: -18.0,
+      recommendation: "RECOMMENDED (MONITOR LOGISTICS)",
       recommendationText:
-        "Station water reserve currently stands at 91% capacity (18,200 Litres), representing 14 days of domestic buffer. Throttling melter has negligible impact on crew supply.",
+        "Station fuel stock stands at 81,600 L (126.8 days runway). A 7-day delivery delay leaves 119.8 days of safety margin, well above the 30-day emergency reserve floor.",
       systemsAffected: [
-        { name: "Snow Melter Calandria", status: "THROTTLED (60% OUTPUT)" },
-        { name: "Potable Water Buffer", status: "18,200 L AVAILABLE" },
-        { name: "Graywater Recycling", status: "NOMINAL (84% RECOVERY)" },
-        { name: "Melter Electrical Coil", status: "CYCLING ON 50% DUTY" },
+        { name: "Bulk Fuel Farm", status: "81,600 L (68.0% CAPACITY)" },
+        { name: "Day Storage Tanks", status: "NOMINAL (100% FILLED)" },
+        { name: "Fuel Trace Heaters", status: "ENGAGED (-24°C AMBIENT)" },
       ],
       chartData: {
-        labels: ["T-0", "T+2h", "T+4h", "T+6h", "T+8h", "T+12h"],
-        currentFuel: [28.5, 28.5, 28.7, 28.5, 28.4, 28.5],
-        projectedFuel: [28.5, 25.9, 25.8, 25.9, 26.0, 25.9],
-        currentPower: [82, 82, 83, 82, 82, 82],
-        projectedPower: [82, 71, 71, 72, 71, 71],
+        labels: ["Day 0", "Day 2", "Day 4", "Day 6", "Day 7"],
+        currentFuel: [26.8, 26.8, 26.8, 26.8, 26.8],
+        projectedFuel: [26.8, 26.8, 26.8, 26.8, 26.8],
+        currentPower: [98, 98, 98, 98, 98],
+        projectedPower: [98, 98, 98, 98, 98],
+        indoorTemp: [21.4, 21.4, 21.4, 21.4, 21.4],
+        waterReserve: [18200, 18200, 18200, 18200, 18200],
+        healthScore: [100, 95, 90, 85, 82],
       },
     },
+    cascadingEffects: [
+      { step: 1, system: "PRIMARY_TRIGGER", title: "Resupply Delay", description: "Vessel arrival deferred by 7.0 days due to pack-ice", severity: "LOW", trigger_time: "T+0d", mitigation_target: "Engage Fuel Conservation" },
+      { step: 2, system: "HABITAT_SAFETY", title: "Bulk Fuel Drawdown", description: "Fuel buffer draws down to 77,098 L", severity: "LOW", trigger_time: "T+7d", mitigation_target: "No rationing required" },
+    ],
+    thresholdBreaches: [],
+    mitigationStrategies: [
+      { strategy_id: "STRAT-A", name: "Eco-Mode Power Setback", description: "Reduce non-critical heating by 5% to preserve fuel", power_deficit_kw: 0.0, delivered_power_kw: 93.0, active_generators: ["G1", "G2"], fuel_delta: "+220 L Saved", risk_level: "LOW", risk_score: 15, health_score: 96.0, is_recommended: true, action_steps: ["Throttle auxiliary lab heating"] },
+    ],
     aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
 
-Snow Melter Throttling Simulation (12 Hours):
-• Power Demand Reduction: −11.0 kW electrical load.
-• Fuel Conserved: ~31.0 Litres.
-• Station potable water storage: drops from 91% to 88.5% over 12 hours (safe threshold is >45%).
-• Water production can catch up within 3 hours of full restoration.
+Station: MAITRI | Scenario: LOGISTICS SUPPLY DELAY | Duration: 7.0 days
+Calculated Risk: LOW (Index: 28/100) | Fuel Runway: 119.8 Days Remaining
 
-OVERALL OPERATIONAL RISK: LOW
-RECOMMENDATION: RECOMMENDED during peak electrical demand hours.`,
+## LOGISTICS IMPACT
+• Current Bulk Reserve: 81,600 L (126.8 days endurance).
+• Projected Stock at T+7d: ~77,098 L (119.8 days endurance).
+• Safe Margin: Substantially exceeds mandatory 30-day polar reserve floor.
+• Station Health: Baseline 100/100 -> Projected 82/100 (Δ -18 pts).
+
+OPERATIONAL DIRECTIVE:
+RECOMMENDED. Zero emergency rationing required. Maintain standard generator rotation schedule.`,
   },
   {
     id: "blizzard_protocol_prep",
     title: "Severe Blizzard Protocol (Cat-3 Storm)",
     category: "EMERGENCY",
     query: "What if Category 3 Blizzard hits with 110 km/h winds and power grid isolates into storm mode?",
+    health: {
+      baseline_score: 100.0,
+      projected_score: 68.0,
+      delta: -32.0,
+      status: "DEGRADED",
+      deductions: [
+        { penalty: 20.0, reason: "Extreme Blizzard Weather", metric: "Wind speed: 110 km/h" },
+        { penalty: 12.0, reason: "Elevated Electrical Draw", metric: "Heating load: 105 kW" },
+      ],
+    },
     impact: {
       fuelSaved: "0 L (Grid Hardening)",
       fuelBurnChange: "+6.8 L/h",
       currentConsumption: "28.5 L/h",
       projectedConsumption: "35.3 L/h",
-      currentLoad: "82 kW (68%)",
+      currentLoad: "98 kW (68%)",
       projectedLoad: "105 kW (87.5%)",
       backupLoad: "Dual Gen Active + Emergency Battery Bank",
       riskLevel: "HIGH",
       riskScore: 78,
+      healthScore: 68.0,
+      healthDelta: -32.0,
       recommendation: "ACTION REQUIRED — PROTOCOL 4B",
       recommendationText:
         "Isolate external telemetry masts. Spin up dual synchronized generators. Lock all storm airlocks. Switch SATCOM antenna to heated radome high-torque tracking.",
@@ -203,10 +332,21 @@ RECOMMENDATION: RECOMMENDED during peak electrical demand hours.`,
         labels: ["T-0", "T+1h", "T+3h", "T+6h", "T+12h", "T+24h"],
         currentFuel: [28.5, 28.5, 28.5, 28.5, 28.5, 28.5],
         projectedFuel: [28.5, 34.0, 35.5, 36.0, 35.2, 34.8],
-        currentPower: [82, 82, 82, 82, 82, 82],
-        projectedPower: [82, 98, 105, 108, 104, 102],
+        currentPower: [98, 98, 98, 98, 98, 98],
+        projectedPower: [98, 102, 105, 108, 104, 102],
+        indoorTemp: [21.4, 20.2, 19.5, 19.0, 18.8, 18.5],
+        waterReserve: [18200, 18100, 17900, 17500, 17000, 16500],
+        healthScore: [100, 80, 75, 70, 68, 68],
       },
     },
+    cascadingEffects: [
+      { step: 1, system: "PRIMARY_TRIGGER", title: "Katabatic Blizzard", description: "Wind speed escalates to 110 km/h with -38°C wind chill", severity: "HIGH", trigger_time: "T+0m", mitigation_target: "Grid Hardening" },
+      { step: 2, system: "LIFE_SUPPORT_HVAC", title: "Perimeter Thermal Loss", description: "Heating coils engage at 100% duty to counteract chill", severity: "MEDIUM", trigger_time: "T+15m", mitigation_target: "Radome Trace Heating" },
+    ],
+    thresholdBreaches: [],
+    mitigationStrategies: [
+      { strategy_id: "STRAT-A", name: "Dual-Gen Load Sharing", description: "Synchronize G1 and G2 to deliver 125 kW capacity", power_deficit_kw: 0.0, delivered_power_kw: 105.0, active_generators: ["G1", "G2"], fuel_delta: "+6.8 L/h", risk_level: "MEDIUM", risk_score: 45, health_score: 85.0, is_recommended: true, action_steps: ["Lock airlocks", "Stow external anemometers"] },
+    ],
     aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
 
 SIMULATING CATEGORY-3 BLIZZARD CONTINGENCY (Winds >110 km/h, Visibility <5m):
@@ -218,49 +358,6 @@ SIMULATING CATEGORY-3 BLIZZARD CONTINGENCY (Winds >110 km/h, Visibility <5m):
 OVERALL OPERATIONAL RISK: HIGH
 RECOMMENDATION: EXECUTE PROTOCOL 4B. Restrict all outdoor movement and verify emergency communication beacon handshake with NCPOR Command.`,
   },
-  {
-    id: "main_bus_failure_sim",
-    title: "Main Power Bus Failure & Auto-Transfer",
-    category: "POWER",
-    query: "What if Bus A experiences an abrupt breaker trip while drawing 55 kW?",
-    impact: {
-      fuelSaved: "N/A (Emergency Fault)",
-      fuelBurnChange: "0.0 L/h",
-      currentConsumption: "28.5 L/h",
-      projectedConsumption: "28.5 L/h",
-      currentLoad: "82 kW (68%)",
-      projectedLoad: "82 kW (UPS + Bus B Transfer in 18ms)",
-      backupLoad: "UPS Inverters Active (0.018s switch)",
-      riskLevel: "CRITICAL",
-      riskScore: 92,
-      recommendation: "EMERGENCY SAFETY INTERVENTION",
-      recommendationText:
-        "Automatic static transfer switch (STS) redirects critical life support to Bus B within 18ms. Non-essential labs shed automatically. Physical inspection of main busbar required.",
-      systemsAffected: [
-        { name: "Power Bus A (Main)", status: "TRIPPED (OVERCURRENT SIM)" },
-        { name: "Power Bus B (Emergency)", status: "AUTOMATIC TAKEOVER (18ms)" },
-        { name: "UPS Battery Inverters", status: "DISCHARGING BUFFER (100%)" },
-        { name: "Life Support Circuits", status: "UNINTERRUPTED (0ms DOWNTIME)" },
-      ],
-      chartData: {
-        labels: ["T-0s", "T+0.02s", "T+1s", "T+5s", "T+30s", "T+60s"],
-        currentFuel: [28.5, 28.5, 28.5, 28.5, 28.5, 28.5],
-        projectedFuel: [28.5, 28.5, 28.5, 28.5, 28.5, 28.5],
-        currentPower: [82, 0, 82, 82, 82, 82],
-        projectedPower: [82, 27, 82, 82, 82, 82],
-      },
-    },
-    aiResponse: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
-
-SIMULATING POWER BUS A ABRUPT TRIPPING FAULT:
-• Static Transfer Switch (STS) triggers sub-cycle transfer in 18 milliseconds.
-• Class-1 Critical Loads (Life Support, SATCOM, SCADA) maintain continuous sinus wave without reset.
-• Class-3 Laboratory loads shed automatically to preserve battery buffer.
-• SCADA telemetry alerts technician workstation with trip diagnostic code E-4081.
-
-OVERALL OPERATIONAL RISK: CRITICAL
-RECOMMENDATION: Verify STS relay trip response time and inspect Bus A circuit breaker contacts before manual re-closure.`,
-  },
 ];
 
 export const simulationHistory = [
@@ -271,7 +368,7 @@ export const simulationHistory = [
     station: "MAITRI",
     title: "Generator 1 shutdown — 7 hours",
     fuelSaved: "42 L",
-    risk: "LOW",
+    risk: "MEDIUM",
     status: "COMPLETED",
   },
   {
@@ -279,18 +376,18 @@ export const simulationHistory = [
     timestamp: "11:30 IST",
     date: "05 Sep 2026",
     station: "MAITRI",
-    title: "Fuel optimization mode — 24 hours",
-    fuelSaved: "118 L",
-    risk: "LOW",
-    status: "COMPLETED",
+    title: "Dual Gen 1 + Gen 2 shutdown",
+    fuelSaved: "187.6 L",
+    risk: "CRITICAL",
+    status: "REJECTED (CRITICAL)",
   },
   {
     id: "sim-1090",
     timestamp: "09:05 IST",
     date: "05 Sep 2026",
     station: "BHARATI",
-    title: "HVAC thermal reduction — 6 hours",
-    fuelSaved: "−28 L",
+    title: "Water purification fault — 24h",
+    fuelSaved: "0 L",
     risk: "MEDIUM",
     status: "COMPLETED",
   },
@@ -310,31 +407,13 @@ export const initialChatMessages = [
   {
     id: "msg-1",
     sender: "system",
-    text: "DHRUVNETRA AI Operational Simulation Engine initialized. Connected to real-time SCADA telemetry for Indian Antarctic Stations (Maitri & Bharati). Select a scenario preset or type a natural-language operational query.",
+    text: "DHRUVNETRA AI Mission Assistant online. Connected to prototype station digital twin telemetry for Maitri & Bharati stations.",
     timestamp: "14:30:00",
   },
   {
     id: "msg-2",
-    sender: "user",
-    text: "What if Generator 1 is turned off for 7 hours?",
-    timestamp: "14:30:45",
-  },
-  {
-    id: "msg-3",
     sender: "ai",
-    text: `DHRUVNETRA AI OPERATIONAL ASSESSMENT:
-
-Analyzing current station conditions at Schirmacher Oasis...
-
-Generator 1 shutdown for 7.0 hours simulation results:
-• Projected Fuel Conservation: ~42.0 Litres of Arctic Grade High-Speed Diesel (HSD-A).
-• Base Electrical Load will shift entirely to Generator 2, increasing its load from 46% to 92%.
-• Temperature drop inside the generator housing: Minimal (~1.4°C over 7 hours).
-• Critical life support and research laboratory power buses remain at 100% nominal voltage.
-
-OVERALL OPERATIONAL RISK: LOW
-RECOMMENDATION: RECOMMENDED. Ensure secondary generator fuel filters are primed before executing shutdown.`,
-    timestamp: "14:30:46",
-    scenarioId: "gen1_shutdown_7h",
+    text: "Welcome, Mission Commander. You can ask direct factual telemetry questions (e.g. \"What is the fuel level till now?\", \"What is the condition of generator 1?\", \"Is G1 running?\", \"What is the outdoor temperature?\") or pose hypothetical contingency simulations (e.g. \"What if I turned generator 1 and 2 off?\", \"What if Generator 1 shuts down for 7 hours?\", \"What if water purification plant fails for 24 hours?\").",
+    timestamp: "14:30:01",
   },
 ];

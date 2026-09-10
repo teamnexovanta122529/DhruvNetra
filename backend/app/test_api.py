@@ -117,6 +117,58 @@ def run_api_tests():
     r5 = client.post("/api/what-if", json=payload5)
     check(r5.status_code == 400, "Empty query rejected with 400 Bad Request")
 
+    # --------------------------------------------------------------------------
+    # TEST 6: Multi-Generator Query: 'What if I turned the generator 1 and 2 off?'
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 6: Multi-Generator Scenario ('What if I turned the generator 1 and 2 off?') ---")
+    payload6 = {"query": "What if I turned the generator 1 and 2 off?"}
+    r6 = client.post("/api/what-if", json=payload6)
+    check(r6.status_code == 200, "Multi-generator scenario returns 200 OK")
+    data6 = r6.json()
+    check(data6["success"] is True, "Multi-generator simulation success is True")
+    check(data6["response_type"] == "SCENARIO_ANALYSIS", "Response type is SCENARIO_ANALYSIS")
+    check(data6["scenario"]["affected_generators"] == ["G1", "G2"], "affected_generators contains ['G1', 'G2']")
+    check(data6["scenario"]["duration_hours"] == 1.0, "Missing duration defaults to 1.0 hour")
+    check(data6["prediction"]["deficit_kw"] > 0, f"Deficit correctly calculated ({data6['prediction']['deficit_kw']} kW)")
+    check(data6["risk"]["overall_risk"] == "CRITICAL", "Risk evaluated as CRITICAL for zero active generators")
+    check("(default: 1.0 hour)" in data6["explanation"] or "1.0 hours (default)" in data6["explanation"], "Default duration explicitly noted in explanation")
+
+    # --------------------------------------------------------------------------
+    # TEST 7: Direct Telemetry Query: 'What is the fuel level till now?'
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 7: Direct Telemetry Query ('What is the fuel level till now?') ---")
+    payload7 = {"query": "What is the fuel level till now?"}
+    r7 = client.post("/api/what-if", json=payload7)
+    check(r7.status_code == 200, "Direct telemetry returns 200 OK")
+    data7 = r7.json()
+    check(data7["success"] is True, "Direct telemetry success is True")
+    check(data7["response_type"] == "DIRECT_ANSWER", "Response type is DIRECT_ANSWER")
+    ai_resp_7 = data7.get("aiResponse", "") or data7.get("text", "")
+    check("68" in ai_resp_7 and "81,600" in ai_resp_7, "Telemetry includes 68% (81,600 L) fuel level")
+    check("DHRUVNETRA AI OPERATIONAL ASSESSMENT" not in ai_resp_7, "Zero What-If leakage in telemetry answer")
+
+    # --------------------------------------------------------------------------
+    # TEST 8: Direct Condition Query: 'What is the condition of generator 1?'
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 8: Generator Condition Query ('What is the condition of generator 1?') ---")
+    payload8 = {"query": "What is the condition of generator 1?"}
+    r8 = client.post("/api/what-if", json=payload8)
+    check(r8.status_code == 200, "Condition query returns 200 OK")
+    data8 = r8.json()
+    check(data8["response_type"] == "DIRECT_ANSWER", "Response type is DIRECT_ANSWER")
+    check("RUNNING" in data8["aiResponse"] or "RUNNING" in data8.get("text", ""), "Generator condition contains RUNNING")
+
+    # --------------------------------------------------------------------------
+    # TEST 9: Standby Generator Validation: 'What if generator 3 at Maitri is turned off?'
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 9: Standby Generator Validation ('What if generator 3 at Maitri is turned off?') ---")
+    payload9 = {"query": "What if generator 3 at Maitri is turned off?"}
+    r9 = client.post("/api/what-if", json=payload9)
+    check(r9.status_code == 200, "Standby query returns 200 OK")
+    data9 = r9.json()
+    check(data9["success"] is True, "Standby query handled gracefully")
+    check("standby" in data9["explanation"].lower() or "standby" in data9.get("aiResponse", "").lower(), "Advisory notes generator is already standby")
+
     print("\n" + "=" * 70)
     print(f" FASTAPI BACKEND TEST RESULTS: {passed} / {total} PASSED")
     print("=" * 70)

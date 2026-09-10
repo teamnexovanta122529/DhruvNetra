@@ -69,6 +69,15 @@ export default function AntarcticaBackground({ mouse }) {
         }}
       />
 
+      {/* Subtle localized center contrast gradient for hero readability */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 50%, rgba(2,11,20,0.38) 0%, rgba(2,11,20,0.14) 44%, transparent 72%)",
+        }}
+      />
+
       {/* Bottom cinematic fade */}
       <div
         className="absolute inset-x-0 bottom-0 h-[35%]"

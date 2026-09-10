@@ -1,16 +1,18 @@
 /**
  * DHRUVNETRA - Centralized Authentication & Authorization Data
+ * SIH 2026: Antarctic Digital Twin Platform (Maitri & Bharati)
  * 
  * PROTOTYPE IMPLEMENTATION NOTE:
- * This is a frontend prototype with mock authentication.
- * In a production deployment, this layer will be replaced with:
- *   Frontend -> Auth API -> JWT / Supabase Auth -> Backend RBAC & Session Management
- * Do not claim frontend-only authentication is production-grade security.
+ * This layer provides role-based access control (RBAC) with 3 standard operational roles:
+ * - ADMIN: Full mission command, What-If simulation engine, Government directives, Reports, All stations.
+ * - OPERATOR: Subsystem monitoring (Power, Fuel, HVAC, Water, Environment, Logistics, Alerts).
+ * - VIEWER: Read-only telemetry monitoring dashboards.
  */
 
 export const ROLES = {
   ADMIN: "ADMIN",
   OPERATOR: "OPERATOR",
+  VIEWER: "VIEWER",
 };
 
 export const MOCK_USERS = [
@@ -49,6 +51,18 @@ export const MOCK_USERS = [
     clearance: "LEVEL-2 OPERATIONAL TELEMETRY",
     email: "s.mukherjee@maitri.dhruvnetra.gov.in",
     avatar: "SM",
+  },
+  {
+    id: "usr-004",
+    username: "viewer",
+    password: "viewer123",
+    role: ROLES.VIEWER,
+    stations: ["MAITRI", "BHARATI"],
+    name: "Observer R. Iyer",
+    title: "Scientific Observer & Telemetry Analyst",
+    clearance: "LEVEL-1 SCIENTIFIC MONITORING (READ-ONLY)",
+    email: "r.iyer@polar.dhruvnetra.gov.in",
+    avatar: "RI",
   },
 ];
 
@@ -93,6 +107,23 @@ export const ROLE_PERMISSIONS = {
     canTransmitGovernmentCommands: false,
     canAccessSensitiveReports: false,
   },
+  [ROLES.VIEWER]: {
+    canAccessAllStations: true,
+    allowedRoutes: [
+      "/dashboard/overview",
+      "/dashboard/digital-twin",
+      "/dashboard/power",
+      "/dashboard/fuel",
+      "/dashboard/hvac",
+      "/dashboard/water",
+      "/dashboard/environment",
+      "/dashboard/logistics",
+      "/dashboard/alerts",
+    ],
+    canExecuteWhatIf: false,
+    canTransmitGovernmentCommands: false,
+    canAccessSensitiveReports: false,
+  },
 };
 
 /**
@@ -106,11 +137,10 @@ export const ADMIN_ONLY_ROUTES = [
 
 /**
  * Mock authentication function
- * Simulated async delay to mimic network latency
  */
 export async function mockAuthenticate(username, password) {
   // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  await new Promise((resolve) => setTimeout(resolve, 400));
 
   const trimmedUsername = username?.trim().toLowerCase();
   const trimmedPassword = password?.trim();
@@ -126,7 +156,7 @@ export async function mockAuthenticate(username, password) {
     throw new Error("Invalid username/email or password. Please verify credentials.");
   }
 
-  // Return sanitized user object (omit password in returned state)
+  // Return sanitized user object (omit password)
   const { password: _, ...sanitizedUser } = user;
   return sanitizedUser;
 }
@@ -136,7 +166,7 @@ export async function mockAuthenticate(username, password) {
  */
 export function isUserAuthorizedForStation(user, stationName) {
   if (!user || !user.stations) return false;
-  if (user.role === ROLES.ADMIN) return true;
+  if (user.role === ROLES.ADMIN || user.role === ROLES.VIEWER) return true;
   return user.stations.includes(stationName);
 }
 
@@ -155,3 +185,13 @@ export function isRoleAuthorizedForRoute(role, routePath) {
     cleanPath.startsWith(allowed)
   );
 }
+
+export default {
+  ROLES,
+  MOCK_USERS,
+  ROLE_PERMISSIONS,
+  ADMIN_ONLY_ROUTES,
+  mockAuthenticate,
+  isUserAuthorizedForStation,
+  isRoleAuthorizedForRoute,
+};

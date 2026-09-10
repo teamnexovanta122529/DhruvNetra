@@ -153,7 +153,12 @@ class RiskEngine:
         active_count = int(simulation_data.get("active_generators_count", 1))
         red_score = 0
 
-        if not n1_satisfied:
+        if active_count == 0:
+            red_score = 60
+            status = "CRITICAL_BLACKOUT_RISK"
+            risk_reasons.append("Zero active generators remaining on microgrid bus. Total loss of primary generation.")
+            action_items.append("CRITICAL: Engage emergency generator start sequence immediately. Isolate non-essential circuits to preserve UPS battery buffer.")
+        elif not n1_satisfied:
             if standby_count > 0:
                 red_score = red_penalties.get("zero_running_reserve_with_warm_standby", 10)
                 status = "STANDBY_PROTECTED"
@@ -264,7 +269,7 @@ class RiskEngine:
         }
 
         # ----------------------------------------------------------------------
-        # 7. MAP COMPOSITE SCORE TO RISK LEVEL
+        # 7. MAP COMPOSITE SCORE TO RISK LEVEL & SUB-RISKS
         # ----------------------------------------------------------------------
         total_score = min(100, max(0, total_score))
         risk_scale = self.config.get("risk_scale", {})
@@ -282,6 +287,28 @@ class RiskEngine:
             overall_risk = "CRITICAL"
             default_rec = risk_scale.get("CRITICAL", {}).get("default_recommendation", "EMERGENCY INTERVENTION")
 
+        # Specific sub-domain risk mappings
+        power_risk_score = min(100, deficit_score + red_score + gen_score)
+        power_risk_level = "CRITICAL" if power_deficit > 0.1 or active_count == 0 else ("HIGH" if max_load_pct > 90 else ("MEDIUM" if not n1_satisfied else "LOW"))
+
+        fuel_risk_score = min(100, fuel_score * 2)
+        fuel_risk_level = "CRITICAL" if runway_days < 5.0 or fuel_pct < 20.0 else ("HIGH" if runway_days < 15.0 else ("MEDIUM" if runway_days < 30.0 else "LOW"))
+
+        env_risk_score = min(100, temp_score * 2)
+        env_risk_level = "CRITICAL" if indoor_temp <= 4.0 else ("HIGH" if indoor_temp <= 12.0 else ("MEDIUM" if indoor_temp <= 18.0 else "LOW"))
+
+        safety_risk_level = "CRITICAL" if (power_deficit > 0 and indoor_temp < 12.0) or indoor_temp <= 4.0 or battery_soc < 25.0 else ("HIGH" if power_deficit > 0 else ("MEDIUM" if max_load_pct > 85.0 else "LOW"))
+
+        mission_risk_level = "CRITICAL" if active_count == 0 or runway_days < 5.0 else ("HIGH" if power_deficit > 0 or not n1_satisfied else ("MEDIUM" if max_load_pct > 85.0 else "LOW"))
+
+        sub_risks = {
+            "power_risk": {"level": power_risk_level, "score": power_risk_score},
+            "fuel_risk": {"level": fuel_risk_level, "score": fuel_risk_score},
+            "environmental_risk": {"level": env_risk_level, "score": env_risk_score},
+            "safety_risk": {"level": safety_risk_level, "score": min(100, int(total_score * 0.9))},
+            "mission_continuity_risk": {"level": mission_risk_level, "score": min(100, int(total_score * 0.85))},
+        }
+
         # Compile concise summary explanation
         if not risk_reasons:
             reasons_summary = "All monitored station microgrid, thermal, and fuel systems operate within nominal safety thresholds."
@@ -297,11 +324,13 @@ class RiskEngine:
             "overall_risk": overall_risk,
             "risk_score": total_score,
             "recommendation": default_rec,
+            "recommended_action": default_rec,
             "reasons": risk_reasons,
             "reason_summary": reasons_summary,
             "recommended_actions": action_items,
             "action_summary": actions_summary,
             "factors": factor_evaluations,
+            "sub_risks": sub_risks,
             "_metadata": {
                 "config_version": self.config.get("version", "1.0.0"),
                 "disclaimer": self.config.get("_disclaimer", "PROTOTYPE ASSUMPTION"),

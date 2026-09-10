@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStation } from "../../context/StationContext";
 import { useAuth } from "../../context/AuthContext";
+import { getAlertsData } from "../../services/telemetryService";
+import NotificationCenter from "./NotificationCenter";
 
 const pageNames = {
   overview: "OVERVIEW",
@@ -25,7 +27,11 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
   const { user, role, isAdmin, logout, setSelectedStation, isStationAuthorized } = useAuth();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const activeAlerts = getAlertsData(station);
+  const unresolvedAlertCount = activeAlerts.filter((a) => !a.resolved).length;
 
   // UTC Time clock
   const [utcTime, setUtcTime] = useState("");
@@ -78,13 +84,11 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
   };
 
   return (
-    <header className="dashboard-header">
-
+    <header className="dashboard-header" style={{ position: "relative" }}>
       {/* =========================================
           LEFT: SIDEBAR TOGGLE & BRAND
       ========================================= */}
       <div className="dashboard-header-left">
-
         <button
           type="button"
           className="sidebar-toggle-btn"
@@ -108,17 +112,13 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
         <div className="header-context">
           AI-POWERED DIGITAL TWIN
         </div>
-
       </div>
-
 
       {/* =========================================
           CENTER: STATION SWITCHER & PAGE TITLE
       ========================================= */}
       <div className="dashboard-header-center">
-
         <div className="station-switcher-container" ref={dropdownRef}>
-
           <button
             type="button"
             className={`station-switcher-btn ${dropdownOpen ? "open" : ""}`}
@@ -140,7 +140,6 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
           {/* DROPDOWN MENU */}
           {dropdownOpen && (
             <div className="station-switcher-dropdown">
-
               <div className="station-dropdown-header">
                 SELECT RESEARCH STATION
               </div>
@@ -178,24 +177,19 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
                   </button>
                 );
               })}
-
             </div>
           )}
-
         </div>
 
         <div className="current-page">
           {pageTitle}
         </div>
-
       </div>
-
 
       {/* =========================================
           RIGHT: STATUS, SECURITY BADGE & LOGOUT
       ========================================= */}
       <div className="dashboard-header-right">
-
         {/* SECURITY SESSION BADGE */}
         <div
           className="header-security-badge"
@@ -225,13 +219,19 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
           className="header-notification"
           type="button"
           title="Active Alerts"
-          onClick={() => navigate("/dashboard/alerts")}
+          onClick={() => setNotificationOpen((prev) => !prev)}
         >
           !
           <span className="notification-badge">
-            3
+            {unresolvedAlertCount}
           </span>
         </button>
+
+        {/* NOTIFICATION CENTER DROPDOWN */}
+        <NotificationCenter
+          isOpen={notificationOpen}
+          onClose={() => setNotificationOpen(false)}
+        />
 
         {/* LOGOUT BUTTON */}
         <button
@@ -255,9 +255,7 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
           <span className="btn-arrow">←</span>
           <span>LANDING</span>
         </button>
-
       </div>
-
     </header>
   );
 }

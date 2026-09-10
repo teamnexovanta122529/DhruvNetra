@@ -98,20 +98,22 @@ def run_tests():
     check(res2["engineeringDetails"]["power_deficit_kw"] == 0.0, "Bharati has zero deficit on G2 shutdown")
 
     # --------------------------------------------------------------------------
-    # TEST 3: Multiple Generator Failure / Overload Deficit Test
+    # TEST 3: Multi-Generator Shutdown (G1 + G2 at Maitri)
     # --------------------------------------------------------------------------
-    print("\n--- TEST 3: All Active Generators Trip (Deficit Test) ---")
-    scenario_3 = {
+    print("\n--- TEST 3: Multi-Generator Shutdown (G1 + G2 at Maitri) ---")
+    scenario_multi = {
         "station": "MAITRI",
         "component": "generator",
-        "component_id": "G1",
-        "action": "fail",
-        "duration_hours": 2.0,
+        "affected_generators": ["G1", "G2"],
+        "action": "shutdown",
+        "duration_hours": 1.0,
     }
-    # Simulate with low initial capacity to induce deficit
-    res3 = engine.simulate(maitri_state, scenario_3)
-    check("chartData" in res3["impact"], "Chart data always present in response")
-    check(res3["impact"]["riskScore"] > 0, "Risk score computed deterministically")
+    res_multi = engine.simulate(maitri_state, scenario_multi)
+    eng_multi = res_multi["engineeringDetails"]
+    check(eng_multi["projected_available_cap_kw"] == 0.0, "Zero active generation remaining after G1+G2 shutdown")
+    check(eng_multi["power_deficit_kw"] > 80.0, f"Critical power deficit calculated ({eng_multi['power_deficit_kw']} kW)")
+    check(res_multi["impact"]["riskLevel"] == "CRITICAL", "Risk level is CRITICAL for total generation loss")
+    check("chartData" in res_multi["impact"], "Chart data present for multi-generator scenario")
 
     # --------------------------------------------------------------------------
     # TEST 4: Extreme Weather / Cold Temperature Drop
@@ -161,7 +163,57 @@ def run_tests():
     })
     check(eval_crit["overall_risk"] == "CRITICAL", "Severe deficit & freeze state evaluates to CRITICAL risk")
     check(len(eval_crit["reasons"]) >= 3, "Multiple risk reasons generated in critical state")
-    check(len(eval_crit["factors"]) == 6, "All 6 risk factors present in evaluation breakdown")
+    # --------------------------------------------------------------------------
+    # TEST 6: Water Purification Plant Outage
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 6: Water Purification Outage Simulation ---")
+    scenario_water = {
+        "station": "MAITRI",
+        "component": "water",
+        "action": "fail",
+        "duration_hours": 24.0,
+    }
+    res_water = engine.simulate(maitri_state, scenario_water)
+    water_eng = res_water["engineeringDetails"]["water"]
+    check(water_eng["purification_status"] == "OFFLINE_FAULT", "Water purification plant marked as OFFLINE_FAULT")
+    check(water_eng["final_reserve_liters"] < water_eng["initial_reserve_liters"], "Water reserves deplete over 24h outage")
+    check(len(water_eng["timeline"]["labels"]) >= 3, "Water timeline populated")
+
+    # --------------------------------------------------------------------------
+    # TEST 7: Supply Logistics / Fuel Resupply Delay
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 7: Fuel Delivery Delay Simulation (7 Days) ---")
+    scenario_logistics = {
+        "station": "MAITRI",
+        "component": "logistics",
+        "action": "delay",
+        "delay_days": 7.0,
+    }
+    res_log = engine.simulate(maitri_state, scenario_logistics)
+    log_eng = res_log["engineeringDetails"]["logistics"]
+    check(log_eng["delay_days"] == 7.0, "Logistics delay duration set to 7.0 days")
+    check(log_eng["current_endurance_days"] > 0, "Endurance days calculated")
+
+    # --------------------------------------------------------------------------
+    # TEST 8: Cascading Failure Chain & Threshold Breaches
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 8: Cascading Failure Chain & Threshold Breaches ---")
+    res_cascade = engine.simulate(maitri_state, scenario_multi)
+    cascade = res_cascade["engineeringDetails"]["cascading_effects"]
+    breaches = res_cascade["engineeringDetails"]["threshold_breaches"]
+    check(len(cascade) >= 3, f"Cascading failure chain contains {len(cascade)} domino nodes")
+    check(len(breaches) >= 1, f"Detected {len(breaches)} safety threshold breaches")
+    check(any(b["metric"] == "POWER_DEFICIT" for b in breaches), "Power deficit threshold breach detected")
+
+    # --------------------------------------------------------------------------
+    # TEST 9: Station Health Score & Mitigation Strategy Comparison
+    # --------------------------------------------------------------------------
+    print("\n--- TEST 9: Station Health Score & Mitigation Strategies ---")
+    health = res_cascade["engineeringDetails"]["health"]
+    mitigation = res_cascade["engineeringDetails"]["mitigation"]
+    check(health["projected"]["score"] < health["baseline"]["score"], f"Health drops under failure ({health['baseline']['score']} -> {health['projected']['score']})")
+    check(len(mitigation["strategies"]) == 4, f"Mitigation optimizer generated {len(mitigation['strategies'])} alternative strategies")
+    check(mitigation["recommended_strategy"]["is_recommended"] is True, "Recommended mitigation strategy flagged")
 
     print("\n" + "=" * 70)
     print(f" SIMULATION ENGINE TEST RESULTS: {passed} / {total} PASSED")

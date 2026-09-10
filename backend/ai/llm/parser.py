@@ -19,17 +19,19 @@ STRICT INSTRUCTIONS:
 ALLOWED VALUES:
 - station: "Maitri" or "Bharati" (If not explicitly stated in query, default to the active station provided in context).
 - component: "generator" | "hvac" | "battery" | "fuel" | "water" | "weather"
-- component_id: "G1" | "G2" | "G3" | "G4" (for generators) or generic ID
+- affected_generators: list of generator IDs e.g. ["G1"], ["G1", "G2"], ["G1", "G2", "G3"] (for generators)
+- component_id: "G1", "G2", "G3", "G4", "G1 + G2" (for generators) or generic ID
 - action: "shutdown" | "start" | "fail" | "setback" | "throttle" | "boost" | "cold_drop" | "blizzard_prep" | "optimize"
-- duration_hours: float (e.g. 7.0, 24.0, 0.5)
+- duration_hours: float (e.g. 1.0, 7.0, 24.0, 0.5; default to 1.0 if not specified by user)
 
 JSON OUTPUT STRUCTURE:
 {
   "station": "Maitri",
   "component": "generator",
-  "component_id": "G1",
+  "component_id": "G1 + G2",
+  "affected_generators": ["G1", "G2"],
   "action": "shutdown",
-  "duration_hours": 7.0,
+  "duration_hours": 1.0,
   "parameters": {}
 }
 """
@@ -54,7 +56,7 @@ class WhatIfQueryParser:
 
         Parameters:
         -----------
-        query: User input string (e.g. "What if Generator 1 at Maitri is turned off for 7 hours?")
+        query: User input string (e.g. "What if Generator 1 and 2 at Maitri are turned off for 7 hours?")
         default_station: Active station context ("Maitri" or "Bharati")
 
         Returns:
@@ -90,12 +92,20 @@ class WhatIfQueryParser:
                 )
 
             # 2. Map to ParsedScenario
+            aff_gens = raw_dict.get("affected_generators", [])
+            if not isinstance(aff_gens, list):
+                aff_gens = [str(aff_gens)]
+
             scenario = ParsedScenario(
                 station=raw_dict.get("station") or default_station,
                 component=raw_dict.get("component") or "generator",
-                component_id=raw_dict.get("component_id") or "G1",
+                component_id=raw_dict.get("component_id") or (" + ".join(aff_gens) if aff_gens else "G1"),
+                affected_generators=aff_gens,
                 action=raw_dict.get("action") or "shutdown",
-                duration_hours=float(raw_dict.get("duration_hours", 7.0)),
+                duration_hours=float(raw_dict.get("duration_hours", 1.0)),
+                duration_is_default=bool(raw_dict.get("duration_is_default", False)),
+                modifications=raw_dict.get("modifications", {}),
+                assumptions=raw_dict.get("assumptions", []),
                 parameters=raw_dict.get("parameters", {}),
                 confidence=float(raw_dict.get("confidence", 1.0)),
                 raw_query=query,

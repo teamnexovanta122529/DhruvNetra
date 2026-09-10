@@ -1,12 +1,33 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 
 /* =========================================================
-   MAITRI STATION 3D MODEL
+   MAITRI STATION 3D MODEL WITH INTERACTIVE MODULES
    (Schirmacher Oasis, East Antarctica)
 ========================================================= */
-function MaitriStation() {
+function MaitriStation({ selectedComponent, onSelectComponent }) {
+  const [hovered, setHovered] = useState(null);
+
+  const handleClick = (e, id) => {
+    e.stopPropagation();
+    onSelectComponent?.(id);
+  };
+
+  const handlePointerOver = (e, id) => {
+    e.stopPropagation();
+    setHovered(id);
+    document.body.style.cursor = "pointer";
+  };
+
+  const handlePointerOut = () => {
+    setHovered(null);
+    document.body.style.cursor = "auto";
+  };
+
+  const isSelected = (id) => selectedComponent === id;
+  const isHovered = (id) => hovered === id;
+
   return (
     <group position={[0, 0, 0]}>
       {/* Main Base Platform */}
@@ -15,84 +36,157 @@ function MaitriStation() {
         <meshStandardMaterial color="#1a2f3a" roughness={0.7} />
       </mesh>
 
-      {/* Main Habitat Module */}
-      <mesh position={[0, 0.45, 0]}>
+      {/* Main Habitat Module (Interactive) */}
+      <mesh
+        position={[0, 0.45, 0]}
+        onClick={(e) => handleClick(e, "habitat")}
+        onPointerOver={(e) => handlePointerOver(e, "habitat")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[3.6, 0.9, 2.0]} />
         <meshStandardMaterial
-          color="#d2edf5"
+          color={isSelected("habitat") ? "#38bdf8" : isHovered("habitat") ? "#e0f2fe" : "#d2edf5"}
+          emissive={isSelected("habitat") ? "#0284c7" : isHovered("habitat") ? "#0369a1" : "#000000"}
+          emissiveIntensity={isSelected("habitat") ? 0.6 : isHovered("habitat") ? 0.3 : 0}
           roughness={0.4}
           metalness={0.2}
         />
       </mesh>
 
       {/* Living & Control Deck (Upper Level) */}
-      <mesh position={[-0.4, 1.05, 0]}>
+      <mesh
+        position={[-0.4, 1.05, 0]}
+        onClick={(e) => handleClick(e, "habitat")}
+        onPointerOver={(e) => handlePointerOver(e, "habitat")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[2.2, 0.5, 1.4]} />
         <meshStandardMaterial
-          color="#a8d8e6"
+          color={isSelected("habitat") ? "#7dd3fc" : isHovered("habitat") ? "#bae6fd" : "#a8d8e6"}
+          emissive={isSelected("habitat") ? "#0284c7" : "#000000"}
+          emissiveIntensity={isSelected("habitat") ? 0.5 : 0}
           roughness={0.35}
           metalness={0.25}
         />
       </mesh>
 
-      {/* Laboratory & Workshop Module */}
-      <mesh position={[1.4, 0.45, 0.3]}>
+      {/* Laboratory & Workshop Module (Interactive) */}
+      <mesh
+        position={[1.4, 0.45, 0.3]}
+        onClick={(e) => handleClick(e, "lab")}
+        onPointerOver={(e) => handlePointerOver(e, "lab")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[1.0, 0.8, 1.2]} />
-        <meshStandardMaterial color="#bfe5ee" roughness={0.4} />
+        <meshStandardMaterial
+          color={isSelected("lab") ? "#38bdf8" : isHovered("lab") ? "#e0f2fe" : "#bfe5ee"}
+          emissive={isSelected("lab") ? "#0ea5e9" : isHovered("lab") ? "#0284c7" : "#000000"}
+          emissiveIntensity={isSelected("lab") ? 0.7 : 0}
+          roughness={0.4}
+        />
       </mesh>
 
-      {/* Observatory Dome */}
-      <mesh position={[-0.9, 1.45, 0]}>
+      {/* Observatory Dome (Interactive) */}
+      <mesh
+        position={[-0.9, 1.45, 0]}
+        onClick={(e) => handleClick(e, "lab")}
+        onPointerOver={(e) => handlePointerOver(e, "lab")}
+        onPointerOut={handlePointerOut}
+      >
         <sphereGeometry args={[0.32, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial
           color="#7be5f3"
-          emissive="#123d47"
+          emissive={isSelected("lab") ? "#38bdf8" : "#123d47"}
+          emissiveIntensity={isSelected("lab") ? 1.2 : 0.5}
           roughness={0.2}
           metalness={0.5}
         />
       </mesh>
 
-      {/* SATCOM & Met Mast */}
-      <mesh position={[0.7, 1.5, -0.4]}>
+      {/* SATCOM & Met Mast (Interactive) */}
+      <mesh
+        position={[0.7, 1.5, -0.4]}
+        onClick={(e) => handleClick(e, "satcom")}
+        onPointerOver={(e) => handlePointerOver(e, "satcom")}
+        onPointerOut={handlePointerOut}
+      >
         <cylinderGeometry args={[0.04, 0.05, 1.8, 8]} />
-        <meshStandardMaterial color="#88b5bf" metalness={0.7} />
+        <meshStandardMaterial
+          color={isSelected("satcom") ? "#00f0ff" : "#88b5bf"}
+          emissive={isSelected("satcom") ? "#00f0ff" : "#000000"}
+          emissiveIntensity={isSelected("satcom") ? 0.8 : 0}
+          metalness={0.7}
+        />
       </mesh>
 
-      {/* Parabolic Antenna Dish */}
-      <mesh position={[0.7, 2.4, -0.4]} rotation={[0.4, 0.3, 0]}>
+      {/* Parabolic Antenna Dish (Interactive) */}
+      <mesh
+        position={[0.7, 2.4, -0.4]}
+        rotation={[0.4, 0.3, 0]}
+        onClick={(e) => handleClick(e, "satcom")}
+        onPointerOver={(e) => handlePointerOver(e, "satcom")}
+        onPointerOut={handlePointerOut}
+      >
         <sphereGeometry args={[0.22, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial
-          color="#dffaff"
-          emissive="#245d68"
+          color={isSelected("satcom") ? "#dffaff" : "#dffaff"}
+          emissive={isSelected("satcom") ? "#00f0ff" : "#245d68"}
+          emissiveIntensity={isSelected("satcom") ? 1.5 : 0.6}
           roughness={0.3}
           metalness={0.6}
         />
       </mesh>
 
-      {/* Solar Array Left */}
-      <mesh position={[-2.3, 0.3, 0.6]} rotation={[0.4, 0, 0]}>
+      {/* Solar Array Left (Interactive) */}
+      <mesh
+        position={[-2.3, 0.3, 0.6]}
+        rotation={[0.4, 0, 0]}
+        onClick={(e) => handleClick(e, "solar")}
+        onPointerOver={(e) => handlePointerOver(e, "solar")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[0.9, 0.04, 1.4]} />
         <meshStandardMaterial
-          color="#15364d"
+          color={isSelected("solar") ? "#0284c7" : "#15364d"}
+          emissive={isSelected("solar") ? "#38bdf8" : "#000000"}
+          emissiveIntensity={isSelected("solar") ? 0.6 : 0}
           roughness={0.2}
           metalness={0.8}
         />
       </mesh>
 
-      {/* Solar Array Right */}
-      <mesh position={[-2.3, 0.3, -0.6]} rotation={[-0.4, 0, 0]}>
+      {/* Solar Array Right (Interactive) */}
+      <mesh
+        position={[-2.3, 0.3, -0.6]}
+        rotation={[-0.4, 0, 0]}
+        onClick={(e) => handleClick(e, "solar")}
+        onPointerOver={(e) => handlePointerOver(e, "solar")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[0.9, 0.04, 1.4]} />
         <meshStandardMaterial
-          color="#15364d"
+          color={isSelected("solar") ? "#0284c7" : "#15364d"}
+          emissive={isSelected("solar") ? "#38bdf8" : "#000000"}
+          emissiveIntensity={isSelected("solar") ? 0.6 : 0}
           roughness={0.2}
           metalness={0.8}
         />
       </mesh>
 
-      {/* Fuel & Generator Shelter */}
-      <mesh position={[1.5, 0.3, -0.8]}>
+      {/* Fuel & Generator Shelter / Powerhouse (Interactive) */}
+      <mesh
+        position={[1.5, 0.3, -0.8]}
+        onClick={(e) => handleClick(e, "powerhouse")}
+        onPointerOver={(e) => handlePointerOver(e, "powerhouse")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[1.1, 0.6, 0.9]} />
-        <meshStandardMaterial color="#4f7a8c" roughness={0.6} />
+        <meshStandardMaterial
+          color={isSelected("powerhouse") ? "#38bdf8" : isHovered("powerhouse") ? "#7dd3fc" : "#4f7a8c"}
+          emissive={isSelected("powerhouse") ? "#0284c7" : "#000000"}
+          emissiveIntensity={isSelected("powerhouse") ? 0.8 : 0}
+          roughness={0.6}
+        />
       </mesh>
 
       {/* Glowing Status Beacon */}
@@ -101,7 +195,7 @@ function MaitriStation() {
         <meshStandardMaterial
           color="#67e8f9"
           emissive="#67e8f9"
-          emissiveIntensity={2}
+          emissiveIntensity={2.5}
         />
       </mesh>
     </group>
@@ -109,14 +203,34 @@ function MaitriStation() {
 }
 
 /* =========================================================
-   BHARATI STATION 3D MODEL
-   (Larsen Ice Shelf / Larsemann Hills, East Antarctica)
-   Aerodynamic elevated modular architectural design
+   BHARATI STATION 3D MODEL WITH INTERACTIVE MODULES
+   (Larsemann Hills / Coastal Aerodynamic Design)
 ========================================================= */
-function BharatiStation() {
+function BharatiStation({ selectedComponent, onSelectComponent }) {
+  const [hovered, setHovered] = useState(null);
+
+  const handleClick = (e, id) => {
+    e.stopPropagation();
+    onSelectComponent?.(id);
+  };
+
+  const handlePointerOver = (e, id) => {
+    e.stopPropagation();
+    setHovered(id);
+    document.body.style.cursor = "pointer";
+  };
+
+  const handlePointerOut = () => {
+    setHovered(null);
+    document.body.style.cursor = "auto";
+  };
+
+  const isSelected = (id) => selectedComponent === id;
+  const isHovered = (id) => hovered === id;
+
   return (
     <group position={[0, 0, 0]}>
-      {/* Hydraulic Support Stilts (Anti-Snowdrift Foundation) */}
+      {/* Hydraulic Support Stilts */}
       {[-1.8, -0.6, 0.6, 1.8].map((x) =>
         [-0.8, 0.8].map((z) => (
           <mesh key={`${x}-${z}`} position={[x, 0.25, z]}>
@@ -126,27 +240,41 @@ function BharatiStation() {
         ))
       )}
 
-      {/* Elevated Aerodynamic Central Complex */}
-      <mesh position={[0, 0.9, 0]}>
+      {/* Elevated Aerodynamic Central Complex (Habitat & Control) */}
+      <mesh
+        position={[0, 0.9, 0]}
+        onClick={(e) => handleClick(e, "habitat")}
+        onPointerOver={(e) => handlePointerOver(e, "habitat")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[4.6, 0.85, 2.2]} />
         <meshStandardMaterial
-          color="#e6f4f8"
+          color={isSelected("habitat") ? "#7dd3fc" : isHovered("habitat") ? "#ffffff" : "#e6f4f8"}
+          emissive={isSelected("habitat") ? "#0284c7" : isHovered("habitat") ? "#0369a1" : "#000000"}
+          emissiveIntensity={isSelected("habitat") ? 0.6 : isHovered("habitat") ? 0.3 : 0}
           roughness={0.25}
           metalness={0.35}
         />
       </mesh>
 
-      {/* Aerodynamic Chamfered Upper Module */}
-      <mesh position={[0, 1.5, 0]}>
+      {/* Aerodynamic Chamfered Upper Module (Labs & Operations) */}
+      <mesh
+        position={[0, 1.5, 0]}
+        onClick={(e) => handleClick(e, "lab")}
+        onPointerOver={(e) => handlePointerOver(e, "lab")}
+        onPointerOut={handlePointerOut}
+      >
         <boxGeometry args={[3.8, 0.55, 1.6]} />
         <meshStandardMaterial
-          color="#c8e8f2"
+          color={isSelected("lab") ? "#38bdf8" : isHovered("lab") ? "#e0f2fe" : "#c8e8f2"}
+          emissive={isSelected("lab") ? "#0284c7" : "#000000"}
+          emissiveIntensity={isSelected("lab") ? 0.6 : 0}
           roughness={0.3}
           metalness={0.4}
         />
       </mesh>
 
-      {/* Bharati Aerospace Thermal Accent Band */}
+      {/* Thermal Accent Band */}
       <mesh position={[0, 1.15, 0]}>
         <boxGeometry args={[4.64, 0.12, 2.24]} />
         <meshStandardMaterial
@@ -157,23 +285,35 @@ function BharatiStation() {
         />
       </mesh>
 
-      {/* Primary Satellite Radome Dome */}
-      <mesh position={[-1.2, 1.95, 0]}>
+      {/* Primary Satellite Radome Dome (Interactive) */}
+      <mesh
+        position={[-1.2, 1.95, 0]}
+        onClick={(e) => handleClick(e, "satcom")}
+        onPointerOver={(e) => handlePointerOver(e, "satcom")}
+        onPointerOut={handlePointerOut}
+      >
         <sphereGeometry args={[0.42, 24, 24]} />
         <meshStandardMaterial
           color="#dffffa"
-          emissive="#155561"
+          emissive={isSelected("satcom") ? "#00f0ff" : "#155561"}
+          emissiveIntensity={isSelected("satcom") ? 1.5 : 0.7}
           roughness={0.15}
           metalness={0.7}
         />
       </mesh>
 
-      {/* Secondary Met Radome */}
-      <mesh position={[1.4, 1.9, 0.3]}>
+      {/* Secondary Met Radome (Interactive) */}
+      <mesh
+        position={[1.4, 1.9, 0.3]}
+        onClick={(e) => handleClick(e, "satcom")}
+        onPointerOver={(e) => handlePointerOver(e, "satcom")}
+        onPointerOut={handlePointerOut}
+      >
         <sphereGeometry args={[0.26, 16, 16]} />
         <meshStandardMaterial
           color="#a5ebf5"
-          emissive="#124854"
+          emissive={isSelected("satcom") ? "#00f0ff" : "#124854"}
+          emissiveIntensity={isSelected("satcom") ? 1.3 : 0.6}
           roughness={0.2}
           metalness={0.6}
         />
@@ -191,14 +331,24 @@ function BharatiStation() {
         <meshStandardMaterial
           color="#78e5ee"
           emissive="#78e5ee"
-          emissiveIntensity={2}
+          emissiveIntensity={2.5}
         />
       </mesh>
 
-      {/* Helipad Observation Platform */}
-      <mesh position={[2.7, 0.65, 0]}>
+      {/* Helipad Observation Platform (Interactive) */}
+      <mesh
+        position={[2.7, 0.65, 0]}
+        onClick={(e) => handleClick(e, "helipad")}
+        onPointerOver={(e) => handlePointerOver(e, "helipad")}
+        onPointerOut={handlePointerOut}
+      >
         <cylinderGeometry args={[0.8, 0.8, 0.1, 16]} />
-        <meshStandardMaterial color="#1a3544" roughness={0.6} />
+        <meshStandardMaterial
+          color={isSelected("helipad") ? "#0284c7" : "#1a3544"}
+          emissive={isSelected("helipad") ? "#38bdf8" : "#000000"}
+          emissiveIntensity={isSelected("helipad") ? 0.6 : 0}
+          roughness={0.6}
+        />
       </mesh>
 
       <mesh position={[2.7, 0.72, 0]}>
@@ -212,19 +362,16 @@ function BharatiStation() {
 /* =========================================================
    CAMERA CONTROLLER WITH RESET SUPPORT
 ========================================================= */
-function CameraController({ resetTrigger }) {
+function CameraController({ resetTrigger, station }) {
   const { camera } = useThree();
   const controlsRef = useRef(null);
 
-  const defaultPos = [6, 4, 7];
-  const defaultTarget = [0, 0.5, 0];
+  const defaultPos = [4.8, 3.0, 5.2];
+  const defaultTarget = [0, 0.85, 0];
 
   useEffect(() => {
-    if (resetTrigger > 0 && controlsRef.current) {
-      // 1. Reset OrbitControls internal state
+    if (controlsRef.current) {
       controlsRef.current.reset();
-
-      // 2. Explicitly reposition camera & look target
       camera.position.set(...defaultPos);
       camera.zoom = 1;
       camera.updateProjectionMatrix();
@@ -232,7 +379,7 @@ function CameraController({ resetTrigger }) {
       controlsRef.current.target.set(...defaultTarget);
       controlsRef.current.update();
     }
-  }, [resetTrigger, camera]);
+  }, [resetTrigger, station, camera]);
 
   return (
     <OrbitControls
@@ -240,7 +387,7 @@ function CameraController({ resetTrigger }) {
       enableDamping
       dampingFactor={0.06}
       minDistance={3}
-      maxDistance={16}
+      maxDistance={14}
       target={defaultTarget}
       makeDefault
     />
@@ -248,16 +395,21 @@ function CameraController({ resetTrigger }) {
 }
 
 /* =========================================================
-   MAIN 3D STATION SCENE
+   MAIN 3D STATION SCENE WITH INTERACTIVE SELECTION
 ========================================================= */
-export default function StationScene({ station = "MAITRI", resetTrigger = 0 }) {
-  const isBharati = station === "BHARATI";
+export default function StationScene({
+  station = "MAITRI",
+  resetTrigger = 0,
+  selectedComponent = null,
+  onSelectComponent = null,
+}) {
+  const isBharati = station.toUpperCase() === "BHARATI";
 
   return (
     <Canvas
       camera={{
-        position: [6, 4, 7],
-        fov: 42,
+        position: [4.8, 3.0, 5.2],
+        fov: 36,
       }}
       dpr={[1, 1.75]}
       gl={{
@@ -282,17 +434,27 @@ export default function StationScene({ station = "MAITRI", resetTrigger = 0 }) {
 
       {/* Grid Floor with Polar Glow */}
       <gridHelper
-        args={[22, 22, "#2e5c6e", "#0e2430"]}
+        args={[14, 14, "#2e5c6e", "#0e2430"]}
         position={[0, -0.01, 0]}
       />
 
-      {/* 3D Station Model */}
+      {/* 3D Station Model with interactive selection */}
       <Float speed={0.4} rotationIntensity={0.02} floatIntensity={0.04}>
-        {isBharati ? <BharatiStation /> : <MaitriStation />}
+        {isBharati ? (
+          <BharatiStation
+            selectedComponent={selectedComponent}
+            onSelectComponent={onSelectComponent}
+          />
+        ) : (
+          <MaitriStation
+            selectedComponent={selectedComponent}
+            onSelectComponent={onSelectComponent}
+          />
+        )}
       </Float>
 
       {/* Interactive Orbit Controls with Reset Handler */}
-      <CameraController resetTrigger={resetTrigger} />
+      <CameraController resetTrigger={resetTrigger} station={station} />
     </Canvas>
   );
 }

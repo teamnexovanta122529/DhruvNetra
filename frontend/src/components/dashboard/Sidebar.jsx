@@ -2,46 +2,56 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useStation } from "../../context/StationContext";
 import { useAuth } from "../../context/AuthContext";
 import { ADMIN_ONLY_ROUTES } from "../../data/authData";
-
-const rawNavigationSections = [
-  {
-    title: "MAIN",
-    items: [
-      { path: "/dashboard/overview", label: "Overview", icon: "⌘", badge: null },
-      { path: "/dashboard/digital-twin", label: "3D Digital Twin", icon: "◇", badge: "3D" },
-    ],
-  },
-  {
-    title: "MONITORING",
-    items: [
-      { path: "/dashboard/power", label: "Power Systems", icon: "ϟ", badge: null },
-      { path: "/dashboard/fuel", label: "Fuel Systems", icon: "◉", badge: null },
-      { path: "/dashboard/hvac", label: "HVAC Systems", icon: "✣", badge: null },
-      { path: "/dashboard/water", label: "Water Systems", icon: "◌", badge: null },
-      { path: "/dashboard/environment", label: "Environment", icon: "△", badge: null },
-    ],
-  },
-  {
-    title: "OPERATIONS",
-    items: [
-      { path: "/dashboard/logistics", label: "Logistics", icon: "▣", badge: null },
-      { path: "/dashboard/alerts", label: "Alerts", icon: "!", badge: "3", alert: true },
-      { path: "/dashboard/what-if", label: "What-If Analysis", icon: "⌁", badge: null, adminOnly: true },
-    ],
-  },
-  {
-    title: "ADMINISTRATION",
-    items: [
-      { path: "/dashboard/government", label: "Government Command", icon: "⛨", badge: null, adminOnly: true },
-      { path: "/dashboard/reports", label: "Reports", icon: "▤", badge: null, adminOnly: true },
-    ],
-  },
-];
+import { getAlertsData } from "../../services/telemetryService";
 
 export default function Sidebar({ collapsed, onToggle, onItemClick }) {
   const navigate = useNavigate();
   const { station, stationInfo } = useStation();
   const { user, role, isAdmin } = useAuth();
+
+  const alerts = getAlertsData(station);
+  const unresolvedAlertCount = alerts.filter((a) => !a.resolved).length;
+
+  const rawNavigationSections = [
+    {
+      title: "MAIN",
+      items: [
+        { path: "/dashboard/overview", label: "Overview", icon: "⌘", badge: null },
+        { path: "/dashboard/digital-twin", label: "3D Digital Twin", icon: "◇", badge: "3D" },
+      ],
+    },
+    {
+      title: "MONITORING",
+      items: [
+        { path: "/dashboard/power", label: "Power Systems", icon: "ϟ", badge: null },
+        { path: "/dashboard/fuel", label: "Fuel Systems", icon: "◉", badge: null },
+        { path: "/dashboard/hvac", label: "HVAC Systems", icon: "✣", badge: null },
+        { path: "/dashboard/water", label: "Water Systems", icon: "◌", badge: null },
+        { path: "/dashboard/environment", label: "Environment", icon: "△", badge: null },
+      ],
+    },
+    {
+      title: "OPERATIONS",
+      items: [
+        { path: "/dashboard/logistics", label: "Logistics", icon: "▣", badge: null },
+        {
+          path: "/dashboard/alerts",
+          label: "Alerts",
+          icon: "!",
+          badge: unresolvedAlertCount > 0 ? String(unresolvedAlertCount) : null,
+          alert: unresolvedAlertCount > 0,
+        },
+        { path: "/dashboard/what-if", label: "What-If Analysis", icon: "⌁", badge: null, adminOnly: true },
+      ],
+    },
+    {
+      title: "ADMINISTRATION",
+      items: [
+        { path: "/dashboard/government", label: "Government Command", icon: "⛨", badge: null, adminOnly: true },
+        { path: "/dashboard/reports", label: "Reports", icon: "▤", badge: null, adminOnly: true },
+      ],
+    },
+  ];
 
   const handleNavClick = () => {
     if (onItemClick) {
@@ -75,12 +85,10 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
 
   return (
     <aside className={`dashboard-sidebar ${collapsed ? "is-collapsed" : ""}`}>
-
       {/* =========================================
           SIDEBAR HEADER & BRANDING
       ========================================= */}
       <div className="sidebar-header">
-
         <div className="sidebar-header-left">
           <div className="sidebar-brand-mark">
             <span>◈</span>
@@ -107,18 +115,14 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
         >
           <span>{collapsed ? "»" : "«"}</span>
         </button>
-
       </div>
-
 
       {/* =========================================
           NAVIGATION SECTIONS (FILTERED BY ROLE)
       ========================================= */}
       <div className="sidebar-navigation">
-
         {filteredSections.map((section) => (
           <div key={section.title} className="sidebar-section">
-
             {!collapsed && (
               <div className="sidebar-section-header">
                 <span>{section.title}</span>
@@ -152,18 +156,14 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
                 </NavLink>
               ))}
             </nav>
-
           </div>
         ))}
-
       </div>
-
 
       {/* =========================================
           SIDEBAR FOOTER & CONTROLS
       ========================================= */}
       <div className="sidebar-footer">
-
         {/* ACTIVE STATION CARD */}
         {!collapsed ? (
           <div className="sidebar-station-card">
@@ -243,9 +243,7 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
             </div>
           </div>
         )}
-
       </div>
-
     </aside>
   );
 }

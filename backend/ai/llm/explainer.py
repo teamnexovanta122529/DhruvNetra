@@ -10,18 +10,17 @@ from .schemas import ParsedScenario
 
 
 EXPLAINER_SYSTEM_PROMPT = """
-You are the DHRUVNETRA AI Operational Explainer for Indian Antarctic Stations (Maitri & Bharati).
-Your role is to generate an executive operational summary explaining the simulation results to station engineers.
+You are the DHRUVNETRA AI Operational Intelligence Explainer for Indian Antarctic Stations (Maitri & Bharati).
+Your role is to explain simulation outcomes and operational guidance directly to station commanders.
 
 CRITICAL CONSTRAINTS:
-1. USE ONLY the exact numerical figures provided in the context (power deficit, fuel saved, battery SOC, temperatures, generator loads).
-2. DO NOT invent, hallucinate, or recalculate numerical values.
-3. Reference specific generator units, N-1 redundancy status, and risk classifications as given.
-4. Keep the tone authoritative, concise, and focused on operational safety in extreme Antarctic conditions.
+1. USE ONLY the exact numerical figures provided in the context (power deficit, fuel saved, generator loads, temperatures).
+2. DO NOT invent or recalculate numbers.
+3. Keep the tone authoritative, calm, technical, and decision-oriented.
 
 Provide your response in JSON with two keys:
-- "explanation": Concise 2-3 sentence narrative describing the physical station impacts.
-- "recommendation": 1-2 sentence actionable directive for the station commander.
+- "explanation": Formatted operational analysis containing sections: Operational impact, Fuel impact, System impact, Risk, Should you do it?, Recommended action.
+- "recommendation": Concise 1-sentence operational recommendation.
 """
 
 
@@ -44,6 +43,15 @@ class LLMExplainer:
         """
         Generates grounded operational explanation and recommendation.
         """
+        # If engine already generated high-fidelity aiResponse, use it directly as ground truth
+        ai_resp = sim_result.get("aiResponse")
+        if ai_resp:
+            rec_text = risk_result.get("recommendation", risk_result.get("recommended_action", "MONITOR_CLOSELY"))
+            return {
+                "explanation": ai_resp,
+                "recommendation": rec_text,
+            }
+
         impact = sim_result.get("impact", {})
         eng = sim_result.get("engineeringDetails", {})
         risk_level = risk_result.get("overall_risk", impact.get("riskLevel", "LOW"))
@@ -103,45 +111,65 @@ class LLMExplainer:
         risk_result: Dict[str, Any],
     ) -> Dict[str, str]:
         """
-        Deterministic, rule-grounded narrative generator that inserts exact numbers.
+        Deterministic, rule-grounded narrative generator matching DHRUVNETRA 6-section template.
         """
-        station = scenario.station
-        comp_id = scenario.component_id or "Component"
+        station = scenario.station.upper()
+        if scenario.affected_generators:
+            comp_id = " + ".join(scenario.affected_generators)
+        else:
+            comp_id = scenario.component_id or "Component"
+
         duration = scenario.duration_hours
         deficit = eng.get("power_deficit_kw", 0.0)
         fuel_saved = impact.get("fuelSaved", "0.0 L")
         risk_level = risk_result.get("overall_risk", impact.get("riskLevel", "LOW"))
+        active_gens = eng.get("active_generators", [])
+        active_str = ", ".join(active_gens) if active_gens else "none"
+        demand_kw = eng.get("baseline_demand_kw", 190.0)
+        avail_kw = eng.get("projected_available_cap_kw", 98.0)
+        lost_kw = max(0.0, eng.get("baseline_available_cap_kw", 223.0) - avail_kw)
+
+        risk_emoji = "🟢" if risk_level == "LOW" else ("🟡" if risk_level == "MEDIUM" else ("🔴" if risk_level == "HIGH" else "🚨"))
 
         if deficit > 0.0:
-            explanation = (
-                f"Simulating a {duration:.1f}-hour {scenario.action} of {comp_id} at {station} causes a critical "
-                f"power deficit of {deficit:.1f} kW. Remaining generation units cannot satisfy the full station electrical load. "
-                f"Non-essential circuits must undergo emergency load shedding."
-            )
-            recommendation = (
-                f"CRITICAL ACTION REQUIRED: Initiate emergency diesel restart sequence immediately. "
-                f"Engage battery BESS backup buffer to protect life-support HVAC circuits."
-            )
-        elif scenario.component == "generator" and scenario.action in ["shutdown", "fail"]:
-            explanation = (
-                f"Simulating a {duration:.1f}-hour {scenario.action} of {comp_id} at {station}. "
-                f"Station electrical load shifts to backup active units with {impact.get('projectedLoad', 'nominal load')}. "
-                f"Station microgrid remains stable with 0.0 kW deficit and projected fuel delta of {fuel_saved}. "
-                f"Redundancy is reduced to N-0 during this operational window."
-            )
-            if risk_level in ["HIGH", "CRITICAL"]:
-                recommendation = "CAUTION: Prime standby generator on auto-crank before isolating primary unit."
-            else:
-                recommendation = "PROCEED WITH CAUTION: Maintain constant telemetry monitoring on active generator thermal load."
+            should_do = "❌ NOT RECOMMENDED"
+            should_why = f"Current demand ({demand_kw:.0f} kW) exceeds remaining generation ({avail_kw:.0f} kW), creating an estimated {deficit:.0f} kW deficit."
+            rec_action = f"Start backup generation before shutting down {comp_id} and maintain sufficient reserve for critical systems."
+        elif len(active_gens) == 1:
+            should_do = "⚠️ CAUTION ADVISED"
+            should_why = f"Remaining generation can support demand, but redundancy is reduced to single-generator operation."
+            rec_action = f"Prime standby units on auto-crank and monitor active unit load closely."
         else:
-            explanation = (
-                f"Simulated {scenario.action} on {comp_id} at {station} over {duration:.1f} hours. "
-                f"Power deficit is {deficit:.1f} kW, fuel consumption is {impact.get('projectedConsumption', '26.2 L/h')}, "
-                f"and habitat indoor temperature remains stable."
-            )
-            recommendation = risk_result.get("recommended_action", "Continue nominal station monitoring.")
+            should_do = "✅ RECOMMENDED"
+            should_why = f"Station microgrid retains sufficient redundancy and generation headroom."
+            rec_action = f"Proceed with planned operation while logging hourly telemetry."
+
+        explanation = (
+            f"**{station} — {duration:.0f}-HOUR {comp_id} {scenario.action.upper()} ANALYSIS**\n\n"
+            f"I analyzed the scenario against the current station telemetry.\n\n"
+            f"**Operational impact**\n"
+            f"• {comp_id} generation lost: {lost_kw:.0f} kW\n"
+            f"• Remaining generation: {avail_kw:.0f} kW ({active_str})\n"
+            f"• Current station demand: {demand_kw:.0f} kW\n"
+            f"• Projected power deficit: {deficit:.0f} kW\n\n"
+            f"**Fuel impact**\n"
+            f"• Direct fuel consumption avoided: approximately {fuel_saved}\n"
+            f"• Net fuel benefit: {fuel_saved}\n\n"
+            f"**System impact**\n"
+            f"• Power redundancy: {'Reduced (N-0)' if len(active_gens) <= 1 else 'Nominal (N-1)'}\n"
+            f"• HVAC: {'At risk if load shedding is required' if deficit > 0 else 'Stable'}\n"
+            f"• Critical systems: Must remain prioritized\n"
+            f"• Non-critical loads: {'May need to be reduced' if deficit > 0 else 'Nominal'}\n\n"
+            f"**Risk**\n"
+            f"{risk_emoji} {risk_level}\n\n"
+            f"**Should you do it?**\n"
+            f"{should_do} under the current operating conditions.\n"
+            f"{should_why}\n\n"
+            f"**Recommended action**\n"
+            f"{rec_action}"
+        )
 
         return {
             "explanation": explanation,
-            "recommendation": recommendation,
+            "recommendation": rec_action,
         }
