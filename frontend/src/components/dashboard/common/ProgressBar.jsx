@@ -16,25 +16,25 @@ export default function ProgressBar({
   const getColorStyle = () => {
     switch (color) {
       case "green":
-        return "linear-gradient(90deg, #10b981, #34d399)";
+        return "linear-gradient(90deg, #16a34a, #22c55e)";
       case "amber":
-        return "linear-gradient(90deg, #f59e0b, #fbbf24)";
+        return "linear-gradient(90deg, #d97706, #f59e0b)";
       case "red":
-        return "linear-gradient(90deg, #ef4444, #f87171)";
+        return "linear-gradient(90deg, #dc2626, #ef4444)";
       case "gradient":
-        if (percentage < 30) return "linear-gradient(90deg, #ef4444, #f97316)";
-        if (percentage < 70) return "linear-gradient(90deg, #f59e0b, #10b981)";
-        return "linear-gradient(90deg, #06b6d4, #10b981)";
+        if (percentage < 30) return "linear-gradient(90deg, #dc2626, #ea580c)";
+        if (percentage < 70) return "linear-gradient(90deg, #d97706, #16a34a)";
+        return "linear-gradient(90deg, #0284c7, #16a34a)";
       case "cyan":
       default:
-        return "linear-gradient(90deg, #0284c7, #00f0ff)";
+        return "linear-gradient(90deg, #0284c7, #38bdf8)";
     }
   };
 
   return (
     <div className={`polar-progress-wrap ${className}`} style={{ width: "100%", ...style }}>
       {(label || valueText || showPercentage) && (
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "0.35rem", color: "#94a3b8", fontFamily: "monospace" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "0.35rem", color: "var(--text-secondary, #64748b)", fontFamily: "var(--font-mono, monospace)" }}>
           {label && <span>{label}</span>}
           <span>{valueText || (showPercentage ? `${percentage.toFixed(1)}%` : `${value}/${max}`)}</span>
         </div>
@@ -44,7 +44,7 @@ export default function ProgressBar({
         style={{
           width: "100%",
           height: `${height}px`,
-          background: "rgba(255, 255, 255, 0.08)",
+          background: "#e2e8f0",
           borderRadius: "9999px",
           overflow: "hidden",
           position: "relative",
@@ -57,7 +57,6 @@ export default function ProgressBar({
             background: getColorStyle(),
             borderRadius: "9999px",
             transition: "width 0.4s ease",
-            boxShadow: percentage > 0 ? "0 0 8px rgba(0, 240, 255, 0.3)" : "none",
           }}
         />
       </div>

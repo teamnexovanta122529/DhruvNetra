@@ -30,60 +30,50 @@ export default function AntarcticaBackground({ mouse }) {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Main Antarctica image */}
+      {/* Main Antarctica image with natural polar daylight grading */}
       <div
         ref={backgroundRef}
         className="absolute inset-[-3%] bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/images/antarctica.jpg')",
-          filter: "saturate(0.82) contrast(1.08) brightness(0.88)",
+          filter: "saturate(0.95) contrast(1.04) brightness(1.02)",
           willChange: "transform",
         }}
       />
 
-      {/* Cold cinematic color grade */}
+      {/* Crisp daylight polar wash */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(4,18,30,0.34) 0%, rgba(5,25,39,0.08) 45%, rgba(2,10,18,0.48) 100%)",
-          mixBlendMode: "multiply",
+            "linear-gradient(180deg, rgba(240,248,255,0.45) 0%, rgba(224,242,254,0.2) 40%, rgba(240,248,255,0.55) 100%)",
         }}
       />
 
-      {/* Blue atmospheric tint */}
+      {/* Subtle ice blue atmospheric tint */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(110deg, rgba(24,83,110,0.18), transparent 45%, rgba(0,160,190,0.08))",
+            "linear-gradient(115deg, rgba(186,230,253,0.3) 0%, transparent 50%, rgba(204,251,241,0.25) 100%)",
         }}
       />
 
-      {/* Cinematic vignette */}
+      {/* Soft center readability veil for deep navy hero typography */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at center, transparent 42%, rgba(1,8,15,0.58) 100%)",
+            "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.35) 45%, rgba(241,245,249,0.15) 80%)",
         }}
       />
 
-      {/* Subtle localized center contrast gradient for hero readability */}
+      {/* Soft bottom vignette for coordinates */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-x-0 bottom-0 h-[30%]"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, rgba(2,11,20,0.38) 0%, rgba(2,11,20,0.14) 44%, transparent 72%)",
-        }}
-      />
-
-      {/* Bottom cinematic fade */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-[35%]"
-        style={{
-          background:
-            "linear-gradient(to top, rgba(1,8,15,0.72), transparent)",
+            "linear-gradient(to top, rgba(241,245,249,0.65), transparent)",
         }}
       />
     </div>

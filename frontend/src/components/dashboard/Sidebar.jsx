@@ -91,7 +91,11 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
       <div className="sidebar-header">
         <div className="sidebar-header-left">
           <div className="sidebar-brand-mark">
-            <span>◈</span>
+            <img
+              src="/dhruvnetra_favicon.svg"
+              alt="DHRUVNETRA Logo"
+              style={{ width: "22px", height: "22px", objectFit: "contain", flexShrink: 0 }}
+            />
           </div>
 
           {!collapsed && (
@@ -191,18 +195,18 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
                 style={{
                   marginTop: "0.5rem",
                   paddingTop: "0.4rem",
-                  borderTop: "1px solid rgba(107, 226, 242, 0.12)",
+                  borderTop: "1px solid var(--border-subtle)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  fontSize: "0.65rem",
+                  fontSize: "0.7rem",
                   fontFamily: "monospace",
                 }}
               >
-                <span style={{ color: "#6be2f2" }}>USER: {user.username}</span>
+                <span style={{ color: "var(--accent-primary)", fontWeight: 600 }}>USER: {user.username}</span>
                 <span
                   style={{
-                    color: isAdmin ? "#ffb84d" : "#00f0ff",
+                    color: isAdmin ? "#b45309" : "#0284c7",
                     fontWeight: 700,
                   }}
                 >
@@ -236,7 +240,7 @@ export default function Sidebar({ collapsed, onToggle, onItemClick }) {
         {/* PROJECT METADATA */}
         {!collapsed && (
           <div className="sidebar-meta-block">
-            <div className="sidebar-meta-title">SIH 2026 · NEXOVANTA</div>
+            <div className="sidebar-meta-title"></div>
             <div className="sidebar-meta-status">
               <span>SATCOM ENCRYPTED</span>
               <strong>UTC LINK ACTIVE</strong>

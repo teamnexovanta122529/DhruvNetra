@@ -46,8 +46,6 @@ export default function LandingPage() {
 
         navigatingRef.current = true;
 
-        console.log("STATION SELECTED:", station);
-
         // Save selected station in auth & station contexts
         setSelectedStation(station);
         setStation(station);
@@ -173,8 +171,8 @@ export default function LandingPage() {
                 h-screen
                 w-full
                 overflow-hidden
-                bg-[#020b12]
-                text-white
+                bg-[#f0f4f8]
+                text-slate-900
                 ${loaded ? "page-loaded" : ""}
                 ${zooming ? "system-zooming" : ""}
             `}
@@ -227,7 +225,7 @@ export default function LandingPage() {
 
 
             {/* ==========================================
-                TOP VIGNETTE
+                TOP VIGNETTE (LIGHT POLAR TRANSITION)
             ========================================== */}
 
             <div
@@ -237,16 +235,16 @@ export default function LandingPage() {
                     inset-x-0
                     top-0
                     z-20
-                    h-40
+                    h-36
                     bg-gradient-to-b
-                    from-[#01070d]/60
+                    from-slate-900/15
                     to-transparent
                 "
             />
 
 
             {/* ==========================================
-                BOTTOM VIGNETTE
+                BOTTOM VIGNETTE (LIGHT POLAR TRANSITION)
             ========================================== */}
 
             <div
@@ -256,9 +254,9 @@ export default function LandingPage() {
                     inset-x-0
                     bottom-0
                     z-20
-                    h-56
+                    h-48
                     bg-gradient-to-t
-                    from-[#01070d]/80
+                    from-slate-900/20
                     to-transparent
                 "
             />

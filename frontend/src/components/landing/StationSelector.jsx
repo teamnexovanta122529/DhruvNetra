@@ -56,14 +56,11 @@ export default function StationSelector({
     const handleStationSelect = (stationKey) => {
         if (selecting || closing) return;
 
-        console.log("STATION CLICKED:", stationKey);
-
         setSelecting(true);
         setSelectedStation(stationKey);
 
         // Transition delay for subtle feedback
         setTimeout(() => {
-            console.log("NAVIGATING TO STATION:", stationKey);
             onSelectStation?.(stationKey);
         }, 450);
     };

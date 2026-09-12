@@ -80,26 +80,27 @@ export default function PowerSystems() {
                 onClick={() => setSelectedGenerator(gen.id)}
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, rgba(8, 30, 48, 0.95), rgba(4, 18, 30, 0.95))"
-                    : "rgba(10, 22, 34, 0.7)",
-                  border: `1px solid ${isSelected ? "#00f0ff" : isRunning ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 255, 255, 0.1)"}`,
+                    ? "#f0f9ff"
+                    : "#ffffff",
+                  border: `1px solid ${isSelected ? "var(--accent-primary)" : "var(--border-default)"}`,
                   borderRadius: "8px",
                   padding: "16px",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
-                  boxShadow: isSelected ? "0 0 16px rgba(0, 240, 255, 0.2)" : "none",
+                  boxShadow: isSelected ? "var(--shadow-md)" : "var(--shadow-xs)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#67e8f9", fontWeight: 700 }}>
+                  <span style={{ fontSize: "10.5px", fontFamily: "monospace", color: "var(--accent-primary)", fontWeight: 800 }}>
                     {gen.id}
                   </span>
                   <span
                     style={{
-                      background: isRunning ? "rgba(16, 185, 129, 0.2)" : "rgba(148, 163, 184, 0.15)",
-                      color: isRunning ? "#10b981" : "#94a3b8",
-                      fontSize: "10px",
-                      fontWeight: 700,
+                      background: isRunning ? "var(--status-normal-bg)" : "var(--surface-muted)",
+                      color: isRunning ? "var(--status-normal)" : "var(--text-muted)",
+                      border: `1px solid ${isRunning ? "var(--status-normal-border)" : "transparent"}`,
+                      fontSize: "9.5px",
+                      fontWeight: 800,
                       padding: "2px 8px",
                       borderRadius: "4px",
                     }}
@@ -108,24 +109,24 @@ export default function PowerSystems() {
                   </span>
                 </div>
 
-                <h4 style={{ margin: "0 0 10px 0", fontSize: "13px", color: "#ffffff" }}>{gen.name}</h4>
+                <h4 style={{ margin: "0 0 10px 0", fontSize: "13.5px", fontWeight: 700, color: "var(--text-primary)" }}>{gen.name}</h4>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px", fontSize: "11px", color: "#94a3b8", fontFamily: "monospace" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px", fontSize: "11px", color: "var(--text-secondary)", fontFamily: "monospace" }}>
                   <div>
-                    <span>Output: </span>
-                    <strong style={{ color: "#38bdf8" }}>{gen.outputKw} kW</strong>
+                    <span style={{ color: "var(--text-muted)" }}>Output: </span>
+                    <strong style={{ color: "var(--accent-primary)" }}>{gen.outputKw} kW</strong>
                   </div>
                   <div>
-                    <span>Load: </span>
-                    <strong style={{ color: gen.loadPercent > 85 ? "#f59e0b" : "#10b981" }}>{gen.loadPercent}%</strong>
+                    <span style={{ color: "var(--text-muted)" }}>Load: </span>
+                    <strong style={{ color: gen.loadPercent > 85 ? "var(--status-warning)" : "var(--status-normal)" }}>{gen.loadPercent}%</strong>
                   </div>
                   <div>
-                    <span>Coolant: </span>
-                    <strong style={{ color: "#e2e8f0" }}>{gen.coolantTempC}°C</strong>
+                    <span style={{ color: "var(--text-muted)" }}>Coolant: </span>
+                    <strong style={{ color: "var(--text-primary)" }}>{gen.coolantTempC}°C</strong>
                   </div>
                   <div>
-                    <span>Fuel Burn: </span>
-                    <strong style={{ color: "#e2e8f0" }}>{gen.fuelConsumptionLh} L/h</strong>
+                    <span style={{ color: "var(--text-muted)" }}>Fuel Burn: </span>
+                    <strong style={{ color: "var(--text-primary)" }}>{gen.fuelConsumptionLh} L/h</strong>
                   </div>
                 </div>
 
@@ -164,52 +165,52 @@ export default function PowerSystems() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             {/* Battery Box */}
-            <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(0, 240, 255, 0.2)", borderRadius: "8px", padding: "14px" }}>
+            <div style={{ background: "var(--surface-secondary)", border: "1px solid var(--border-default)", borderRadius: "8px", padding: "14px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <span style={{ fontSize: "11px", color: "#67e8f9", fontFamily: "monospace", fontWeight: 700 }}>
+                <span style={{ fontSize: "10.5px", color: "var(--accent-primary)", fontFamily: "monospace", fontWeight: 800 }}>
                   🔋 BESS BATTERY CONTAINER
                 </span>
-                <span style={{ fontSize: "11px", color: "#10b981", fontWeight: 700 }}>
+                <span style={{ fontSize: "10px", color: "var(--status-normal)", fontWeight: 800, background: "var(--status-normal-bg)", padding: "2px 6px", borderRadius: "4px", border: "1px solid var(--status-normal-border)" }}>
                   ● {bess.status}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ fontSize: "28px", fontWeight: 800, color: "#ffffff" }}>
+                <span style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)" }}>
                   {bess.socPercent}%
                 </span>
-                <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+                <span style={{ fontSize: "11px", color: "var(--text-secondary)", fontFamily: "monospace" }}>
                   {bess.voltageV} V · {bess.currentAmps} A · {bess.temperatureC}°C
                 </span>
               </div>
               <ProgressBar value={bess.socPercent} max={100} height={6} color="green" style={{ marginTop: "8px" }} />
-              <div style={{ fontSize: "11px", color: "#94a3b8", marginTop: "6px" }}>
-                Inverter: <strong style={{ color: "#38bdf8" }}>{bess.inverterStatus}</strong> · Health: {bess.healthPercent}%
+              <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "6px" }}>
+                Inverter: <strong style={{ color: "var(--accent-primary)" }}>{bess.inverterStatus}</strong> · Health: {bess.healthPercent}%
               </div>
             </div>
 
             {/* Renewable Offset */}
-            <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "8px", padding: "14px" }}>
-              <div style={{ fontSize: "11px", color: "#f59e0b", fontFamily: "monospace", fontWeight: 700, marginBottom: "6px" }}>
+            <div style={{ background: "var(--surface-secondary)", border: "1px solid var(--border-subtle)", borderRadius: "8px", padding: "14px" }}>
+              <div style={{ fontSize: "10.5px", color: "#b45309", fontFamily: "monospace", fontWeight: 800, marginBottom: "6px" }}>
                 ☀️ POLAR SOLAR PV & WIND TURBINE
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", fontSize: "12px" }}>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>SOLAR PV</span>
-                  <strong style={{ color: "#ffffff" }}>{renewable.solarPvOutputKw} kW</strong>
+                  <span style={{ color: "var(--text-muted)", fontSize: "9.5px", display: "block", fontWeight: 700 }}>SOLAR PV</span>
+                  <strong style={{ color: "var(--text-primary)", fontSize: "14px" }}>{renewable.solarPvOutputKw} kW</strong>
                 </div>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>WIND TURBINE</span>
-                  <strong style={{ color: "#ffffff" }}>{renewable.windTurbineOutputKw} kW</strong>
+                  <span style={{ color: "var(--text-muted)", fontSize: "9.5px", display: "block", fontWeight: 700 }}>WIND TURBINE</span>
+                  <strong style={{ color: "var(--text-primary)", fontSize: "14px" }}>{renewable.windTurbineOutputKw} kW</strong>
                 </div>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>GRID OFFSET</span>
-                  <strong style={{ color: "#10b981" }}>{renewable.contributionPercent}%</strong>
+                  <span style={{ color: "var(--text-muted)", fontSize: "9.5px", display: "block", fontWeight: 700 }}>GRID OFFSET</span>
+                  <strong style={{ color: "var(--status-normal)", fontSize: "14px" }}>{renewable.contributionPercent}%</strong>
                 </div>
               </div>
             </div>
 
             {/* Anomaly / Diagnostics notice */}
-            <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.25)", borderRadius: "6px", padding: "10px 14px", fontSize: "11px", color: "#a7f3d0" }}>
+            <div style={{ background: "var(--status-normal-bg)", border: "1px solid var(--status-normal-border)", borderRadius: "6px", padding: "10px 14px", fontSize: "11px", color: "var(--status-normal)", fontWeight: 600 }}>
               <strong>DIAGNOSTICS:</strong> {anomaly.message}
             </div>
           </div>

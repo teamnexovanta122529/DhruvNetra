@@ -153,41 +153,41 @@ export default function ComponentInfoPanel({
         left: "16px",
         right: "16px",
         maxWidth: "520px",
-        background: "linear-gradient(135deg, rgba(8, 22, 34, 0.95) 0%, rgba(5, 15, 25, 0.98) 100%)",
-        border: "1px solid rgba(0, 240, 255, 0.35)",
+        background: "rgba(255, 255, 255, 0.96)",
+        border: "1px solid var(--border-default)",
         borderRadius: "10px",
         padding: "16px 20px",
-        boxShadow: "0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.15)",
+        boxShadow: "var(--shadow-xl)",
         backdropFilter: "blur(12px)",
         zIndex: 20,
-        color: "#f1f5f9",
+        color: "var(--text-primary)",
         animation: "fadeIn 0.25s ease-out",
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", borderBottom: "1px solid rgba(100, 200, 240, 0.15)", paddingBottom: "10px", marginBottom: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "10px", marginBottom: "12px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div
             style={{
               width: "36px",
               height: "36px",
               borderRadius: "6px",
-              background: "rgba(0, 240, 255, 0.12)",
-              border: "1px solid rgba(0, 240, 255, 0.3)",
+              background: "var(--accent-primary-light)",
+              border: "1px solid rgba(2, 132, 199, 0.3)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "18px",
-              color: "#00f0ff",
+              color: "var(--accent-primary)",
             }}
           >
             {details.icon}
           </div>
           <div>
-            <div style={{ fontSize: "10px", fontFamily: "monospace", letterSpacing: "1.5px", color: "#00f0ff", fontWeight: 700 }}>
+            <div style={{ fontSize: "9.5px", fontFamily: "monospace", letterSpacing: "1.5px", color: "var(--accent-primary)", fontWeight: 800 }}>
               {details.subsystem} · {station}
             </div>
-            <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#ffffff", letterSpacing: "0.3px" }}>
+            <h4 style={{ margin: 0, fontSize: "14px", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "0.2px" }}>
               {details.title}
             </h4>
           </div>
@@ -199,12 +199,13 @@ export default function ComponentInfoPanel({
           style={{
             background: "transparent",
             border: "none",
-            color: "#94a3b8",
+            color: "var(--text-muted)",
             cursor: "pointer",
             fontSize: "16px",
             padding: "2px 6px",
             borderRadius: "4px",
             lineHeight: 1,
+            fontWeight: 700,
           }}
           title="Close component telemetry HUD"
         >
@@ -213,13 +214,13 @@ export default function ComponentInfoPanel({
       </div>
 
       {/* Metrics Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px 16px", marginBottom: "12px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px 14px", marginBottom: "12px" }}>
         {details.metrics.map((m, idx) => (
-          <div key={idx} style={{ background: "rgba(255, 255, 255, 0.03)", padding: "6px 10px", borderRadius: "4px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
-            <div style={{ fontSize: "10px", color: "#94a3b8", fontFamily: "monospace" }}>{m.label}</div>
-            <div style={{ fontSize: "12px", fontWeight: 700, color: "#38bdf8", marginTop: "2px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div key={idx} style={{ background: "var(--surface-secondary)", padding: "8px 10px", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
+            <div style={{ fontSize: "9px", color: "var(--text-muted)", fontFamily: "monospace", fontWeight: 700 }}>{m.label}</div>
+            <div style={{ fontSize: "12px", fontWeight: 800, color: "var(--text-primary)", marginTop: "2px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>{m.value}</span>
-              <span style={{ fontSize: "9px", color: m.state === "OPTIMAL" || m.state === "RUNNING" || m.state === "LOCKED" ? "#10b981" : "#00f0ff" }}>
+              <span style={{ fontSize: "9px", fontWeight: 700, color: m.state === "OPTIMAL" || m.state === "RUNNING" || m.state === "LOCKED" ? "var(--status-normal)" : "var(--accent-primary)" }}>
                 ● {m.state}
               </span>
             </div>
@@ -228,33 +229,34 @@ export default function ComponentInfoPanel({
       </div>
 
       {/* Description */}
-      <p style={{ fontSize: "11px", color: "#cbd5e1", margin: "0 0 12px 0", lineHeight: "1.4" }}>
+      <p style={{ fontSize: "11px", color: "var(--text-secondary)", margin: "0 0 12px 0", lineHeight: "1.45" }}>
         {details.description}
       </p>
 
       {/* Actions */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "10px", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "10px", borderTop: "1px solid var(--border-subtle)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "11px", color: "#94a3b8" }}>Health Score:</span>
-          <strong style={{ fontSize: "12px", color: "#10b981" }}>{details.health}%</strong>
+          <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600 }}>Health Score:</span>
+          <strong style={{ fontSize: "12px", color: "var(--status-normal)", fontWeight: 800 }}>{details.health}%</strong>
         </div>
 
         <button
           type="button"
           onClick={() => navigate(details.route)}
           style={{
-            background: "linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(2, 132, 199, 0.3))",
-            border: "1px solid rgba(0, 240, 255, 0.4)",
-            color: "#00f0ff",
-            padding: "5px 12px",
+            background: "var(--accent-primary)",
+            border: "none",
+            color: "#ffffff",
+            padding: "6px 14px",
             borderRadius: "4px",
             fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "0.5px",
+            fontWeight: 800,
+            letterSpacing: "0.08em",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: "4px",
+            gap: "6px",
+            transition: "background 0.2s ease",
           }}
         >
           <span>OPEN SUBSYSTEM</span>

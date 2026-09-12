@@ -478,7 +478,7 @@ export default function WhatIfAnalysis() {
                         <div className="mini-card-vals">
                           <span className="val-before">100</span>
                           <span className="val-arrow">→</span>
-                          <span className="val-after" style={{ color: (msg.simulationData.health?.projected_score ?? 85) < 60 ? "#f87171" : "#4ade80" }}>
+                          <span className="val-after" style={{ color: (msg.simulationData.health?.projected_score ?? 85) < 60 ? "#dc2626" : "#16a34a" }}>
                             {Math.round(msg.simulationData.health?.projected_score ?? 85)}/100
                           </span>
                         </div>
@@ -487,7 +487,7 @@ export default function WhatIfAnalysis() {
                             className="mini-progress-fill"
                             style={{
                               width: `${Math.min(100, msg.simulationData.health?.projected_score ?? 85)}%`,
-                              background: (msg.simulationData.health?.projected_score ?? 85) < 60 ? "#f87171" : "#4ade80",
+                              background: (msg.simulationData.health?.projected_score ?? 85) < 60 ? "#dc2626" : "#16a34a",
                             }}
                           />
                         </div>

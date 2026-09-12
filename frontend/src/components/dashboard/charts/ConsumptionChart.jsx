@@ -33,8 +33,8 @@ export default function ConsumptionChart({
           const val = Math.round(maxVal - ratio * (maxVal - minVal));
           return (
             <g key={idx}>
-              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="rgba(100, 200, 240, 0.1)" strokeDasharray="3 3" />
-              <text x={padding.left - 6} y={y + 3} fill="rgba(160, 220, 240, 0.6)" fontSize="8" textAnchor="end" fontFamily="monospace">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#e2e8f0" strokeDasharray="3 3" />
+              <text x={padding.left - 6} y={y + 3} fill="#64748b" fontSize="8" textAnchor="end" fontFamily="monospace">
                 {val} {unit}
               </text>
             </g>
@@ -43,33 +43,33 @@ export default function ConsumptionChart({
 
         {/* X labels */}
         {labels.map((lbl, idx) => (
-          <text key={idx} x={getX(idx)} y={height - 10} fill="rgba(160, 220, 240, 0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace">
+          <text key={idx} x={getX(idx)} y={height - 10} fill="#64748b" fontSize="8" textAnchor="middle" fontFamily="monospace">
             {lbl}
           </text>
         ))}
 
-        {/* Production Line (Cyan/Green) */}
-        <polyline fill="none" stroke="#10b981" strokeWidth="2" points={prodPoints} />
+        {/* Production Line (Green) */}
+        <polyline fill="none" stroke="#16a34a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={prodPoints} />
 
         {/* Consumption Line (Amber dashed) */}
-        <polyline fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4 2" points={consPoints} />
+        <polyline fill="none" stroke="#d97706" strokeWidth="2" strokeDasharray="4 2" strokeLinecap="round" strokeLinejoin="round" points={consPoints} />
 
         {production.map((v, i) => (
-          <circle key={`p-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#10b981" stroke="#051622" strokeWidth="1.5" />
+          <circle key={`p-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#16a34a" stroke="#ffffff" strokeWidth="1.5" />
         ))}
         {consumption.map((v, i) => (
-          <circle key={`c-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#f59e0b" stroke="#051622" strokeWidth="1" />
+          <circle key={`c-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#d97706" stroke="#ffffff" strokeWidth="1" />
         ))}
       </svg>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "monospace" }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "var(--font-mono, monospace)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 2, background: "#10b981", display: "inline-block" }} />
-          <span style={{ color: "#a7f3d0" }}>{seriesLabels.b} ({unit})</span>
+          <span style={{ width: 12, height: 2, background: "#16a34a", borderRadius: "1px", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>{seriesLabels.b} ({unit})</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 2, borderTop: "2px dashed #f59e0b", display: "inline-block" }} />
-          <span style={{ color: "#fde68a" }}>{seriesLabels.a} ({unit})</span>
+          <span style={{ width: 12, height: 2, borderTop: "2px dashed #d97706", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>{seriesLabels.a} ({unit})</span>
         </div>
       </div>
     </div>

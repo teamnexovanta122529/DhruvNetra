@@ -25,9 +25,9 @@ export default function FuelChart({
     <div style={{ width: "100%", overflow: "hidden" }}>
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto" }} preserveAspectRatio="none">
         <defs>
-          <linearGradient id="fuelGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.0" />
+          <linearGradient id="fuelGradLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#d97706" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#d97706" stopOpacity="0.01" />
           </linearGradient>
         </defs>
 
@@ -37,8 +37,8 @@ export default function FuelChart({
           const val = Math.round(maxVal - ratio * (maxVal - minVal));
           return (
             <g key={idx}>
-              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="rgba(245, 158, 11, 0.15)" strokeDasharray="3 3" />
-              <text x={padding.left - 6} y={y + 3} fill="rgba(245, 158, 11, 0.7)" fontSize="8" textAnchor="end" fontFamily="monospace">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#e2e8f0" strokeDasharray="3 3" />
+              <text x={padding.left - 6} y={y + 3} fill="#64748b" fontSize="8" textAnchor="end" fontFamily="monospace">
                 {val} {unit}
               </text>
             </g>
@@ -47,21 +47,24 @@ export default function FuelChart({
 
         {/* X labels */}
         {labels.map((lbl, idx) => (
-          <text key={idx} x={getX(idx)} y={height - 10} fill="rgba(160, 220, 240, 0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace">
+          <text key={idx} x={getX(idx)} y={height - 10} fill="#64748b" fontSize="8" textAnchor="middle" fontFamily="monospace">
             {lbl}
           </text>
         ))}
 
-        <polygon points={areaPoints} fill="url(#fuelGrad)" />
-        <polyline fill="none" stroke="#f59e0b" strokeWidth="2.2" points={points} />
+        <polygon points={areaPoints} fill="url(#fuelGradLight)" />
+        <polyline fill="none" stroke="#d97706" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={points} />
 
         {burnRates.map((v, i) => (
-          <circle key={i} cx={getX(i)} cy={getY(v)} r="3" fill="#f59e0b" stroke="#051622" strokeWidth="1.5" />
+          <circle key={i} cx={getX(i)} cy={getY(v)} r="3" fill="#d97706" stroke="#ffffff" strokeWidth="1.5" />
         ))}
       </svg>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "monospace", color: "#fbbf24" }}>
-        <span>● Hourly Generator Fuel Burn Trajectory ({unit})</span>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "var(--font-mono, monospace)", color: "#475569" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontWeight: 500 }}>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#d97706", display: "inline-block" }}></span>
+          Hourly Generator Fuel Burn Trajectory ({unit})
+        </span>
       </div>
     </div>
   );

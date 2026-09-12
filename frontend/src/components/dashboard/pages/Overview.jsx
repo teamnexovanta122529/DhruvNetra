@@ -21,41 +21,44 @@ export default function Overview() {
         <PageHeader
           eyebrow={`DHRUVNETRA / MISSION COMMAND · ${stationInfo.coordinates || ""}`}
           title={`${station} STATION OVERVIEW`}
-          description={`REAL-TIME OPERATIONAL STATUS & DIGITAL TWIN TELEMETRY OF ${station} ANTARCTIC STATION (${stationInfo.location})`}
+          description={`Real-time operational status & multi-physics digital twin telemetry of ${station} Antarctic Station (${stationInfo.location}).`}
           status="STATION ONLINE"
         />
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "12px" }}>
           <div
             style={{
-              background: "rgba(10, 30, 45, 0.7)",
-              border: "1px solid rgba(0, 240, 255, 0.3)",
-              padding: "6px 12px",
+              background: "#ffffff",
+              border: "1px solid var(--border-default)",
+              padding: "6px 14px",
               borderRadius: "20px",
               fontSize: "11px",
-              color: "#9cd8e6",
+              color: "var(--text-secondary)",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               fontFamily: "monospace",
+              boxShadow: "var(--shadow-xs)",
             }}
           >
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 8px #10b981", display: "inline-block" }} />
-            <span>LIVE TELEMETRY · {lastUpdated}</span>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--status-normal)", boxShadow: "0 0 6px rgba(22, 163, 74, 0.6)", display: "inline-block" }} />
+            <span style={{ fontWeight: 700 }}>LIVE SCADA · {lastUpdated}</span>
           </div>
 
           <button
             type="button"
             onClick={() => navigate("/dashboard/digital-twin")}
             style={{
-              background: "linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(2, 132, 199, 0.35))",
-              border: "1px solid rgba(0, 240, 255, 0.5)",
-              color: "#00f0ff",
+              background: "var(--accent-primary-light)",
+              border: "1px solid rgba(2, 132, 199, 0.35)",
+              color: "var(--accent-primary)",
               padding: "6px 14px",
               borderRadius: "6px",
               fontSize: "11px",
-              fontWeight: 700,
+              fontWeight: 800,
+              letterSpacing: "0.08em",
               cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
           >
             OPEN 3D DIGITAL TWIN ◇
@@ -73,29 +76,29 @@ export default function Overview() {
                 width: "80px",
                 height: "80px",
                 borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, rgba(10, 25, 40, 0.8) 100%)",
-                border: "2px solid #00f0ff",
+                background: "radial-gradient(circle, #e0f2fe 0%, #f8fafc 100%)",
+                border: "2.5px solid var(--accent-primary)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 0 20px rgba(0, 240, 255, 0.3)",
+                boxShadow: "var(--shadow-sm)",
               }}
             >
-              <strong style={{ fontSize: "26px", fontWeight: 800, color: "#ffffff", lineHeight: 1 }}>
+              <strong style={{ fontSize: "26px", fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
                 {health.overallHealth}
               </strong>
-              <span style={{ fontSize: "10px", color: "#67e8f9", fontFamily: "monospace" }}>/ 100</span>
+              <span style={{ fontSize: "10px", color: "var(--accent-primary)", fontFamily: "monospace", fontWeight: 700 }}>/ 100</span>
             </div>
 
             <div>
-              <div style={{ fontSize: "11px", fontFamily: "monospace", color: "#67e8f9", letterSpacing: "1.5px", fontWeight: 700 }}>
+              <div style={{ fontSize: "10.5px", fontFamily: "monospace", color: "var(--accent-primary)", letterSpacing: "1.5px", fontWeight: 800 }}>
                 STATION OPERATIONAL HEALTH
               </div>
-              <h3 style={{ margin: "2px 0 4px 0", fontSize: "18px", color: "#ffffff", fontWeight: 700 }}>
+              <h3 style={{ margin: "2px 0 4px 0", fontSize: "18px", color: "var(--text-primary)", fontWeight: 800 }}>
                 {health.status} STATUS
               </h3>
-              <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8", lineHeight: "1.3" }}>
+              <p style={{ margin: 0, fontSize: "12px", color: "var(--text-secondary)", lineHeight: "1.4" }}>
                 Computed dynamically from live multi-physics microgrid, fuel burn, and thermal envelope telemetry.
               </p>
             </div>
@@ -104,51 +107,51 @@ export default function Overview() {
           {/* Subsystem Health Progress Bars */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px 16px" }}>
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>Power</span>
-                <strong style={{ color: "#00f0ff" }}>{health.breakdown.power}%</strong>
+                <strong style={{ color: "var(--accent-primary)" }}>{health.breakdown.power}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.power} max={100} height={4} color="cyan" />
+              <ProgressBar value={health.breakdown.power} max={100} height={5} color="cyan" />
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>Fuel</span>
-                <strong style={{ color: "#fbbf24" }}>{health.breakdown.fuel}%</strong>
+                <strong style={{ color: "var(--status-warning)" }}>{health.breakdown.fuel}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.fuel} max={100} height={4} color="amber" />
+              <ProgressBar value={health.breakdown.fuel} max={100} height={5} color="amber" />
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>HVAC</span>
-                <strong style={{ color: "#10b981" }}>{health.breakdown.hvac}%</strong>
+                <strong style={{ color: "var(--status-normal)" }}>{health.breakdown.hvac}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.hvac} max={100} height={4} color="green" />
+              <ProgressBar value={health.breakdown.hvac} max={100} height={5} color="green" />
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>Water</span>
-                <strong style={{ color: "#38bdf8" }}>{health.breakdown.water}%</strong>
+                <strong style={{ color: "var(--accent-primary)" }}>{health.breakdown.water}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.water} max={100} height={4} color="cyan" />
+              <ProgressBar value={health.breakdown.water} max={100} height={5} color="cyan" />
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>Environment</span>
-                <strong style={{ color: "#e2e8f0" }}>{health.breakdown.environment}%</strong>
+                <strong style={{ color: "var(--text-secondary)" }}>{health.breakdown.environment}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.environment} max={100} height={4} color="cyan" />
+              <ProgressBar value={health.breakdown.environment} max={100} height={5} color="cyan" />
             </div>
 
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginBottom: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10.5px", color: "var(--text-muted)", marginBottom: "2px", fontWeight: 600 }}>
                 <span>Logistics</span>
-                <strong style={{ color: "#a7f3d0" }}>{health.breakdown.logistics}%</strong>
+                <strong style={{ color: "var(--status-normal)" }}>{health.breakdown.logistics}%</strong>
               </div>
-              <ProgressBar value={health.breakdown.logistics} max={100} height={4} color="green" />
+              <ProgressBar value={health.breakdown.logistics} max={100} height={5} color="green" />
             </div>
           </div>
         </div>
@@ -287,7 +290,7 @@ export default function Overview() {
             <button
               type="button"
               onClick={() => navigate("/dashboard/alerts")}
-              style={{ background: "transparent", border: "none", color: "#00f0ff", cursor: "pointer", fontSize: "11px", fontWeight: 700 }}
+              style={{ background: "transparent", border: "none", color: "var(--accent-primary)", cursor: "pointer", fontSize: "11px", fontWeight: 800 }}
             >
               VIEW ALL →
             </button>

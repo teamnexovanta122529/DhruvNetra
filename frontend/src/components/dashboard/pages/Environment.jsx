@@ -57,25 +57,25 @@ export default function Environment() {
 
                 <div className="env-header-actions" style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "12px" }}>
                     <div className="env-freshness-pill" style={{
-                        background: "rgba(10, 30, 45, 0.7)",
-                        border: "1px solid rgba(80, 200, 240, 0.25)",
+                        background: "#ffffff",
+                        border: "1px solid var(--border-subtle, #e2e8f0)",
                         padding: "6px 14px",
                         borderRadius: "20px",
                         fontSize: "12px",
-                        color: "#9cd8e6",
+                        color: "var(--text-secondary, #475569)",
                         display: "flex",
                         alignItems: "center",
-                        gap: "8px"
+                        gap: "8px",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
                     }}>
                         <span style={{
                             width: "8px",
                             height: "8px",
                             borderRadius: "50%",
-                            background: isUnavailable ? "#ef4444" : "#10b981",
-                            boxShadow: isUnavailable ? "0 0 8px #ef4444" : "0 0 8px #10b981",
+                            background: isUnavailable ? "#ef4444" : "#16a34a",
                             display: "inline-block"
                         }} />
-                        <span>{isUnavailable ? "OFFLINE" : "LIVE"} · {timeSinceUpdate}</span>
+                        <span style={{ fontFamily: "var(--font-mono, monospace)" }}>{isUnavailable ? "OFFLINE" : "LIVE"} · {timeSinceUpdate}</span>
                     </div>
 
                     <button
@@ -83,11 +83,11 @@ export default function Environment() {
                         onClick={refreshEnvironment}
                         disabled={isRefreshing || isLoading}
                         style={{
-                            background: "linear-gradient(135deg, rgba(20, 50, 75, 0.9), rgba(15, 35, 55, 0.9))",
-                            border: "1px solid rgba(100, 220, 255, 0.35)",
-                            color: "#e2f8ff",
+                            background: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+                            border: "none",
+                            color: "#ffffff",
                             padding: "7px 16px",
-                            borderRadius: "8px",
+                            borderRadius: "6px",
                             cursor: (isRefreshing || isLoading) ? "not-allowed" : "pointer",
                             fontSize: "12px",
                             fontWeight: "600",
@@ -95,6 +95,7 @@ export default function Environment() {
                             display: "flex",
                             alignItems: "center",
                             gap: "6px",
+                            boxShadow: "0 2px 6px rgba(2,132,199,0.25)",
                             transition: "all 0.2s ease"
                         }}
                     >
@@ -109,46 +110,37 @@ export default function Environment() {
             ========================================= */}
             <section className="dashboard-section" style={{ marginTop: "16px" }}>
                 <div style={{
-                    background: "linear-gradient(135deg, rgba(12, 28, 42, 0.92) 0%, rgba(8, 20, 32, 0.95) 100%)",
-                    border: "1px solid rgba(80, 200, 255, 0.22)",
+                    background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+                    border: "1px solid #bae6fd",
                     borderRadius: "12px",
                     padding: "24px 28px",
                     position: "relative",
                     overflow: "hidden",
-                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)"
+                    boxShadow: "0 4px 16px rgba(2, 132, 199, 0.06)"
                 }}>
-                    {/* Background Subtle Polar Glow */}
-                    <div style={{
-                        position: "absolute",
-                        top: "-50%",
-                        right: "-10%",
-                        width: "350px",
-                        height: "350px",
-                        background: "radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%)",
-                        pointerEvents: "none"
-                    }} />
-
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px", alignItems: "center" }}>
                         
-                        {/* LEFT: Massive Ambient Temp & Wind Chill */}
+                        {/* LEFT: Ambient Temp & Wind Chill */}
                         <div>
-                            <div style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#67e8f9", fontWeight: "700", marginBottom: "6px" }}>
+                            <div style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#0369a1", fontWeight: "700", marginBottom: "6px", fontFamily: "var(--font-mono, monospace)" }}>
                                 AMBIENT POLAR THERMAL STATE · {station.toUpperCase()}
                             </div>
 
                             <div style={{ display: "flex", alignItems: "baseline", gap: "12px", flexWrap: "wrap" }}>
-                                <div style={{ fontSize: "54px", fontWeight: "800", color: "#ffffff", letterSpacing: "-1px", lineHeight: "1" }}>
+                                <div style={{ fontSize: "52px", fontWeight: "800", color: "#0f172a", letterSpacing: "-1px", lineHeight: "1" }}>
                                     {isLoading ? "..." : isUnavailable ? "N/A" : current.temperature_c !== null && current.temperature_c !== undefined ? `${current.temperature_c > 0 ? "+" : ""}${current.temperature_c}°C` : "—"}
                                 </div>
 
                                 {polar.wind_chill_c !== null && polar.wind_chill_c !== undefined && (
                                     <div style={{
-                                        background: "rgba(30, 58, 80, 0.8)",
-                                        border: "1px solid rgba(125, 211, 252, 0.3)",
+                                        background: "#ffffff",
+                                        border: "1px solid #bae6fd",
                                         padding: "4px 10px",
                                         borderRadius: "6px",
                                         fontSize: "13px",
-                                        color: "#bae6fd"
+                                        color: "#0369a1",
+                                        fontWeight: "500",
+                                        boxShadow: "0 1px 3px rgba(0,0,0,0.03)"
                                     }}>
                                         Wind Chill: <strong>{polar.wind_chill_c > 0 ? "+" : ""}{polar.wind_chill_c}°C</strong>
                                     </div>
@@ -157,9 +149,9 @@ export default function Environment() {
 
                             <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                                 <span style={{
-                                    background: "rgba(14, 165, 233, 0.15)",
-                                    border: "1px solid rgba(56, 189, 248, 0.35)",
-                                    color: "#7dd3fc",
+                                    background: "#dbeafe",
+                                    border: "1px solid #93c5fd",
+                                    color: "#1e40af",
                                     padding: "3px 8px",
                                     borderRadius: "4px",
                                     fontSize: "11px",
@@ -168,55 +160,55 @@ export default function Environment() {
                                     {polar.freezing_severity || "Sub-Zero Polar"}
                                 </span>
 
-                                <span style={{ fontSize: "12px", color: "rgba(220, 240, 255, 0.7)" }}>
+                                <span style={{ fontSize: "12px", color: "#475569" }}>
                                     Elevation: {stationInfo.elevation || "117 m"} · {stationInfo.region || stationInfo.location}
                                 </span>
                             </div>
                         </div>
 
                         {/* CENTER: Weather Condition & Cloud Status */}
-                        <div style={{ borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "24px" }}>
-                            <div style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#94a3b8", fontWeight: "700", marginBottom: "6px" }}>
+                        <div style={{ borderLeft: "1px solid #cbd5e1", paddingLeft: "24px" }}>
+                            <div style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#64748b", fontWeight: "700", marginBottom: "6px", fontFamily: "var(--font-mono, monospace)" }}>
                                 CURRENT METEOROLOGICAL STATE
                             </div>
 
-                            <div style={{ fontSize: "24px", fontWeight: "700", color: "#e2e8f0", letterSpacing: "0.5px" }}>
+                            <div style={{ fontSize: "22px", fontWeight: "700", color: "#0f172a", letterSpacing: "0.5px" }}>
                                 {isLoading ? "Fetching Satellite & Model Feeds..." : isUnavailable ? "Data Stream Offline" : (conditions.weather || "Overcast Polar Conditions").toUpperCase()}
                             </div>
 
-                            <div style={{ marginTop: "8px", fontSize: "13px", color: "#94a3b8", display: "flex", gap: "16px" }}>
-                                <span>Cloud Cover: <strong style={{ color: "#cbd5e1" }}>{current.cloud_cover_percent ?? "—"}%</strong></span>
-                                <span>Precipitation: <strong style={{ color: "#cbd5e1" }}>{current.precipitation_mm ?? 0} mm</strong></span>
-                                <span>Snowfall: <strong style={{ color: "#cbd5e1" }}>{current.snowfall_cm ?? 0} cm</strong></span>
+                            <div style={{ marginTop: "8px", fontSize: "13px", color: "#64748b", display: "flex", gap: "16px" }}>
+                                <span>Cloud Cover: <strong style={{ color: "#0f172a" }}>{current.cloud_cover_percent ?? "—"}%</strong></span>
+                                <span>Precipitation: <strong style={{ color: "#0f172a" }}>{current.precipitation_mm ?? 0} mm</strong></span>
+                                <span>Snowfall: <strong style={{ color: "#0f172a" }}>{current.snowfall_cm ?? 0} cm</strong></span>
                             </div>
                         </div>
 
                         {/* RIGHT: Blizzard Risk Indicator */}
-                        <div style={{ borderLeft: "1px solid rgba(255,255,255,0.08)", paddingLeft: "24px" }}>
+                        <div style={{ borderLeft: "1px solid #cbd5e1", paddingLeft: "24px" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                                <span style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#f59e0b", fontWeight: "700" }}>
+                                <span style={{ fontSize: "11px", letterSpacing: "1.5px", color: "#b45309", fontWeight: "700", fontFamily: "var(--font-mono, monospace)" }}>
                                     BLIZZARD PROBABILITY INDEX
                                 </span>
                                 <span style={{
                                     fontSize: "12px",
                                     fontWeight: "700",
-                                    color: polar.blizzard_risk === "CRITICAL" ? "#ef4444" : polar.blizzard_risk === "HIGH" ? "#f97316" : polar.blizzard_risk === "MODERATE" ? "#facc15" : "#10b981"
+                                    color: polar.blizzard_risk === "CRITICAL" ? "#dc2626" : polar.blizzard_risk === "HIGH" ? "#ea580c" : polar.blizzard_risk === "MODERATE" ? "#d97706" : "#16a34a"
                                 }}>
                                     {polar.blizzard_risk || "LOW"} ({polar.blizzard_probability_percent ?? 15}%)
                                 </span>
                             </div>
 
                             {/* Risk Progress Bar */}
-                            <div style={{ width: "100%", height: "8px", background: "rgba(255,255,255,0.08)", borderRadius: "4px", overflow: "hidden", marginTop: "8px" }}>
+                            <div style={{ width: "100%", height: "8px", background: "#e2e8f0", borderRadius: "4px", overflow: "hidden", marginTop: "8px" }}>
                                 <div style={{
                                     width: `${polar.blizzard_probability_percent ?? 15}%`,
                                     height: "100%",
-                                    background: polar.blizzard_risk === "CRITICAL" ? "linear-gradient(90deg, #f97316, #ef4444)" : polar.blizzard_risk === "HIGH" ? "linear-gradient(90deg, #eab308, #f97316)" : "linear-gradient(90deg, #10b981, #06b6d4)",
+                                    background: polar.blizzard_risk === "CRITICAL" ? "linear-gradient(90deg, #ea580c, #dc2626)" : polar.blizzard_risk === "HIGH" ? "linear-gradient(90deg, #d97706, #ea580c)" : "linear-gradient(90deg, #16a34a, #0284c7)",
                                     transition: "width 0.5s ease"
                                 }} />
                             </div>
 
-                            <p style={{ fontSize: "11px", color: "rgba(200, 220, 240, 0.6)", marginTop: "8px", lineHeight: "1.4" }}>
+                            <p style={{ fontSize: "11px", color: "#64748b", marginTop: "8px", lineHeight: "1.4" }}>
                                 Evaluated from katabatic wind velocity, snowfall rate, and optical visibility.
                             </p>
                         </div>
@@ -255,7 +247,7 @@ export default function Environment() {
                                 Wind Chill Index: <strong>{polar.wind_chill_c ?? "—"}°C</strong>
                             </div>
                         </div>
-                        <div className="metric-footer" style={{ fontSize: "11px", color: "#94a3b8", marginTop: "8px" }}>
+                        <div className="metric-footer" style={{ fontSize: "11px", color: "#64748b", marginTop: "8px" }}>
                             Condition: {polar.freezing_severity || "Sub-Zero Polar"}
                         </div>
                     </div>
@@ -275,7 +267,7 @@ export default function Environment() {
                                 Azimuth: <strong>{current.wind_direction_cardinal || "—"} ({current.wind_direction_deg ?? "—"}°)</strong>
                             </div>
                         </div>
-                        <div className="metric-footer" style={{ fontSize: "11px", color: "#94a3b8", marginTop: "8px" }}>
+                        <div className="metric-footer" style={{ fontSize: "11px", color: "#64748b", marginTop: "8px" }}>
                             Velocity: {current.wind_speed_ms ?? "—"} m/s · Gust: {current.wind_gust_kmh ?? "—"} km/h
                         </div>
                     </div>
@@ -295,7 +287,7 @@ export default function Environment() {
                                 Sea-level ref: 1013.25 hPa ({(current.pressure_hpa ? (current.pressure_hpa - 1013.25).toFixed(1) : 0)} hPa)
                             </div>
                         </div>
-                        <div className="metric-footer" style={{ fontSize: "11px", color: "#94a3b8", marginTop: "8px" }}>
+                        <div className="metric-footer" style={{ fontSize: "11px", color: "#64748b", marginTop: "8px" }}>
                             System: {current.pressure_hpa && current.pressure_hpa < 975 ? "Deep Polar Low" : "Stable Polar Anticyclone"}
                         </div>
                     </div>
@@ -315,7 +307,7 @@ export default function Environment() {
                                 Visibility: <strong>{current.visibility_km ? `${current.visibility_km} km` : "Unrestricted"}</strong>
                             </div>
                         </div>
-                        <div className="metric-footer" style={{ fontSize: "11px", color: "#94a3b8", marginTop: "8px" }}>
+                        <div className="metric-footer" style={{ fontSize: "11px", color: "#64748b", marginTop: "8px" }}>
                             Cloud Fraction: {current.cloud_cover_percent ?? 0}% · Snow: {conditions.is_snowing ? "Active" : "None"}
                         </div>
                     </div>
@@ -330,11 +322,11 @@ export default function Environment() {
             <section className="dashboard-section" style={{ marginTop: "24px" }}>
                 <div style={{
                     background: isAlertCritical
-                        ? "linear-gradient(135deg, rgba(60, 15, 20, 0.9), rgba(40, 10, 15, 0.95))"
+                        ? "#fef2f2"
                         : isAlertWarning
-                        ? "linear-gradient(135deg, rgba(50, 30, 15, 0.9), rgba(35, 20, 10, 0.95))"
-                        : "linear-gradient(135deg, rgba(12, 35, 45, 0.9), rgba(8, 25, 35, 0.95))",
-                    border: `1px solid ${isAlertCritical ? "rgba(239, 68, 68, 0.45)" : isAlertWarning ? "rgba(249, 115, 22, 0.4)" : "rgba(16, 185, 129, 0.35)"}`,
+                        ? "#fffbeb"
+                        : "#f0fdf4",
+                    border: `1px solid ${isAlertCritical ? "#fecaca" : isAlertWarning ? "#fde68a" : "#bbf7d0"}`,
                     borderRadius: "12px",
                     padding: "20px 24px",
                     display: "flex",
@@ -344,38 +336,39 @@ export default function Environment() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <span style={{
-                                background: isAlertCritical ? "#ef4444" : isAlertWarning ? "#f97316" : isAlertWatch ? "#f59e0b" : "#10b981",
-                                color: "#000",
+                                background: isAlertCritical ? "#dc2626" : isAlertWarning ? "#ea580c" : isAlertWatch ? "#d97706" : "#16a34a",
+                                color: "#ffffff",
                                 fontWeight: "800",
                                 fontSize: "11px",
                                 padding: "3px 8px",
                                 borderRadius: "4px",
-                                letterSpacing: "1px"
+                                letterSpacing: "1px",
+                                fontFamily: "var(--font-mono, monospace)"
                             }}>
                                 {alertLevel}
                             </span>
-                            <strong style={{ fontSize: "15px", color: "#f8fafc" }}>
+                            <strong style={{ fontSize: "15px", color: isAlertCritical ? "#991b1b" : isAlertWarning ? "#92400e" : "#166534" }}>
                                 {alert.title || `STATION ENVIRONMENTAL STATUS: ${alertLevel}`}
                             </strong>
                         </div>
 
-                        <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+                        <span style={{ fontSize: "12px", color: "#64748b" }}>
                             Station Protocol: <strong>{isAlertCritical ? "CODE RED — LOCKDOWN EXTERIOR" : isAlertWarning ? "CODE ORANGE — CAUTIONARY SORTIES" : "CODE GREEN — NOMINAL OPERATIONS"}</strong>
                         </span>
                     </div>
 
-                    <p style={{ margin: 0, fontSize: "13px", color: "#cbd5e1", lineHeight: "1.5" }}>
+                    <p style={{ margin: 0, fontSize: "13px", color: "#334155", lineHeight: "1.5" }}>
                         {alert.description || "All meteorological indicators are within standard operational envelope for East Antarctic research facilities."}
                     </p>
 
                     {alert.active_factors && alert.active_factors.length > 0 && (
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
-                            <span style={{ fontSize: "12px", color: "#94a3b8", alignSelf: "center" }}>Active Factors:</span>
+                            <span style={{ fontSize: "12px", color: "#64748b", alignSelf: "center" }}>Active Factors:</span>
                             {alert.active_factors.map((factor, idx) => (
                                 <span key={idx} style={{
-                                    background: "rgba(255,255,255,0.07)",
-                                    border: "1px solid rgba(255,255,255,0.15)",
-                                    color: "#f1f5f9",
+                                    background: "#ffffff",
+                                    border: "1px solid var(--border-subtle, #e2e8f0)",
+                                    color: "#334155",
                                     padding: "2px 8px",
                                     borderRadius: "4px",
                                     fontSize: "11px"
@@ -394,57 +387,58 @@ export default function Environment() {
             ========================================= */}
             <section className="dashboard-section" style={{ marginTop: "24px" }}>
                 <div style={{
-                    background: "rgba(10, 22, 34, 0.6)",
-                    border: "1px solid rgba(80, 200, 255, 0.12)",
+                    background: "var(--bg-subtle, #f8fafc)",
+                    border: "1px solid var(--border-subtle, #e2e8f0)",
                     borderRadius: "10px",
                     padding: "16px 20px",
                     fontSize: "12px",
-                    color: "#94a3b8",
+                    color: "var(--text-secondary, #475569)",
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
                     gap: "16px"
                 }}>
                     <div>
-                        <span style={{ color: "#67e8f9", fontWeight: "700", display: "block", marginBottom: "4px" }}>
+                        <span style={{ color: "var(--accent-primary, #0284c7)", fontWeight: "700", display: "block", marginBottom: "4px", fontFamily: "var(--font-mono, monospace)" }}>
                             DATA PROVENANCE & MODEL ATTRIBUTION
                         </span>
-                        <span>Provider: <strong>{source.provider || "Open-Meteo Polar Weather API"}</strong></span><br />
-                        <span>Ensemble: <strong>{source.model_type || "ECMWF IFS / DWD ICON Polar Models"}</strong></span>
+                        <span>Provider: <strong style={{ color: "#0f172a" }}>{source.provider || "Open-Meteo Polar Weather API"}</strong></span><br />
+                        <span>Ensemble: <strong style={{ color: "#0f172a" }}>{source.model_type || "ECMWF IFS / DWD ICON Polar Models"}</strong></span>
                     </div>
 
                     <div>
-                        <span style={{ color: "#67e8f9", fontWeight: "700", display: "block", marginBottom: "4px" }}>
+                        <span style={{ color: "var(--accent-primary, #0284c7)", fontWeight: "700", display: "block", marginBottom: "4px", fontFamily: "var(--font-mono, monospace)" }}>
                             STATION HARDWARE SENSORS
                         </span>
-                        <span>Direct Sensor Telemetry: <strong style={{ color: source.station_sensors_connected ? "#10b981" : "#f59e0b" }}>{source.station_sensors_connected ? "ONLINE" : "PENDING SATCOM LINK"}</strong></span><br />
-                        <span style={{ fontSize: "11px", color: "rgba(148, 163, 184, 0.8)" }}>
+                        <span>Direct Sensor Telemetry: <strong style={{ color: source.station_sensors_connected ? "#16a34a" : "#d97706" }}>{source.station_sensors_connected ? "ONLINE" : "PENDING SATCOM LINK"}</strong></span><br />
+                        <span style={{ fontSize: "11px", color: "#64748b" }}>
                             External numerical weather models provide real-time boundary observations until direct IoT telemetry is linked.
                         </span>
                     </div>
 
                     <div>
-                        <span style={{ color: "#67e8f9", fontWeight: "700", display: "block", marginBottom: "4px" }}>
+                        <span style={{ color: "var(--accent-primary, #0284c7)", fontWeight: "700", display: "block", marginBottom: "4px", fontFamily: "var(--font-mono, monospace)" }}>
                             OBSERVATION COORDINATES
                         </span>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span>{stationInfo.coordinates}</span>
+                            <span style={{ color: "#0f172a" }}>{stationInfo.coordinates}</span>
                             <button
                                 type="button"
                                 onClick={handleCopyCoords}
                                 style={{
-                                    background: "rgba(255,255,255,0.06)",
-                                    border: "1px solid rgba(255,255,255,0.15)",
-                                    color: "#93c5fd",
+                                    background: "#ffffff",
+                                    border: "1px solid #cbd5e1",
+                                    color: "#0284c7",
                                     padding: "2px 6px",
                                     borderRadius: "3px",
                                     fontSize: "10px",
+                                    fontWeight: 600,
                                     cursor: "pointer"
                                 }}
                             >
                                 {copiedInfo ? "COPIED" : "COPY"}
                             </button>
                         </div>
-                        <span style={{ fontSize: "11px" }}>Timestamp: {environment?.timestamp ? `${environment.timestamp} UTC` : "Current UTC"}</span>
+                        <span style={{ fontSize: "11px", color: "#64748b" }}>Timestamp: {environment?.timestamp ? `${environment.timestamp} UTC` : "Current UTC"}</span>
                     </div>
                 </div>
             </section>

@@ -14,8 +14,6 @@ export default function HVACSystems() {
 
   const [selectedZone, setSelectedZone] = useState(zones[0]?.id || "ZONE-01");
 
-  const activeZone = zones.find((z) => z.id === selectedZone) || zones[0];
-
   return (
     <div className="dashboard-page hvac-page">
       <PageHeader
@@ -79,46 +77,47 @@ export default function HVACSystems() {
                 onClick={() => setSelectedZone(zone.id)}
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, rgba(8, 36, 40, 0.95), rgba(4, 20, 25, 0.95))"
-                    : "rgba(10, 22, 34, 0.7)",
-                  border: `1px solid ${isSelected ? "#10b981" : "rgba(16, 185, 129, 0.25)"}`,
+                    ? "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)"
+                    : "#ffffff",
+                  border: `1px solid ${isSelected ? "#16a34a" : "var(--border-subtle, #e2e8f0)"}`,
                   borderRadius: "8px",
                   padding: "16px",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
-                  boxShadow: isSelected ? "0 0 16px rgba(16, 185, 129, 0.2)" : "none",
+                  boxShadow: isSelected ? "0 4px 12px rgba(22, 163, 74, 0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#6ee7b7", fontWeight: 700 }}>
+                  <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#166534", fontWeight: 700 }}>
                     {zone.id}
                   </span>
                   <span
                     style={{
-                      background: "rgba(16, 185, 129, 0.15)",
-                      color: "#10b981",
+                      background: "#dcfce7",
+                      color: "#166534",
                       fontSize: "10px",
                       fontWeight: 700,
                       padding: "2px 6px",
                       borderRadius: "4px",
+                      border: "1px solid #bbf7d0",
                     }}
                   >
                     ● {zone.heatingState}
                   </span>
                 </div>
 
-                <h4 style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#ffffff" }}>{zone.name}</h4>
+                <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>{zone.name}</h4>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "24px", fontWeight: 800, color: "#10b981" }}>
+                  <span style={{ fontSize: "24px", fontWeight: 800, color: "#16a34a" }}>
                     {zone.currentTempC > 0 ? `+${zone.currentTempC}` : zone.currentTempC}°C
                   </span>
-                  <span style={{ fontSize: "11px", color: "#94a3b8", fontFamily: "monospace" }}>
+                  <span style={{ fontSize: "11px", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
                     Target: {zone.targetTempC}°C · {zone.humidityPercent}% RH
                   </span>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "6px", fontSize: "10px", color: "#94a3b8", marginTop: "8px", fontFamily: "monospace" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "6px", fontSize: "10px", color: "#64748b", marginTop: "8px", fontFamily: "var(--font-mono, monospace)" }}>
                   <span>Air Flow: {zone.airFlowM3h} m³/h</span>
                   <span>Radiator: {zone.radiatorLoadKw} kW</span>
                 </div>
@@ -152,32 +151,32 @@ export default function HVACSystems() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "8px", padding: "14px" }}>
-              <div style={{ fontSize: "11px", color: "#67e8f9", fontFamily: "monospace", fontWeight: 700, marginBottom: "8px" }}>
+            <div style={{ background: "var(--bg-subtle, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "14px" }}>
+              <div style={{ fontSize: "11px", color: "var(--accent-primary, #0284c7)", fontFamily: "var(--font-mono, monospace)", fontWeight: 700, marginBottom: "8px" }}>
                 CLOSED-LOOP GLYCOL HEAT EXCHANGER
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px", fontSize: "12px" }}>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>SUPPLY TEMPERATURE</span>
-                  <strong style={{ color: "#f59e0b", fontSize: "16px" }}>{summary.glycolSupplyTempC}°C</strong>
+                  <span style={{ color: "#64748b", fontSize: "10px", display: "block" }}>SUPPLY TEMPERATURE</span>
+                  <strong style={{ color: "#d97706", fontSize: "16px", fontFamily: "var(--font-mono, monospace)" }}>{summary.glycolSupplyTempC}°C</strong>
                 </div>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>RETURN TEMPERATURE</span>
-                  <strong style={{ color: "#38bdf8", fontSize: "16px" }}>{summary.glycolReturnTempC}°C</strong>
+                  <span style={{ color: "#64748b", fontSize: "10px", display: "block" }}>RETURN TEMPERATURE</span>
+                  <strong style={{ color: "#0284c7", fontSize: "16px", fontFamily: "var(--font-mono, monospace)" }}>{summary.glycolReturnTempC}°C</strong>
                 </div>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>CIRCULATION FLOW</span>
-                  <strong style={{ color: "#ffffff" }}>{summary.glycolFlowRateLpm} L/min</strong>
+                  <span style={{ color: "#64748b", fontSize: "10px", display: "block" }}>CIRCULATION FLOW</span>
+                  <strong style={{ color: "var(--text-primary, #0f172a)", fontSize: "16px", fontFamily: "var(--font-mono, monospace)" }}>{summary.glycolFlowRateLpm} L/min</strong>
                 </div>
                 <div>
-                  <span style={{ color: "#94a3b8", fontSize: "10px", display: "block" }}>THERMAL EFFICIENCY</span>
-                  <strong style={{ color: "#10b981" }}>{summary.thermalEfficiencyPercent}%</strong>
+                  <span style={{ color: "#64748b", fontSize: "10px", display: "block" }}>THERMAL EFFICIENCY</span>
+                  <strong style={{ color: "#16a34a", fontSize: "16px", fontFamily: "var(--font-mono, monospace)" }}>{summary.thermalEfficiencyPercent}%</strong>
                 </div>
               </div>
             </div>
 
-            <div style={{ background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.25)", borderRadius: "8px", padding: "12px 14px", fontSize: "11px", color: "#a7f3d0" }}>
+            <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "8px", padding: "12px 14px", fontSize: "11px", color: "#166534" }}>
               <strong>THERMAL STATUS:</strong> All airlock vestibules and perimeter insulation panels are operating with nominal delta retention.
             </div>
           </div>

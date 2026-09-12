@@ -30,9 +30,9 @@ export default function PowerChart({
     <div style={{ width: "100%", overflow: "hidden" }}>
       <svg viewBox={`0 0 ${width} ${height}`} style={{ width: "100%", height: "auto" }} preserveAspectRatio="none">
         <defs>
-          <linearGradient id="powerGenGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#00f0ff" stopOpacity="0.0" />
+          <linearGradient id="powerGenGradLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0284c7" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#0284c7" stopOpacity="0.01" />
           </linearGradient>
         </defs>
 
@@ -42,8 +42,8 @@ export default function PowerChart({
           const val = Math.round(maxVal - ratio * (maxVal - minVal));
           return (
             <g key={idx}>
-              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="rgba(100, 200, 240, 0.12)" strokeDasharray="3 3" />
-              <text x={padding.left - 8} y={y + 3} fill="rgba(160, 220, 240, 0.6)" fontSize="8" textAnchor="end" fontFamily="monospace">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#e2e8f0" strokeDasharray="3 3" />
+              <text x={padding.left - 8} y={y + 3} fill="#64748b" fontSize="8" textAnchor="end" fontFamily="monospace">
                 {val} {unit}
               </text>
             </g>
@@ -52,38 +52,38 @@ export default function PowerChart({
 
         {/* X labels */}
         {labels.map((lbl, idx) => (
-          <text key={idx} x={getX(idx)} y={height - 10} fill="rgba(160, 220, 240, 0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace">
+          <text key={idx} x={getX(idx)} y={height - 10} fill="#64748b" fontSize="8" textAnchor="middle" fontFamily="monospace">
             {lbl}
           </text>
         ))}
 
         {/* Gen Area */}
-        <polygon points={genArea} fill="url(#powerGenGrad)" />
+        <polygon points={genArea} fill="url(#powerGenGradLight)" />
 
         {/* Gen line */}
-        <polyline fill="none" stroke="#00f0ff" strokeWidth="2" points={genPoints} />
+        <polyline fill="none" stroke="#0284c7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={genPoints} />
 
         {/* Demand line */}
-        <polyline fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4 2" points={demandPoints} />
+        <polyline fill="none" stroke="#d97706" strokeWidth="2" strokeDasharray="4 2" strokeLinecap="round" strokeLinejoin="round" points={demandPoints} />
 
         {/* Data points */}
         {generation.map((v, i) => (
-          <circle key={`gen-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#00f0ff" stroke="#051622" strokeWidth="1.5" />
+          <circle key={`gen-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#0284c7" stroke="#ffffff" strokeWidth="1.5" />
         ))}
         {demand.map((v, i) => (
-          <circle key={`dem-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#f59e0b" stroke="#051622" strokeWidth="1" />
+          <circle key={`dem-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#d97706" stroke="#ffffff" strokeWidth="1" />
         ))}
       </svg>
 
       {/* Legend */}
-      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.5rem", fontSize: "0.75rem", fontFamily: "monospace" }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.5rem", fontSize: "0.75rem", fontFamily: "var(--font-mono, monospace)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 3, background: "#00f0ff", display: "inline-block" }} />
-          <span style={{ color: "#e2f1f8" }}>Power Generation ({unit})</span>
+          <span style={{ width: 12, height: 3, background: "#0284c7", borderRadius: "1px", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>Power Generation ({unit})</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 2, borderTop: "2px dashed #f59e0b", display: "inline-block" }} />
-          <span style={{ color: "#e2f1f8" }}>Station Demand Load ({unit})</span>
+          <span style={{ width: 12, height: 2, borderTop: "2px dashed #d97706", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>Station Demand Load ({unit})</span>
         </div>
       </div>
     </div>

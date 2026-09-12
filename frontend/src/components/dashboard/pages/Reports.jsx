@@ -105,23 +105,23 @@ export default function Reports() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "rgba(0, 240, 255, 0.06)",
-          border: "1px solid rgba(0, 240, 255, 0.22)",
+          background: "#f0f9ff",
+          border: "1px solid #bae6fd",
           borderRadius: 6,
           padding: "0.6rem 1rem",
           marginBottom: "1.25rem",
           fontSize: "0.75rem",
-          fontFamily: "monospace",
-          color: "#e2f1f8",
+          fontFamily: "var(--font-mono, monospace)",
+          color: "var(--text-primary, #0f172a)",
           flexWrap: "wrap",
           gap: "0.5rem",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <span style={{ color: "#ffb84d", fontWeight: 700 }}>🔒 RESTRICTED RECORDS</span>
-          <span style={{ color: "#6be2f2" }}>CLASSIFICATION: OFFICIAL POLAR DOSSIER / NCPOR DIRECTORATE</span>
+          <span style={{ color: "#d97706", fontWeight: 700 }}>🔒 RESTRICTED RECORDS</span>
+          <span style={{ color: "#0369a1", fontWeight: 600 }}>CLASSIFICATION: OFFICIAL POLAR DOSSIER / NCPOR DIRECTORATE</span>
         </div>
-        <span style={{ color: "#00f0ff", fontSize: "0.7rem" }}>
+        <span style={{ color: "#0284c7", fontSize: "0.7rem", fontWeight: 600 }}>
           CLEARANCE LEVEL: LEVEL-4 POLAR COMMAND (ADMIN ONLY)
         </span>
       </div>

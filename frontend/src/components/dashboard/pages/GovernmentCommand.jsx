@@ -124,23 +124,23 @@ export default function GovernmentCommand() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "rgba(255, 184, 77, 0.08)",
-          border: "1px solid rgba(255, 184, 77, 0.25)",
+          background: "#fffbeb",
+          border: "1px solid #fde68a",
           borderRadius: 6,
           padding: "0.6rem 1rem",
           marginBottom: "1.25rem",
           fontSize: "0.75rem",
-          fontFamily: "monospace",
-          color: "#ffb84d",
+          fontFamily: "var(--font-mono, monospace)",
+          color: "#92400e",
           flexWrap: "wrap",
           gap: "0.5rem",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span>⚠</span>
+          <span>⚠️</span>
           <strong>SIMULATED SATCOM TRANSMISSION — PROTOTYPE</strong>
         </div>
-        <span style={{ color: "#a0c4dc", fontSize: "0.7rem" }}>
+        <span style={{ color: "#64748b", fontSize: "0.7rem" }}>
           Decision-support & polar telemetry interface. No direct electrical hardware actuation.
         </span>
       </div>
@@ -558,7 +558,7 @@ export default function GovernmentCommand() {
             <div className="modal-gov-header">
               <span className="modal-gov-icon">🔒</span>
               <div>
-                <div style={{ fontFamily: "monospace", fontSize: "0.65rem", color: "#6be2f2", letterSpacing: "0.12em" }}>
+                <div style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.65rem", color: "#0369a1", letterSpacing: "0.12em", fontWeight: 700 }}>
                   NCPOR MISSION DIRECTIVE AUTHORIZATION
                 </div>
                 <h3 className="modal-gov-title">AUTHORIZED COMMAND</h3>
@@ -566,18 +566,18 @@ export default function GovernmentCommand() {
             </div>
 
             <div className="modal-gov-body">
-              <p style={{ margin: "0 0 0.5rem 0", color: "#e2f1f8", fontWeight: 600 }}>
+              <p style={{ margin: "0 0 0.5rem 0", color: "#0f172a", fontWeight: 600 }}>
                 Are you sure you want to transmit this mission directive?
               </p>
-              <p style={{ margin: "0 0 0.75rem 0", fontSize: "0.8rem", color: "#8bb0c9" }}>
+              <p style={{ margin: "0 0 0.75rem 0", fontSize: "0.8rem", color: "#475569" }}>
                 This will simulate dispatching an authenticated cryptographic directive package over the INSAT Satcom telemetry channel.
               </p>
 
               <div className="modal-gov-summary-box">
-                <div><span style={{ color: "#6be2f2" }}>TARGET STATION:</span> <strong>{targetStation} STATION</strong></div>
-                <div><span style={{ color: "#6be2f2" }}>CLASSIFICATION:</span> <strong>{commandType}</strong></div>
-                <div><span style={{ color: "#6be2f2" }}>PRIORITY:</span> <strong style={{ color: priority === "CRITICAL" ? "#ff6b6b" : priority === "HIGH" ? "#ffb84d" : "#00f0ff" }}>{priority}</strong></div>
-                <div><span style={{ color: "#6be2f2" }}>DIRECTIVE SUBJECT:</span> <span>{title}</span></div>
+                <div><span style={{ color: "#0369a1" }}>TARGET STATION:</span> <strong>{targetStation} STATION</strong></div>
+                <div><span style={{ color: "#0369a1" }}>CLASSIFICATION:</span> <strong>{commandType}</strong></div>
+                <div><span style={{ color: "#0369a1" }}>PRIORITY:</span> <strong style={{ color: priority === "CRITICAL" ? "#dc2626" : priority === "HIGH" ? "#d97706" : "#0284c7" }}>{priority}</strong></div>
+                <div><span style={{ color: "#0369a1" }}>DIRECTIVE SUBJECT:</span> <span>{title}</span></div>
               </div>
             </div>
 

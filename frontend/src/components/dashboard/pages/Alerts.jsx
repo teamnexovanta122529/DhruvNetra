@@ -50,43 +50,43 @@ export default function Alerts() {
         <div
           className="metric-card"
           onClick={() => setSeverityFilter("CRITICAL")}
-          style={{ cursor: "pointer", border: severityFilter === "CRITICAL" ? "1px solid #ef4444" : undefined }}
+          style={{ cursor: "pointer", border: severityFilter === "CRITICAL" ? "2px solid #dc2626" : "1px solid var(--border-subtle, #e2e8f0)" }}
         >
           <div className="metric-card-top">
             <span>CRITICAL ALERTS</span>
-            <span style={{ color: "#ef4444", fontWeight: 700 }}>● CODE RED</span>
+            <span style={{ color: "#dc2626", fontWeight: 700 }}>● CODE RED</span>
           </div>
-          <div className="metric-value" style={{ color: criticalCount > 0 ? "#ef4444" : "#ffffff" }}>
+          <div className="metric-value" style={{ color: criticalCount > 0 ? "#dc2626" : "var(--text-primary, #0f172a)" }}>
             {criticalCount}
           </div>
-          <div className="metric-trend">Immediate action mandatory</div>
+          <div className="metric-trend" style={{ color: criticalCount > 0 ? "#dc2626" : "#64748b" }}>Immediate action mandatory</div>
         </div>
 
         <div
           className="metric-card"
           onClick={() => setSeverityFilter("WARNING")}
-          style={{ cursor: "pointer", border: severityFilter === "WARNING" ? "1px solid #f59e0b" : undefined }}
+          style={{ cursor: "pointer", border: severityFilter === "WARNING" ? "2px solid #d97706" : "1px solid var(--border-subtle, #e2e8f0)" }}
         >
           <div className="metric-card-top">
             <span>WARNING ALERTS</span>
-            <span style={{ color: "#f59e0b", fontWeight: 700 }}>● CODE ORANGE</span>
+            <span style={{ color: "#d97706", fontWeight: 700 }}>● CODE ORANGE</span>
           </div>
-          <div className="metric-value" style={{ color: warningCount > 0 ? "#f59e0b" : "#ffffff" }}>
+          <div className="metric-value" style={{ color: warningCount > 0 ? "#d97706" : "var(--text-primary, #0f172a)" }}>
             {warningCount}
           </div>
-          <div className="metric-trend">Subsystem threshold drift</div>
+          <div className="metric-trend" style={{ color: warningCount > 0 ? "#d97706" : "#64748b" }}>Subsystem threshold drift</div>
         </div>
 
         <div
           className="metric-card"
           onClick={() => setSeverityFilter("INFO")}
-          style={{ cursor: "pointer", border: severityFilter === "INFO" ? "1px solid #00f0ff" : undefined }}
+          style={{ cursor: "pointer", border: severityFilter === "INFO" ? "2px solid #0284c7" : "1px solid var(--border-subtle, #e2e8f0)" }}
         >
           <div className="metric-card-top">
             <span>INFORMATIONAL</span>
-            <span style={{ color: "#00f0ff", fontWeight: 700 }}>● CODE CYAN</span>
+            <span style={{ color: "#0284c7", fontWeight: 700 }}>● CODE BLUE</span>
           </div>
-          <div className="metric-value">
+          <div className="metric-value" style={{ color: "var(--text-primary, #0f172a)" }}>
             {infoCount}
           </div>
           <div className="metric-trend">Telemetry sync & cycle updates</div>
@@ -95,13 +95,13 @@ export default function Alerts() {
         <div
           className="metric-card"
           onClick={() => setSeverityFilter("RESOLVED")}
-          style={{ cursor: "pointer", border: severityFilter === "RESOLVED" ? "1px solid #10b981" : undefined }}
+          style={{ cursor: "pointer", border: severityFilter === "RESOLVED" ? "2px solid #16a34a" : "1px solid var(--border-subtle, #e2e8f0)" }}
         >
           <div className="metric-card-top">
             <span>RESOLVED EVENTS</span>
-            <span style={{ color: "#10b981", fontWeight: 700 }}>● ARCHIVE</span>
+            <span style={{ color: "#16a34a", fontWeight: 700 }}>● ARCHIVE</span>
           </div>
-          <div className="metric-value" style={{ color: "#10b981" }}>
+          <div className="metric-value" style={{ color: "#16a34a" }}>
             {resolvedCount}
           </div>
           <div className="metric-trend">Cleared & validated</div>
@@ -119,15 +119,16 @@ export default function Alerts() {
                 type="button"
                 onClick={() => setSeverityFilter(sev)}
                 style={{
-                  background: severityFilter === sev ? "rgba(0, 240, 255, 0.2)" : "rgba(255, 255, 255, 0.04)",
-                  border: `1px solid ${severityFilter === sev ? "#00f0ff" : "rgba(255, 255, 255, 0.12)"}`,
-                  color: severityFilter === sev ? "#ffffff" : "#94a3b8",
+                  background: severityFilter === sev ? "var(--accent-primary, #0284c7)" : "#ffffff",
+                  border: `1px solid ${severityFilter === sev ? "var(--accent-primary, #0284c7)" : "var(--border-subtle, #cbd5e1)"}`,
+                  color: severityFilter === sev ? "#ffffff" : "var(--text-secondary, #475569)",
                   padding: "5px 12px",
                   borderRadius: "4px",
                   fontSize: "11px",
-                  fontWeight: 700,
+                  fontWeight: 600,
                   cursor: "pointer",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono, monospace)",
+                  transition: "all 0.15s ease"
                 }}
               >
                 {sev}
@@ -136,8 +137,8 @@ export default function Alerts() {
           </div>
 
           {/* Subsystem Filter Dropdown */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "11px", fontFamily: "monospace" }}>
-            <span style={{ color: "#94a3b8" }}>SUBSYSTEM:</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "11px", fontFamily: "var(--font-mono, monospace)" }}>
+            <span style={{ color: "#64748b" }}>SUBSYSTEM:</span>
             <select
               value={systemFilter}
               onChange={(e) => setSystemFilter(e.target.value)}
@@ -160,7 +161,7 @@ export default function Alerts() {
       {/* ALERT CARDS LIST */}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "16px" }}>
         {filteredAlerts.length === 0 ? (
-          <div style={{ background: "rgba(10, 22, 34, 0.5)", border: "1px dashed rgba(255, 255, 255, 0.15)", borderRadius: "8px", padding: "32px", textAlign: "center", color: "#94a3b8" }}>
+          <div style={{ background: "#ffffff", border: "1px dashed var(--border-subtle, #cbd5e1)", borderRadius: "8px", padding: "32px", textAlign: "center", color: "#64748b" }}>
             <span>No alerts match the selected filter criteria for {station} Station.</span>
           </div>
         ) : (
@@ -175,27 +176,27 @@ export default function Alerts() {
                 key={alt.id}
                 style={{
                   background: isCritical
-                    ? "linear-gradient(135deg, rgba(50, 15, 20, 0.9), rgba(30, 8, 12, 0.95))"
+                    ? "#fef2f2"
                     : isWarning
-                    ? "linear-gradient(135deg, rgba(40, 25, 10, 0.9), rgba(25, 15, 6, 0.95))"
+                    ? "#fffbeb"
                     : isResolved
-                    ? "rgba(10, 22, 34, 0.5)"
-                    : "rgba(10, 26, 40, 0.8)",
+                    ? "#f8fafc"
+                    : "#f0f9ff",
                   border: `1px solid ${
                     isCritical
-                      ? "rgba(239, 68, 68, 0.45)"
+                      ? "#fecaca"
                       : isWarning
-                      ? "rgba(245, 158, 11, 0.4)"
+                      ? "#fde68a"
                       : isResolved
-                      ? "rgba(16, 185, 129, 0.25)"
-                      : "rgba(0, 240, 255, 0.25)"
+                      ? "#e2e8f0"
+                      : "#bae6fd"
                   }`,
                   borderRadius: "8px",
                   padding: "16px 20px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "10px",
-                  boxShadow: isCritical ? "0 0 16px rgba(239, 68, 68, 0.2)" : "none",
+                  boxShadow: isCritical ? "0 4px 12px rgba(220, 38, 38, 0.08)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
                 {/* Alert Top Row */}
@@ -204,58 +205,59 @@ export default function Alerts() {
                     <span
                       style={{
                         background: isCritical
-                          ? "#ef4444"
+                          ? "#dc2626"
                           : isWarning
-                          ? "#f59e0b"
+                          ? "#d97706"
                           : isResolved
-                          ? "#10b981"
-                          : "#00f0ff",
-                        color: "#000000",
-                        fontWeight: 800,
+                          ? "#16a34a"
+                          : "#0284c7",
+                        color: "#ffffff",
+                        fontWeight: 700,
                         fontSize: "10px",
                         padding: "2px 8px",
                         borderRadius: "4px",
                         letterSpacing: "1px",
+                        fontFamily: "var(--font-mono, monospace)"
                       }}
                     >
                       {alt.severity}
                     </span>
 
-                    <span style={{ fontSize: "11px", color: "#67e8f9", fontFamily: "monospace", fontWeight: 700 }}>
+                    <span style={{ fontSize: "11px", color: "var(--accent-primary, #0284c7)", fontFamily: "var(--font-mono, monospace)", fontWeight: 700 }}>
                       [{alt.subsystem}] · {alt.station}
                     </span>
                   </div>
 
-                  <span style={{ fontSize: "11px", color: "#94a3b8", fontFamily: "monospace" }}>
+                  <span style={{ fontSize: "11px", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
                     Detected: {alt.detectedAt} ({alt.timestamp})
                   </span>
                 </div>
 
                 {/* Alert Title & Description */}
                 <div>
-                  <h3 style={{ margin: "0 0 4px 0", fontSize: "15px", color: "#ffffff", fontWeight: 700 }}>
+                  <h3 style={{ margin: "0 0 4px 0", fontSize: "15px", color: isCritical ? "#991b1b" : isWarning ? "#92400e" : "var(--text-primary, #0f172a)", fontWeight: 700 }}>
                     {alt.title}
                   </h3>
-                  <p style={{ margin: 0, fontSize: "12px", color: "#cbd5e1", lineHeight: "1.4" }}>
+                  <p style={{ margin: 0, fontSize: "12px", color: isCritical ? "#7f1d1d" : isWarning ? "#78350f" : "var(--text-secondary, #475569)", lineHeight: "1.4" }}>
                     {alt.description}
                   </p>
                 </div>
 
                 {/* Affected equipment & recommendation */}
-                <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "8px 12px", borderRadius: "6px", fontSize: "11px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "8px" }}>
+                <div style={{ background: "#ffffff", border: "1px solid rgba(0,0,0,0.06)", padding: "10px 12px", borderRadius: "6px", fontSize: "11px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "8px" }}>
                   <div>
-                    <span style={{ color: "#94a3b8" }}>Affected Component: </span>
-                    <strong style={{ color: "#e2e8f0" }}>{alt.affectedComponent}</strong>
+                    <span style={{ color: "#64748b" }}>Affected Component: </span>
+                    <strong style={{ color: "var(--text-primary, #0f172a)" }}>{alt.affectedComponent}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#94a3b8" }}>Recommended Action: </span>
-                    <strong style={{ color: "#38bdf8" }}>{alt.recommendation}</strong>
+                    <span style={{ color: "#64748b" }}>Recommended Action: </span>
+                    <strong style={{ color: "#0284c7" }}>{alt.recommendation}</strong>
                   </div>
                 </div>
 
                 {/* Actions Row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "6px" }}>
-                  <div style={{ fontSize: "11px", color: isAck ? "#10b981" : "#94a3b8" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "4px" }}>
+                  <div style={{ fontSize: "11px", color: isAck ? "#16a34a" : "#64748b" }}>
                     {isAck ? "✓ Acknowledged by Station Operator" : "Pending Operator Acknowledgement"}
                   </div>
 
@@ -265,12 +267,13 @@ export default function Alerts() {
                         type="button"
                         onClick={() => handleAcknowledge(alt.id)}
                         style={{
-                          background: "rgba(255, 255, 255, 0.08)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          color: "#ffffff",
+                          background: "#ffffff",
+                          border: "1px solid #cbd5e1",
+                          color: "#334155",
                           padding: "4px 10px",
                           borderRadius: "4px",
                           fontSize: "11px",
+                          fontWeight: 500,
                           cursor: "pointer",
                         }}
                       >
@@ -283,14 +286,15 @@ export default function Alerts() {
                         type="button"
                         onClick={() => navigate(alt.targetRoute)}
                         style={{
-                          background: "linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(2, 132, 199, 0.3))",
-                          border: "1px solid rgba(0, 240, 255, 0.4)",
-                          color: "#00f0ff",
+                          background: "var(--accent-primary, #0284c7)",
+                          border: "none",
+                          color: "#ffffff",
                           padding: "4px 12px",
                           borderRadius: "4px",
                           fontSize: "11px",
-                          fontWeight: 700,
+                          fontWeight: 600,
                           cursor: "pointer",
+                          boxShadow: "0 1px 3px rgba(2, 132, 199, 0.2)"
                         }}
                       >
                         Open Subsystem →

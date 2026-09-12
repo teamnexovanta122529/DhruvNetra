@@ -32,7 +32,7 @@ export default function TemperatureChart({
             y1={getY(0)}
             x2={width - padding.right}
             y2={getY(0)}
-            stroke="rgba(255, 255, 255, 0.25)"
+            stroke="#94a3b8"
             strokeDasharray="2 2"
           />
         )}
@@ -43,8 +43,8 @@ export default function TemperatureChart({
           const val = Math.round(maxVal - ratio * (maxVal - minVal));
           return (
             <g key={idx}>
-              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="rgba(100, 200, 240, 0.1)" strokeDasharray="3 3" />
-              <text x={padding.left - 6} y={y + 3} fill="rgba(160, 220, 240, 0.6)" fontSize="8" textAnchor="end" fontFamily="monospace">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#e2e8f0" strokeDasharray="3 3" />
+              <text x={padding.left - 6} y={y + 3} fill="#64748b" fontSize="8" textAnchor="end" fontFamily="monospace">
                 {val > 0 ? `+${val}` : val}°C
               </text>
             </g>
@@ -53,33 +53,33 @@ export default function TemperatureChart({
 
         {/* X labels */}
         {labels.map((lbl, idx) => (
-          <text key={idx} x={getX(idx)} y={height - 10} fill="rgba(160, 220, 240, 0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace">
+          <text key={idx} x={getX(idx)} y={height - 10} fill="#64748b" fontSize="8" textAnchor="middle" fontFamily="monospace">
             {lbl}
           </text>
         ))}
 
-        {/* Outdoor Ambient Line (Ice Blue) */}
-        <polyline fill="none" stroke="#38bdf8" strokeWidth="2" points={outdoorPoints} />
+        {/* Outdoor Ambient Line (Glacier Blue) */}
+        <polyline fill="none" stroke="#0284c7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={outdoorPoints} />
 
-        {/* Indoor Target Line (Green/Amber) */}
-        <polyline fill="none" stroke="#10b981" strokeWidth="2.2" points={indoorPoints} />
+        {/* Indoor Target Line (Green) */}
+        <polyline fill="none" stroke="#16a34a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={indoorPoints} />
 
         {outdoor.map((v, i) => (
-          <circle key={`out-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#38bdf8" stroke="#051622" strokeWidth="1" />
+          <circle key={`out-${i}`} cx={getX(i)} cy={getY(v)} r="2.5" fill="#0284c7" stroke="#ffffff" strokeWidth="1" />
         ))}
         {indoor.map((v, i) => (
-          <circle key={`in-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#10b981" stroke="#051622" strokeWidth="1.5" />
+          <circle key={`in-${i}`} cx={getX(i)} cy={getY(v)} r="3" fill="#16a34a" stroke="#ffffff" strokeWidth="1.5" />
         ))}
       </svg>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "monospace" }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "0.4rem", fontSize: "0.75rem", fontFamily: "var(--font-mono, monospace)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 2.5, background: "#10b981", display: "inline-block" }} />
-          <span style={{ color: "#a7f3d0" }}>Indoor Target (+21°C)</span>
+          <span style={{ width: 12, height: 2.5, background: "#16a34a", borderRadius: "1px", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>Indoor Target (+21°C)</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-          <span style={{ width: 12, height: 2, background: "#38bdf8", display: "inline-block" }} />
-          <span style={{ color: "#bae6fd" }}>Outdoor Polar Ambient</span>
+          <span style={{ width: 12, height: 2, background: "#0284c7", borderRadius: "1px", display: "inline-block" }} />
+          <span style={{ color: "#334155", fontWeight: 500 }}>Outdoor Polar Ambient</span>
         </div>
       </div>
     </div>

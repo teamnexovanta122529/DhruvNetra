@@ -207,7 +207,7 @@ export default function Login() {
 
         {/* Demo Quick-Fill Credentials */}
         <footer className="auth-demo-shortcuts">
-          <div className="demo-title">TEST CREDENTIALS (CLICK TO FILL)</div>
+          <div className="demo-title">AUTHORIZED OPERATOR PROFILES (QUICK SELECT)</div>
           <div className="demo-chips">
             <button
               type="button"

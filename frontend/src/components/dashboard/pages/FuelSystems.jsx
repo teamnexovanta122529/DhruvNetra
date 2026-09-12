@@ -29,21 +29,21 @@ export default function FuelSystems() {
       {isLowFuel && (
         <div
           style={{
-            background: "rgba(239, 68, 68, 0.15)",
-            border: "1px solid rgba(239, 68, 68, 0.45)",
+            background: "#fef2f2",
+            border: "1px solid #fecaca",
             borderRadius: 8,
             padding: "12px 16px",
             marginBottom: "16px",
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            color: "#fca5a5",
+            color: "#991b1b",
           }}
         >
           <span style={{ fontSize: "18px" }}>⚠️</span>
           <div>
             <strong style={{ display: "block" }}>CRITICAL FUEL RESERVE WARNING: TANK CAPACITY BELOW SAFETY THRESHOLD</strong>
-            <span style={{ fontSize: "12px" }}>Estimated buffer less than required winter expedition reserve. Expedite tanker scheduling.</span>
+            <span style={{ fontSize: "12px", color: "#b91c1c" }}>Estimated buffer less than required winter expedition reserve. Expedite tanker scheduling.</span>
           </div>
         </div>
       )}
@@ -101,48 +101,49 @@ export default function FuelSystems() {
                 onClick={() => setSelectedTank(tank.id)}
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, rgba(30, 24, 8, 0.95), rgba(18, 14, 4, 0.95))"
-                    : "rgba(10, 22, 34, 0.7)",
-                  border: `1px solid ${isSelected ? "#f59e0b" : "rgba(245, 158, 11, 0.25)"}`,
+                    ? "linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)"
+                    : "#ffffff",
+                  border: `1px solid ${isSelected ? "#d97706" : "var(--border-subtle, #e2e8f0)"}`,
                   borderRadius: "8px",
                   padding: "16px",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
-                  boxShadow: isSelected ? "0 0 16px rgba(245, 158, 11, 0.2)" : "none",
+                  boxShadow: isSelected ? "0 4px 12px rgba(217, 119, 6, 0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "11px", fontFamily: "monospace", color: "#fbbf24", fontWeight: 700 }}>
+                  <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#b45309", fontWeight: 700 }}>
                     {tank.id}
                   </span>
                   <span
                     style={{
-                      background: "rgba(245, 158, 11, 0.15)",
-                      color: "#fbbf24",
+                      background: "#fef3c7",
+                      color: "#b45309",
                       fontSize: "10px",
                       fontWeight: 700,
                       padding: "2px 6px",
                       borderRadius: "4px",
+                      border: "1px solid #fde68a",
                     }}
                   >
                     ● {tank.valveStatus}
                   </span>
                 </div>
 
-                <h4 style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#ffffff" }}>{tank.name}</h4>
+                <h4 style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-primary, #0f172a)", fontWeight: 600 }}>{tank.name}</h4>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "22px", fontWeight: 800, color: "#fbbf24" }}>
+                  <span style={{ fontSize: "22px", fontWeight: 800, color: "#d97706" }}>
                     {tank.percentage}%
                   </span>
-                  <span style={{ fontSize: "11px", color: "#94a3b8", fontFamily: "monospace" }}>
+                  <span style={{ fontSize: "11px", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
                     {tank.currentL.toLocaleString()} / {tank.capacityL.toLocaleString()} L
                   </span>
                 </div>
 
                 <ProgressBar value={tank.percentage} max={100} height={5} color="amber" />
 
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#94a3b8", marginTop: "8px", fontFamily: "monospace" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#64748b", marginTop: "8px", fontFamily: "var(--font-mono, monospace)" }}>
                   <span>Temp: {tank.tempC}°C</span>
                   <span>Level: {tank.levelMeters} m</span>
                   <span>Heating: {tank.heatTracing}</span>
@@ -178,8 +179,8 @@ export default function FuelSystems() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             {/* Gen-wise burn share */}
-            <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "8px", padding: "14px" }}>
-              <div style={{ fontSize: "11px", color: "#67e8f9", fontFamily: "monospace", fontWeight: 700, marginBottom: "8px" }}>
+            <div style={{ background: "var(--bg-subtle, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "14px" }}>
+              <div style={{ fontSize: "11px", color: "var(--accent-primary, #0284c7)", fontFamily: "var(--font-mono, monospace)", fontWeight: 700, marginBottom: "8px" }}>
                 GENERATOR-WISE FUEL CONSUMPTION SHARE
               </div>
 
@@ -187,8 +188,8 @@ export default function FuelSystems() {
                 {generatorBurnDistribution.map((gb) => (
                   <div key={gb.id}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", marginBottom: "3px" }}>
-                      <span style={{ color: "#e2e8f0" }}>{gb.name}</span>
-                      <strong style={{ color: "#fbbf24" }}>{gb.burnRateLh} L/h ({gb.sharePercent}%)</strong>
+                      <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 500 }}>{gb.name}</span>
+                      <strong style={{ color: "#d97706", fontFamily: "var(--font-mono, monospace)" }}>{gb.burnRateLh} L/h ({gb.sharePercent}%)</strong>
                     </div>
                     <ProgressBar value={gb.sharePercent} max={100} height={4} color="amber" />
                   </div>
@@ -197,13 +198,13 @@ export default function FuelSystems() {
             </div>
 
             {/* Logistics Refill Notice */}
-            <div style={{ background: "rgba(10, 30, 45, 0.6)", border: "1px solid rgba(0, 240, 255, 0.2)", borderRadius: "8px", padding: "14px", fontSize: "12px", color: "#94a3b8" }}>
-              <div style={{ color: "#00f0ff", fontWeight: 700, marginBottom: "4px" }}>
+            <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: "8px", padding: "14px", fontSize: "12px", color: "#475569" }}>
+              <div style={{ color: "#0369a1", fontWeight: 700, marginBottom: "4px", fontSize: "11px", fontFamily: "var(--font-mono, monospace)" }}>
                 LOGISTICS REPLENISHMENT VOYAGE
               </div>
-              <div>Last Bunkering: <strong style={{ color: "#ffffff" }}>{summary.lastRefillDate}</strong></div>
-              <div>Next Scheduled Tanker: <strong style={{ color: "#10b981" }}>{summary.nextScheduledDelivery}</strong></div>
-              <div style={{ marginTop: "4px", fontSize: "11px", color: "rgba(148, 163, 184, 0.8)" }}>
+              <div style={{ marginTop: "2px" }}>Last Bunkering: <strong style={{ color: "#0f172a" }}>{summary.lastRefillDate}</strong></div>
+              <div style={{ marginTop: "2px" }}>Next Scheduled Tanker: <strong style={{ color: "#16a34a" }}>{summary.nextScheduledDelivery}</strong></div>
+              <div style={{ marginTop: "4px", fontSize: "11px", color: "#64748b" }}>
                 Fuel Type: {summary.fuelType}
               </div>
             </div>

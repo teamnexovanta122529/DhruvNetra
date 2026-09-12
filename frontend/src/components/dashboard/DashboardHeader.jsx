@@ -101,10 +101,16 @@ export default function DashboardHeader({ sidebarCollapsed, onToggleSidebar }) {
         <Link
           to="/"
           className="header-logo"
-          style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
+          style={{ textDecoration: "none", color: "inherit", cursor: "pointer", display: "flex", alignItems: "center", gap: "9px" }}
           title="Return to Landing Page"
         >
-          DHRUVNETRA
+          <img
+            src="/dhruvnetra_favicon.svg"
+            alt="DHRUVNETRA Logo"
+            className="header-logo-icon"
+            style={{ width: "26px", height: "26px", objectFit: "contain", flexShrink: 0 }}
+          />
+          <span className="header-logo-text">DHRUVNETRA</span>
         </Link>
 
         <div className="header-divider" />

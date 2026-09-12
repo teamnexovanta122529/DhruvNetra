@@ -79,38 +79,41 @@ export default function DigitalTwin() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "rgba(0, 240, 255, 0.06)",
-          border: "1px solid rgba(0, 240, 255, 0.2)",
+          background: "var(--surface-card)",
+          border: "1px solid var(--border-default)",
           borderRadius: 6,
-          padding: "0.5rem 1rem",
+          padding: "0.6rem 1rem",
           marginBottom: "1rem",
           fontSize: "0.75rem",
           fontFamily: "monospace",
-          color: "#9cd8e6",
+          color: "var(--text-secondary)",
           flexWrap: "wrap",
           gap: "0.5rem",
+          boxShadow: "var(--shadow-xs)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{ color: "#00f0ff" }}>◈</span>
-          <strong>CLICK ANY 3D BUILDING MODULE TO INSPECT LIVE SUBSYSTEM TELEMETRY</strong>
+          <span style={{ color: "var(--accent-primary)", fontWeight: 800 }}>◈</span>
+          <strong style={{ color: "var(--text-primary)" }}>CLICK ANY 3D BUILDING MODULE TO INSPECT LIVE SUBSYSTEM TELEMETRY</strong>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           {["powerhouse", "habitat", "lab", "satcom", "fuel", "solar", "helipad"].map((mod) => (
             <button
               key={mod}
               type="button"
               onClick={() => setSelectedComponent(mod)}
               style={{
-                background: selectedComponent === mod ? "rgba(0, 240, 255, 0.25)" : "rgba(255, 255, 255, 0.05)",
-                border: `1px solid ${selectedComponent === mod ? "#00f0ff" : "rgba(255, 255, 255, 0.15)"}`,
-                color: selectedComponent === mod ? "#ffffff" : "#94a3b8",
-                padding: "2px 8px",
+                background: selectedComponent === mod ? "var(--accent-primary-light)" : "var(--surface-secondary)",
+                border: `1px solid ${selectedComponent === mod ? "var(--accent-primary)" : "var(--border-subtle)"}`,
+                color: selectedComponent === mod ? "var(--accent-primary)" : "var(--text-muted)",
+                padding: "3px 9px",
                 borderRadius: "4px",
                 fontSize: "10px",
+                fontWeight: 700,
                 cursor: "pointer",
                 textTransform: "uppercase",
                 fontFamily: "monospace",
+                transition: "all 0.15s ease",
               }}
             >
               {mod}
@@ -268,7 +271,7 @@ export default function DigitalTwin() {
               />
             </div>
 
-            <div style={{ marginTop: "12px", paddingTop: "8px", borderTop: "1px solid rgba(255,255,255,0.06)", fontSize: "10px", color: "rgba(160,200,220,0.6)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ marginTop: "12px", paddingTop: "8px", borderTop: "1px solid var(--border-subtle, #e2e8f0)", fontSize: "10px", color: "var(--text-muted, #64748b)", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono, monospace)" }}>
               <span>PROVENANCE: OPEN-METEO POLAR NWP</span>
               <span>{timeSinceUpdate}</span>
             </div>
@@ -285,7 +288,17 @@ function HealthRow({ name, value }) {
     <div className="health-row">
       <span>{name}</span>
       <div className="health-bar">
-        <i style={{ width: `${num}%`, background: num >= 90 ? "linear-gradient(90deg, #0284c7, #00f0ff)" : "linear-gradient(90deg, #f59e0b, #10b981)" }} />
+        <i
+          style={{
+            width: `${num}%`,
+            background:
+              num >= 90
+                ? "var(--status-normal, #16a34a)"
+                : num >= 75
+                ? "var(--accent-primary, #0284c7)"
+                : "var(--status-warning, #d97706)",
+          }}
+        />
       </div>
       <strong>{value}</strong>
     </div>
