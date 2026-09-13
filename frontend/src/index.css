@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 /* =========================================================
@@ -782,685 +783,600 @@ canvas {
 }
 
 /* =========================================================
-   STATION SELECTOR MODAL (LIGHT ANTARCTIC THEME)
-========================================================= */
+   DHRUVNETRA - LIGHT ANTARCTIC MISSION STATION SELECTOR
+   ========================================================= */
 
-.station-selector {
+.mission-station-view {
   position: fixed;
   inset: 0;
   z-index: 5000;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   pointer-events: auto;
   opacity: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg-app);
+  color: var(--text-primary);
+  user-select: none;
   transition:
-    opacity 0.4s ease,
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.station-selector-visible {
+.mission-view-visible {
   opacity: 1;
 }
 
-.station-selector-closing {
+.mission-view-closing {
   opacity: 0;
   transform: scale(1.015);
 }
 
-.station-selector-selecting {
+.mission-view-selecting {
   pointer-events: none;
 }
 
-.station-selector-bg {
+/* ---------------------------------------------------------
+   TOP NAVIGATION HEADER (LIGHT THEME)
+   --------------------------------------------------------- */
+.mission-nav-header {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(240, 249, 255, 0.95) 0%, rgba(241, 245, 249, 0.96) 100%);
-}
-
-.station-ambient-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center top, rgba(2, 132, 199, 0.06), transparent 70%);
-}
-
-.station-scan-line {
-  position: absolute;
+  top: 0;
   left: 0;
-  top: -10%;
-  width: 100%;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(2, 132, 199, 0.2) 20%,
-    rgba(2, 132, 199, 0.65) 50%,
-    rgba(2, 132, 199, 0.2) 80%,
-    transparent 100%
-  );
-  animation: stationScan 6s linear infinite;
-}
-
-@keyframes stationScan {
-  0% { top: -5%; opacity: 0; }
-  12% { opacity: 0.75; }
-  88% { opacity: 0.75; }
-  100% { top: 105%; opacity: 0; }
-}
-
-/* STATION SELECTOR HEADER */
-.station-selector-header {
-  position: relative;
-  z-index: 20;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 28px 48px 12px;
-}
-
-.station-header-branding {
-  display: flex;
-  flex-direction: column;
-}
-
-.station-selector-kicker {
+  right: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  color: #0369a1;
+  justify-content: space-between;
+  padding: 20px 48px;
+  background: rgba(248, 250, 252, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  pointer-events: auto;
 }
 
-.kicker-badge {
-  padding: 2px 7px;
-  background: #e0f2fe;
-  border: 1px solid rgba(2, 132, 199, 0.3);
-  border-radius: var(--radius-xs);
-  color: #0284c7;
-  font-size: 9px;
+.mission-brand-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mission-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mission-brand-emblem {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(2, 132, 199, 0.25));
+}
+
+.brand-primary-text {
+  font-size: 13.5px;
   font-weight: 700;
-  letter-spacing: 0.2em;
-}
-
-.kicker-separator {
-  color: #94a3b8;
-}
-
-.station-selector-title {
-  margin: 0;
-  font-size: clamp(20px, 2.2vw, 28px);
-  font-weight: 400;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.26em;
   color: #0f172a;
 }
 
-.station-selector-subtitle {
-  margin: 4px 0 0;
+.mission-brand-divider {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.mission-network-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #0284c7;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.mission-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.mission-select-heading {
   font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.24em;
   color: #475569;
 }
 
-.station-header-actions {
-  display: flex;
+.mission-esc-button {
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-}
-
-.station-network-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border: 1px solid var(--border-default);
+  gap: 6px;
+  padding: 5px 12px;
   background: #ffffff;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-xs);
-}
-
-.status-ping {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #16a34a;
-  box-shadow: 0 0 6px rgba(22, 163, 74, 0.6);
-  animation: statusPulse 2s ease-in-out infinite;
-}
-
-.status-text {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xs);
+  color: #334155;
   font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: #0f172a;
-}
-
-/* Close Button */
-.station-close {
-  position: relative;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 38px;
-  padding: 0 14px;
-  border: 1px solid var(--border-default);
-  background: #ffffff;
-  color: #0f172a;
+  letter-spacing: 0.16em;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   cursor: pointer;
-  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-xs);
   transition:
-    color 0.2s ease,
     background 0.2s ease,
     border-color 0.2s ease,
+    color 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
-.close-icon {
-  font-size: 14px;
-  line-height: 1;
-  color: #0284c7;
-  transition: transform 0.25s ease;
-}
-
-.close-label {
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  font-weight: 700;
-}
-
-.station-close:hover {
-  background: #f8fafc;
+.mission-esc-button:hover {
+  background: #f0f9ff;
   border-color: #0284c7;
   color: #0284c7;
   box-shadow: var(--shadow-sm);
 }
 
-.station-close:hover .close-icon {
-  transform: rotate(90deg);
-}
-
-.station-close:active {
+.mission-esc-button:active {
   transform: scale(0.96);
 }
 
-/* ==========================================
-   STATION CARDS CONTAINER & PANEL
-========================================== */
+.esc-key-tag {
+  font-weight: 700;
+}
 
-.station-selection-content {
+.esc-close-icon {
+  font-size: 11px;
+  opacity: 0.8;
+  color: #0284c7;
+}
+
+/* ---------------------------------------------------------
+   SPLIT SCREEN 50/50 CONTAINER (LIGHT THEME)
+   --------------------------------------------------------- */
+.mission-stations-split {
   position: relative;
-  z-index: 10;
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 48px 24px;
-  min-height: 0;
-}
-
-.station-cards-container {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(360px, 520px));
-  gap: 32px;
-  width: min(1100px, 100%);
-}
-
-.station-panel {
-  position: relative;
-  display: flex;
   flex-direction: column;
-  border: 1px solid var(--border-default);
-  background: #ffffff;
-  color: #0f172a;
-  text-align: left;
-  cursor: pointer;
-  border-radius: var(--radius-md);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-canvas);
+}
+
+.mission-split-divider {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  z-index: 25;
+  background: var(--border-default);
+  flex-shrink: 0;
+}
+
+.divider-glow-line {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(2, 132, 199, 0.4) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   INDIVIDUAL HORIZONTAL STATION SECTION (50% VIEWPORT)
+   --------------------------------------------------------- */
+.mission-station-row {
+  position: relative;
+  flex: 1 1 50%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(28px);
-  opacity: 0;
-  animation: stationPanelReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  cursor: pointer;
+  text-align: left;
+  background: var(--bg-canvas);
+  border: none;
+  outline: none;
   transition:
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease,
-    box-shadow 0.35s ease,
+    background 0.35s ease,
+    filter 0.35s ease,
     opacity 0.35s ease;
 }
 
-.station-panel:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.station-selector-visible .station-panel {
-  opacity: 1;
-}
-
-@keyframes stationPanelReveal {
-  from {
-    opacity: 0;
-    transform: translateY(35px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.station-panel:hover {
-  transform: translateY(-5px);
-  border-color: #0284c7;
-  box-shadow:
-    0 20px 35px -5px rgba(2, 132, 199, 0.15),
-    0 8px 10px -6px rgba(15, 23, 42, 0.05);
-}
-
-.station-panel:hover .station-photo {
-  transform: scale(1.03);
-}
-
-.station-panel:hover .station-cta-bar {
-  background: #f0f9ff;
-  border-top-color: #bae6fd;
-  color: #0284c7;
-}
-
-.station-panel:hover .cta-arrow {
-  transform: translateX(4px);
-  color: #0284c7;
-}
-
-.station-panel-selected {
-  border-color: #0284c7;
-  box-shadow: 0 0 0 2px #0284c7, var(--shadow-xl);
-  transform: scale(1.01);
-}
-
-.station-panel-selected .station-cta-bar {
-  background: #e0f2fe;
-  border-top-color: #7dd3fc;
-  color: #0369a1;
-}
-
-.station-panel-dimmed {
-  opacity: 0.45;
-  filter: grayscale(20%);
-  transform: scale(0.985);
-  pointer-events: none;
-}
-
-/* Corner Brackets */
-.station-bracket {
+.station-row-bg {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  pointer-events: none;
-  z-index: 15;
-}
-
-.bracket-tl {
-  top: 0;
-  left: 0;
-  border-top: 2px solid #0284c7;
-  border-left: 2px solid #0284c7;
-}
-
-.bracket-tr {
-  top: 0;
-  right: 0;
-  border-top: 2px solid #0284c7;
-  border-right: 2px solid #0284c7;
-}
-
-.bracket-bl {
-  bottom: 0;
-  left: 0;
-  border-bottom: 2px solid #0284c7;
-  border-left: 2px solid #0284c7;
-}
-
-.bracket-br {
-  bottom: 0;
-  right: 0;
-  border-bottom: 2px solid #0284c7;
-  border-right: 2px solid #0284c7;
-}
-
-/* PANEL HEADER BAR */
-.panel-header-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 18px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border-subtle);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  z-index: 5;
-}
-
-.panel-id-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.station-code-pill {
-  font-weight: 700;
-  color: #0284c7;
-  background: #e0f2fe;
-  border: 1px solid rgba(2, 132, 199, 0.3);
-  padding: 2px 7px;
-  border-radius: var(--radius-xs);
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
-}
-
-.station-sector-tag {
-  color: #475569;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-}
-
-.panel-telemetry-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.telemetry-live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #0284c7;
-  box-shadow: 0 0 6px rgba(2, 132, 199, 0.7);
-  animation: statusPulse 2s ease-in-out infinite;
-}
-
-.telemetry-live-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: #0f172a;
-}
-
-/* PHOTOGRAPHIC FRAME */
-.station-image-frame {
-  position: relative;
-  width: 100%;
-  height: 230px;
-  overflow: hidden;
-  background: #0f172a;
-}
-
-.station-photo {
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  filter: brightness(0.98) contrast(1.02);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background-size: cover;
+  background-position: center 38%;
+  filter: brightness(0.98) saturate(1.0) contrast(1.02);
+  transform: scale(1);
+  transition:
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.6s ease;
 }
 
-.station-photo-gradient {
+.mission-station-row:hover .station-row-bg {
+  transform: scale(1.025);
+  filter: brightness(1.02) saturate(1.06) contrast(1.04);
+}
+
+/* Light Antarctic Gradients for Crisp Readability */
+.station-row-overlay-primary {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(248, 250, 252, 0.96) 0%,
+    rgba(248, 250, 252, 0.92) 35%,
+    rgba(248, 250, 252, 0.72) 58%,
+    rgba(248, 250, 252, 0.28) 82%,
+    rgba(248, 250, 252, 0.08) 100%
+  );
+}
+
+.station-row-overlay-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(15, 23, 42, 0.05) 0%,
-    rgba(15, 23, 42, 0.15) 50%,
-    rgba(15, 23, 42, 0.75) 100%
+    rgba(248, 250, 252, 0.4) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(248, 250, 252, 0.4) 100%
   );
 }
 
-.station-coordinate-tag {
-  position: absolute;
-  bottom: 12px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(2, 132, 199, 0.3);
-  border-radius: var(--radius-xs);
-  font-size: 8.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  color: #0f172a;
-  backdrop-filter: blur(6px);
-}
-
-.coord-icon {
-  color: #0284c7;
-  font-size: 10px;
-}
-
-.coord-divider {
-  color: #cbd5e1;
-}
-
-.station-est-tag {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  padding: 3px 8px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(2, 132, 199, 0.3);
-  border-radius: var(--radius-xs);
-  font-size: 8.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: #0f172a;
-  backdrop-filter: blur(6px);
-}
-
-/* STATION INFO DECK */
-.station-info-deck {
-  display: flex;
-  flex-direction: column;
-  padding: 16px 20px 14px;
-  flex: 1;
-}
-
-.station-name-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.station-title-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.station-name {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  color: #0f172a;
-  line-height: 1.1;
-}
-
-.station-subheading {
-  margin: 4px 0 0;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  color: #0369a1;
-}
-
-.station-symbol-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(2, 132, 199, 0.3);
-  background: #f0f9ff;
-  border-radius: var(--radius-xs);
-  font-size: 13px;
-  font-weight: 700;
-  color: #0284c7;
-}
-
-.station-location-text {
-  margin: 8px 0 14px;
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  color: #475569;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.location-pin-icon {
-  font-size: 11px;
-}
-
-/* MICRO TELEMETRY PILLS */
-.station-quick-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: auto;
-}
-
-.metric-pill {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 6px 8px;
-  background: #f8fafc;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  text-align: center;
-}
-
-.metric-label {
-  font-size: 7.5px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #64748b;
-}
-
-.metric-value {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #0f172a;
-  font-variant-numeric: tabular-nums;
-}
-
-/* MISSION CTA CONTROL BAR */
-.station-cta-bar {
+/* Foreground Content Container */
+.station-row-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  background: #f8fafc;
-  border-top: 1px solid var(--border-subtle);
-  font-size: 10px;
-  letter-spacing: 0.24em;
-  color: #0f172a;
-  font-weight: 700;
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease;
+  gap: 40px;
 }
 
-.cta-action-content {
+/* ---------------------------------------------------------
+   LEFT BLOCK: IDENTITY, LOCATION, METADATA
+   --------------------------------------------------------- */
+.station-identity-block {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 500px;
+  flex-shrink: 0;
 }
 
-.cta-dot {
+.station-operational-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 2px;
+}
+
+.operational-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #0284c7;
-  box-shadow: 0 0 6px rgba(2, 132, 199, 0.7);
+  background: #16a34a;
+  box-shadow: 0 0 6px rgba(22, 163, 74, 0.5);
+  animation: operationalPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.cta-arrow {
-  font-size: 14px;
-  line-height: 1;
-  color: #0284c7;
-  transition: transform 0.25s ease;
+@keyframes operationalPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
 }
 
-/* FOOTER BAR */
-.station-selector-footer {
-  position: relative;
-  z-index: 20;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 48px 20px;
-  font-size: 8.5px;
-  letter-spacing: 0.22em;
-  color: #475569;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.footer-meta-left {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.meta-label {
+.operational-label {
+  display: inline-block;
+  padding: 2px 7px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-xs);
+  font-size: 9px;
   font-weight: 700;
+  letter-spacing: 0.24em;
+  color: #15803d;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.station-title-editorial {
+  margin: 0;
+  font-family: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: #0f172a;
+  line-height: 1.05;
+  transition: color 0.3s ease;
 }
 
-.meta-dot {
-  opacity: 0.5;
+.mission-station-row:hover .station-title-editorial {
+  color: #0369a1;
 }
 
-.footer-meta-center {
+.station-geo-location {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.station-coords-strip {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #334155;
-  font-weight: 600;
-}
-
-.meta-indicator {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #0284c7;
-  box-shadow: 0 0 6px rgba(2, 132, 199, 0.7);
-}
-
-.footer-meta-right {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   color: #64748b;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.coord-value {
+  color: #0284c7;
   font-weight: 600;
+}
+
+.coord-bullet {
+  color: #cbd5e1;
+}
+
+.coord-est {
+  color: #475569;
+  font-weight: 600;
+}
+
+.coord-elev {
+  color: #64748b;
+}
+
+/* ---------------------------------------------------------
+   CENTER BLOCK: TECHNICAL TELEMETRY METRICS (LIGHT CARDS)
+   --------------------------------------------------------- */
+.station-telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  min-width: 460px;
+  max-width: 580px;
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xs);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.mission-station-row:hover .telemetry-item {
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.telemetry-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #64748b;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.telemetry-value {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0f172a;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.mission-station-row:hover .telemetry-value {
+  color: #0284c7;
+}
+
+/* ---------------------------------------------------------
+   RIGHT BLOCK: ACTION BUTTON (LIGHT THEME)
+   --------------------------------------------------------- */
+.station-action-block {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.station-enter-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: #ffffff;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: #0f172a;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mission-station-row:hover .station-enter-action {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+}
+
+.enter-action-arrow {
+  font-size: 15px;
+  line-height: 1;
+  color: #0284c7;
+  font-weight: 700;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.25s ease;
+}
+
+.mission-station-row:hover .enter-action-arrow {
+  transform: translateX(6px);
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   SELECTION STATES
+   --------------------------------------------------------- */
+.station-row-selected {
+  background: #f0f9ff;
+}
+
+.station-row-selected .station-enter-action {
+  border-color: #0369a1;
+  background: #0369a1;
+  color: #ffffff;
+}
+
+.station-row-selected .enter-action-arrow {
+  color: #ffffff;
+}
+
+.station-row-dimmed {
+  opacity: 0.45;
+  filter: grayscale(25%);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   BOTTOM INFORMATION FOOTER STRIP (LIGHT THEME)
+   --------------------------------------------------------- */
+.mission-info-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 48px;
+  background: rgba(248, 250, 252, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: #475569;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  pointer-events: none;
+}
+
+.footer-agency {
+  color: #475569;
+}
+
+.footer-dot {
+  color: #94a3b8;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE ADJUSTMENTS
+   --------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .station-row-container {
+    padding: 0 36px;
+    gap: 24px;
+  }
+  .station-telemetry-strip {
+    min-width: 380px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .mission-station-view {
+    overflow-y: auto;
+  }
+  .mission-nav-header {
+    position: relative;
+    padding: 16px 20px;
+    background: #ffffff;
+  }
+  .mission-stations-split {
+    height: auto;
+    flex: none;
+  }
+  .mission-station-row {
+    flex: none;
+    height: auto;
+    min-height: 48vh;
+    padding: 40px 0;
+  }
+  .station-row-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 24px;
+    gap: 24px;
+  }
+  .station-telemetry-strip {
+    grid-template-columns: repeat(2, 1fr);
+    min-width: 100%;
+    width: 100%;
+  }
+  .station-action-block {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .mission-info-footer {
+    position: relative;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 20px;
+    text-align: center;
+    background: #ffffff;
+  }
 }
 
 /* =========================================================

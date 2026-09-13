@@ -16,11 +16,9 @@ export default function StationSelector({
     useEffect(() => {
         const timer = setTimeout(() => {
             setVisible(true);
-        }, 40);
+        }, 30);
 
-        return () => {
-            clearTimeout(timer);
-        };
+        return () => clearTimeout(timer);
     }, []);
 
     // ==========================================
@@ -33,7 +31,7 @@ export default function StationSelector({
 
         setTimeout(() => {
             onClose?.();
-        }, 400);
+        }, 350);
     };
 
     // ==========================================
@@ -59,262 +57,238 @@ export default function StationSelector({
         setSelecting(true);
         setSelectedStation(stationKey);
 
-        // Transition delay for subtle feedback
         setTimeout(() => {
             onSelectStation?.(stationKey);
-        }, 450);
+        }, 400);
     };
 
-    const maitriData = stationData.MAITRI;
-    const bharatiData = stationData.BHARATI;
+    const maitri = stationData.MAITRI;
+    const bharati = stationData.BHARATI;
 
     return (
         <div
             className={`
-                station-selector
-                ${visible ? "station-selector-visible" : ""}
-                ${closing ? "station-selector-closing" : ""}
-                ${selecting ? "station-selector-selecting" : ""}
+                mission-station-view
+                ${visible ? "mission-view-visible" : ""}
+                ${closing ? "mission-view-closing" : ""}
+                ${selecting ? "mission-view-selecting" : ""}
             `}
             role="dialog"
             aria-modal="true"
-            aria-label="Select Research Station"
+            aria-label="Select Operating Station"
         >
-            {/* Background & Atmospheric Overlay */}
-            <div className="station-selector-bg" />
-            <div className="station-scan-line" />
-            <div className="station-ambient-glow" />
-
-            {/* Top Navigation & Status Bar */}
-            <header className="station-selector-header">
-                <div className="station-header-branding">
-                    <div className="station-selector-kicker">
-                        <span className="kicker-badge">DHRUVNETRA</span>
-                        <span className="kicker-separator">/</span>
-                        <span>ANTARCTIC DIGITAL TWIN NETWORK</span>
+            {/* Minimal Top Header */}
+            <header className="mission-nav-header">
+                <div className="mission-brand-left">
+                    <div className="mission-brand-title">
+                        <img
+                            src="/dhruvnetra_favicon.svg"
+                            alt="DhruvNetra Emblem"
+                            className="mission-brand-emblem"
+                        />
+                        <span className="brand-primary-text">DHRUVNETRA</span>
                     </div>
-                    <h2 className="station-selector-title">
-                        SELECT RESEARCH STATION
-                    </h2>
-                    <p className="station-selector-subtitle">
-                        ACCESS THE DIGITAL TWIN NETWORK
-                    </p>
+                    <span className="mission-brand-divider">/</span>
+                    <span className="mission-network-tag">ANTARCTIC DIGITAL TWIN NETWORK</span>
                 </div>
 
-                <div className="station-header-actions">
-                    <div className="station-network-status">
-                        <span className="status-ping" />
-                        <span className="status-text">NODES ACTIVE [2/2]</span>
-                    </div>
-
+                <div className="mission-nav-right">
+                    <span className="mission-select-heading">SELECT OPERATING STATION</span>
                     <button
                         type="button"
-                        className="station-close"
+                        className="mission-esc-button"
                         onClick={handleClose}
                         disabled={selecting}
-                        aria-label="Close station selection"
+                        aria-label="Close Station Selection"
                         data-cursor="pointer"
                     >
-                        <span className="close-icon">✕</span>
-                        <span className="close-label">ESC</span>
+                        <span className="esc-key-tag">ESC</span>
+                        <span className="esc-close-icon">✕</span>
                     </button>
                 </div>
             </header>
 
-            {/* Central Expedition Station Panels */}
-            <main className="station-selection-content">
-                <div className="station-cards-container">
-                    {/* MAITRI PANEL */}
-                    <StationPanel
-                        stationKey="MAITRI"
-                        data={maitriData}
-                        imageSrc="/images/maitri.jpg"
-                        index="01"
-                        code="MT"
-                        sector="SECTOR 70°S"
-                        selected={selectedStation === "MAITRI"}
-                        otherSelected={selecting && selectedStation !== "MAITRI"}
-                        disabled={selecting}
-                        onClick={() => handleStationSelect("MAITRI")}
-                    />
+            {/* Split Screen 50/50 Viewport Stations */}
+            <main className="mission-stations-split">
+                {/* MAITRI STATION SECTION */}
+                <StationSection
+                    stationKey="MAITRI"
+                    name="MAITRI"
+                    location="Schirmacher Oasis, Queen Maud Land"
+                    coordinates="70°45′58″ S · 11°44′09″ E"
+                    established="1989"
+                    elevation="117 m"
+                    temperature={maitri.outdoorTemp || maitri.environment || "−24.3°C"}
+                    windSpeed={maitri.windSpeed || "34 km/h"}
+                    powerLoad={`${maitri.power}% · ${maitri.totalPowerDemandKw || 295} kW`}
+                    operationDuration="36+ YRS CONTINUOUS"
+                    crewCount={`${maitri.winterCrew} Winter / ${maitri.summerCrew} Summer`}
+                    imageSrc="/images/maitri.jpg"
+                    isSelected={selectedStation === "MAITRI"}
+                    isDimmed={selecting && selectedStation !== "MAITRI"}
+                    disabled={selecting}
+                    onSelect={() => handleStationSelect("MAITRI")}
+                />
 
-                    {/* BHARATI PANEL */}
-                    <StationPanel
-                        stationKey="BHARATI"
-                        data={bharatiData}
-                        imageSrc="/images/bharati.jpg"
-                        index="02"
-                        code="BH"
-                        sector="SECTOR 69°S"
-                        selected={selectedStation === "BHARATI"}
-                        otherSelected={selecting && selectedStation !== "BHARATI"}
-                        disabled={selecting}
-                        onClick={() => handleStationSelect("BHARATI")}
-                    />
+                {/* Subtle Divider Line */}
+                <div className="mission-split-divider">
+                    <div className="divider-glow-line" />
                 </div>
+
+                {/* BHARATI STATION SECTION */}
+                <StationSection
+                    stationKey="BHARATI"
+                    name="BHARATI"
+                    location="Larsemann Hills, Prydz Bay, East Antarctica"
+                    coordinates="69°24′28″ S · 76°11′14″ E"
+                    established="2012"
+                    elevation="35 m"
+                    temperature={bharati.outdoorTemp || bharati.environment || "−18.2°C"}
+                    windSpeed={bharati.windSpeed || "28 km/h"}
+                    powerLoad={`${bharati.power}% · ${bharati.totalPowerDemandKw || 335} kW`}
+                    operationDuration="14+ YRS CONTINUOUS"
+                    crewCount={`${bharati.winterCrew} Winter / ${bharati.summerCrew} Summer`}
+                    imageSrc="/images/bharati.jpg"
+                    isSelected={selectedStation === "BHARATI"}
+                    isDimmed={selecting && selectedStation !== "BHARATI"}
+                    disabled={selecting}
+                    onSelect={() => handleStationSelect("BHARATI")}
+                />
             </main>
 
-            {/* Mission System Footer */}
-            <footer className="station-selector-footer">
-                <div className="footer-meta-left">
-                    <span className="meta-label">GOVERNMENT OF INDIA</span>
-                    <span className="meta-dot">·</span>
-                    <span className="meta-sub">MINISTRY OF EARTH SCIENCES · NCPOR</span>
-                </div>
-
-                <div className="footer-meta-center">
-                    <span className="meta-indicator" />
-                    <span>
-                        {selecting
-                            ? `INITIALIZING ${selectedStation} DIGITAL TWIN...`
-                            : "REAL-TIME TELEMETRY STREAM ONLINE"}
-                    </span>
-                </div>
-
-                <div className="footer-meta-right">
-                    <span>SECURE SATELLITE LINK · SATCOM 256-BIT</span>
-                </div>
+            {/* Minimal Mission Information Footer Strip */}
+            <footer className="mission-info-footer">
+                <span className="footer-agency">NATIONAL CENTRE FOR POLAR AND OCEAN RESEARCH</span>
+                <span className="footer-dot">·</span>
+                <span className="footer-agency">MINISTRY OF EARTH SCIENCES</span>
+                <span className="footer-dot">·</span>
+                <span className="footer-agency">GOVERNMENT OF INDIA</span>
             </footer>
         </div>
     );
 }
 
-/* =====================================================
-   STATION EXPEDITION PANEL COMPONENT
-===================================================== */
-function StationPanel({
+/* =========================================================
+   INDIVIDUAL FULL-BLEED HORIZONTAL STATION SECTION
+========================================================= */
+function StationSection({
     stationKey,
-    data,
+    name,
+    location,
+    coordinates,
+    established,
+    elevation,
+    temperature,
+    windSpeed,
+    powerLoad,
+    operationDuration,
+    crewCount,
     imageSrc,
-    index,
-    code,
-    sector,
-    selected,
-    otherSelected,
+    isSelected,
+    isDimmed,
     disabled,
-    onClick,
+    onSelect,
 }) {
     return (
-        <button
-            type="button"
+        <section
             className={`
-                station-panel
-                station-card
-                ${selected ? "station-panel-selected" : ""}
-                ${otherSelected ? "station-panel-dimmed" : ""}
+                mission-station-row
+                ${isSelected ? "station-row-selected" : ""}
+                ${isDimmed ? "station-row-dimmed" : ""}
             `}
-            onClick={onClick}
-            disabled={disabled}
+            onClick={onSelect}
+            role="button"
+            tabIndex={0}
+            aria-label={`Select ${name} Station`}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect();
+                }
+            }}
             data-cursor="pointer"
-            aria-label={`Select ${stationKey} Research Station`}
         >
-            {/* Corner Precision Brackets */}
-            <span className="station-bracket bracket-tl" />
-            <span className="station-bracket bracket-tr" />
-            <span className="station-bracket bracket-bl" />
-            <span className="station-bracket bracket-br" />
+            {/* Full-bleed Background Photograph */}
+            <div
+                className="station-row-bg"
+                style={{ backgroundImage: `url(${imageSrc})` }}
+            />
 
-            {/* Panel Top Header Bar */}
-            <div className="panel-header-bar">
-                <div className="panel-id-badge">
-                    <span className="station-code-pill">{code}-{index}</span>
-                    <span className="station-sector-tag">{sector}</span>
+            {/* Dark Navy / Near-Black Gradients for Crisp Legibility */}
+            <div className="station-row-overlay-primary" />
+            <div className="station-row-overlay-vignette" />
+
+            {/* Foreground Mission Dossier & Telemetry Content */}
+            <div className="station-row-container">
+                {/* Left Block: Identity, Location, Coordinates */}
+                <div className="station-identity-block">
+                    {/* Operational Status Tag */}
+                    <div className="station-operational-badge">
+                        <span className="operational-dot" />
+                        <span className="operational-label">
+                            {isSelected ? "INITIALIZING TWIN..." : "OPERATIONAL"}
+                        </span>
+                    </div>
+
+                    {/* Large Editorial Station Heading */}
+                    <h2 className="station-title-editorial">{name}</h2>
+
+                    {/* Geographic Location Subheading */}
+                    <p className="station-geo-location">{location}</p>
+
+                    {/* Coordinates & Technical Metadata Strip */}
+                    <div className="station-coords-strip">
+                        <span className="coord-value">{coordinates}</span>
+                        <span className="coord-bullet">·</span>
+                        <span className="coord-est">EST. {established}</span>
+                        <span className="coord-bullet">·</span>
+                        <span className="coord-elev">ELEV {elevation}</span>
+                    </div>
                 </div>
 
-                <div className="panel-telemetry-badge">
-                    <span className="telemetry-live-dot" />
-                    <span className="telemetry-live-label">
-                        {selected ? "INITIALIZING..." : "TELEMETRY ACTIVE"}
-                    </span>
+                {/* Center Block: Telemetry Indicators */}
+                <div className="station-telemetry-strip">
+                    <div className="telemetry-item">
+                        <span className="telemetry-label">CURRENT TEMP</span>
+                        <span className="telemetry-value">{temperature}</span>
+                    </div>
+
+                    <div className="telemetry-item">
+                        <span className="telemetry-label">WIND SPEED</span>
+                        <span className="telemetry-value">{windSpeed}</span>
+                    </div>
+
+                    <div className="telemetry-item">
+                        <span className="telemetry-label">POWER LOAD</span>
+                        <span className="telemetry-value">{powerLoad}</span>
+                    </div>
+
+                    <div className="telemetry-item">
+                        <span className="telemetry-label">OPERATION</span>
+                        <span className="telemetry-value">{operationDuration}</span>
+                    </div>
+                </div>
+
+                {/* Right Block: Action Button */}
+                <div className="station-action-block">
+                    <button
+                        type="button"
+                        className="station-enter-action"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSelect();
+                        }}
+                        disabled={disabled}
+                        data-cursor="pointer"
+                        aria-label={`Enter ${name} Station Digital Twin`}
+                    >
+                        <span className="enter-action-text">
+                            {isSelected ? "CONNECTING..." : "ENTER STATION"}
+                        </span>
+                        <span className="enter-action-arrow">→</span>
+                    </button>
                 </div>
             </div>
-
-            {/* Photographic Viewport */}
-            <div className="station-image-frame">
-                <img
-                    src={imageSrc}
-                    alt={`${data.name} Indian Antarctic Research Station`}
-                    className="station-photo"
-                    loading="eager"
-                />
-
-                {/* Subtle Image Vignette & Atmosphere Gradient */}
-                <div className="station-photo-gradient" />
-                <div className="station-photo-top-tint" />
-
-                {/* Technical Coordinates Stamp */}
-                <div className="station-coordinate-tag">
-                    <span className="coord-icon">⌖</span>
-                    <span>{data.coordinates}</span>
-                    <span className="coord-divider">|</span>
-                    <span>ELEV {data.elevation}</span>
-                </div>
-
-                {/* Station Establishment Tag */}
-                <div className="station-est-tag">
-                    <span>EST. {data.established}</span>
-                </div>
-            </div>
-
-            {/* Station Dossier & Info Deck */}
-            <div className="station-info-deck">
-                <div className="station-name-row">
-                    <div className="station-title-group">
-                        <h3 className="station-name">{data.name}</h3>
-                        <p className="station-subheading">
-                            INDIAN ANTARCTIC RESEARCH STATION
-                        </p>
-                    </div>
-
-                    <div className="station-symbol-badge">
-                        <span>{code}</span>
-                    </div>
-                </div>
-
-                <p className="station-location-text">
-                    <span className="location-pin-icon">📍</span>
-                    {data.location}
-                </p>
-
-                {/* Live Micro Telemetry Metrics */}
-                <div className="station-quick-metrics">
-                    <div className="metric-pill">
-                        <span className="metric-label">TEMP</span>
-                        <span className="metric-value">{data.environment}</span>
-                    </div>
-                    <div className="metric-pill">
-                        <span className="metric-label">POWER</span>
-                        <span className="metric-value">{data.power}%</span>
-                    </div>
-                    <div className="metric-pill">
-                        <span className="metric-label">SATCOM</span>
-                        <span className="metric-value">{data.satcomQuality}</span>
-                    </div>
-                    <div className="metric-pill">
-                        <span className="metric-label">HEALTH</span>
-                        <span className="metric-value">{data.health}%</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mission CTA Control Bar */}
-            <div className="station-cta-bar">
-                <div className="cta-action-content">
-                    <span className="cta-dot" />
-                    <span className="cta-label">
-                        {selected
-                            ? "INITIALIZING DIGITAL TWIN..."
-                            : "ENTER DIGITAL TWIN"}
-                    </span>
-                </div>
-
-                <div className="cta-arrow-wrapper">
-                    <span className="cta-arrow">→</span>
-                </div>
-            </div>
-
-            {/* Scanning Glow Border Effect */}
-            <div className="panel-glow-layer" />
-        </button>
+        </section>
     );
 }
