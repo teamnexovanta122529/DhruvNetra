@@ -3,7 +3,6 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { StationProvider } from "./context/StationContext";
 import { EnvironmentProvider } from "./context/EnvironmentContext";
-import CustomCursor from "./components/landing/CustomCursor";
 import LandingPage from "./components/landing/LandingPage";
 import Login from "./components/auth/Login";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -30,8 +29,6 @@ function App() {
             <AuthProvider>
                 <StationProvider>
                     <EnvironmentProvider>
-                        <CustomCursor />
-
                         <Routes>
 
                         {/* Public: Landing */}

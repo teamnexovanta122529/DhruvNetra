@@ -698,24 +698,9 @@ canvas {
 ========================================================= */
 
 @media (pointer: fine) {
-  html,
-  body,
-  #root,
-  button,
-  a,
-  [role="button"],
-  .dashboard-shell,
-  .dashboard-body,
-  .dashboard-content,
-  .dashboard-sidebar,
-  .dashboard-header,
-  .dashboard-page,
-  .station-3d-panel,
-  .station-3d-view,
-  .station-3d-view canvas,
-  .metric-card,
-  .dashboard-panel,
-  .station-card {
+  /* Hide native cursor ONLY on the Landing Page when station selector is closed */
+  .landing-page:not(.stations-open),
+  .landing-page:not(.stations-open) * {
     cursor: none !important;
   }
 

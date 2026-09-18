@@ -9,6 +9,7 @@ import SnowOverlay from "./SnowOverlay";
 import AtmosphereCanvas from "./AtmosphereCanvas";
 import AuroraEffect from "./AuroraEffect";
 import StationSelector from "./StationSelector";
+import CustomCursor from "./CustomCursor";
 
 export default function LandingPage() {
     const mouse = useRef({ x: 0, y: 0 });
@@ -175,8 +176,11 @@ export default function LandingPage() {
                 text-slate-900
                 ${loaded ? "page-loaded" : ""}
                 ${zooming ? "system-zooming" : ""}
+                ${showStations ? "stations-open" : ""}
             `}
         >
+            {/* Custom cursor mounted ONLY on Landing Page when station selector is closed */}
+            {!showStations && <CustomCursor />}
 
             {/* ==========================================
                 BACKGROUND
