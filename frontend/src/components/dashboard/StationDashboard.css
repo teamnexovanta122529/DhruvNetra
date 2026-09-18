@@ -1108,10 +1108,12 @@
 }
 
 .station-3d-view {
-  height: 480px;
+  height: 640px;
+  min-height: 560px;
   width: 100%;
   position: relative;
   background: radial-gradient(circle at 50% 40%, #f0f7fb 0%, #dbeaf4 100%);
+  overflow: hidden;
 }
 
 .station-3d-footer {
@@ -1142,40 +1144,42 @@
   position: fixed !important;
   inset: 0 !important;
   z-index: 999999 !important;
-  background: #f0f7fb !important;
+  background: #0b0f19 !important;
 }
 
 .station-3d-panel.is-fullscreen .station-3d-view,
 .station-3d-panel:fullscreen .station-3d-view {
   height: calc(100vh - 90px) !important;
-  background: radial-gradient(circle at 50% 40%, #f8fcfe 0%, #dbeaf4 100%) !important;
+  background: radial-gradient(circle at 50% 40%, #0f172a 0%, #020617 100%) !important;
 }
 
 .station-3d-panel.is-fullscreen .station-3d-header,
 .station-3d-panel.is-fullscreen .station-3d-footer {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: var(--border-subtle) !important;
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  color: #94a3b8 !important;
 }
 
-/* Floating 3D Component Info HUD */
-.component-info-panel {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 320px;
-  background: #ffffff;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-xl);
-  padding: 16px 18px;
-  z-index: 25;
-  color: var(--text-primary);
-  animation: hudSlideIn 0.25s ease;
+/* Anchored 3D Floating Digital Twin Card */
+.anchored-twin-card {
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
 }
 
-@keyframes hudSlideIn {
-  from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
+.anchored-twin-card:hover {
+  border-color: rgba(56, 189, 248, 0.7) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(56, 189, 248, 0.3) !important;
+}
+
+@keyframes cardPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* =========================================

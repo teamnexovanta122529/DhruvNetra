@@ -40,13 +40,17 @@ export default function StationSelector({
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
-                handleClose();
+                if (closing || selecting) return;
+                setClosing(true);
+                setTimeout(() => {
+                    onClose?.();
+                }, 350);
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [closing, selecting]);
+    }, [closing, selecting, onClose]);
 
     // ==========================================
     // STATION SELECT
@@ -196,6 +200,7 @@ function StationSection({
                 ${isSelected ? "station-row-selected" : ""}
                 ${isDimmed ? "station-row-dimmed" : ""}
             `}
+            data-station={stationKey}
             onClick={onSelect}
             role="button"
             tabIndex={0}
@@ -243,6 +248,8 @@ function StationSection({
                         <span className="coord-est">EST. {established}</span>
                         <span className="coord-bullet">·</span>
                         <span className="coord-elev">ELEV {elevation}</span>
+                        <span className="coord-bullet">·</span>
+                        <span className="coord-crew">{crewCount}</span>
                     </div>
                 </div>
 

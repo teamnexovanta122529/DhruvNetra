@@ -131,16 +131,10 @@ export default function CustomCursor() {
       <div
         ref={cursorRef}
         className="custom-cursor"
-        style={{
-          transform: `translate3d(${mousePosRef.current.x}px, ${mousePosRef.current.y}px, 0)`,
-        }}
       />
       <div
         ref={followerRef}
         className="custom-cursor-follower"
-        style={{
-          transform: `translate3d(${followerPosRef.current.x}px, ${followerPosRef.current.y}px, 0)`,
-        }}
       />
     </>
   );

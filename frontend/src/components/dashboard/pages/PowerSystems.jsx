@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PageHeader from "../common/PageHeader";
 import MetricCard from "../common/MetricCard";
-import StatusBadge from "../common/StatusBadge";
 import ProgressBar from "../common/ProgressBar";
 import PowerChart from "../charts/PowerChart";
 import { useStation } from "../../../context/StationContext";
@@ -13,8 +12,6 @@ export default function PowerSystems() {
   const { summary, generators, bess, renewable, history24h, anomaly } = power;
 
   const [selectedGenerator, setSelectedGenerator] = useState(generators[0]?.id || "GEN-01");
-
-  const activeGen = generators.find((g) => g.id === selectedGenerator) || generators[0];
 
   return (
     <div className="dashboard-page power-page">

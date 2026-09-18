@@ -1,21 +1,112 @@
-import { useEffect, useRef, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import PageHeader from "../common/PageHeader";
 import StatusBadge from "../common/StatusBadge";
 import StationScene from "../3d/StationScene";
-import ComponentInfoPanel from "../3d/ComponentInfoPanel";
 import { useStation } from "../../../context/StationContext";
 import { useEnvironment } from "../../../context/EnvironmentContext";
 import { getStationTelemetry } from "../../../services/telemetryService";
+
+/* =========================================================
+   3D DIGITAL TWIN ERROR BOUNDARY
+========================================================= */
+class DigitalTwinErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("[!] DHRUVNETRA Digital Twin Error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            height: "100%",
+            minHeight: "560px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "radial-gradient(circle at 50% 40%, #0f172a 0%, #020617 100%)",
+            color: "#f8fafc",
+            padding: "24px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "50%",
+              background: "rgba(220, 38, 38, 0.2)",
+              border: "1px solid rgba(220, 38, 38, 0.4)",
+              display: "grid",
+              placeItems: "center",
+              fontSize: "20px",
+              color: "#f87171",
+              marginBottom: "16px",
+            }}
+          >
+            ⚠️
+          </div>
+          <h3 style={{ fontSize: "16px", fontWeight: 800, margin: "0 0 8px 0" }}>
+            3D DIGITAL TWIN RENDER ADVISORY
+          </h3>
+          <p style={{ fontSize: "12px", color: "#94a3b8", maxWidth: "460px", margin: "0 0 20px 0" }}>
+            {this.state.error?.message || "WebGL context temporarily interrupted or 3D scene reload required."}
+          </p>
+          <button
+            type="button"
+            onClick={() => this.setState({ hasError: false, error: null })}
+            style={{
+              padding: "8px 20px",
+              background: "var(--accent-primary, #0284c7)",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "6px",
+              fontSize: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            REINITIALIZE 3D TWIN
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function DigitalTwin() {
   const { station, stationInfo } = useStation();
   const { environment, isLoading, isUnavailable, timeSinceUpdate } = useEnvironment();
   const [resetCount, setResetCount] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState("powerhouse");
+  const [selectedComponent, setSelectedComponent] = useState(null);
   const panelRef = useRef(null);
 
+  // 3D Architectural Reconstruction Controls
+  const [sceneMode, setSceneMode] = useState("exterior"); // 'exterior' | 'cutaway' | 'interior' | 'structure'
+  const [floorMode, setFloorMode] = useState("all"); // 'all' | 'lower' | 'upper'
+  const [lightingMode, setLightingMode] = useState("day"); // 'day' | 'overcast' | 'night'
+  const [bookmark, setBookmark] = useState("overview");
+
+  // Reset selected component when station changes
+  useEffect(() => {
+    setSelectedComponent(null);
+    setBookmark("overview");
+  }, [station]);
+
   const telemetry = getStationTelemetry(station);
+  const isBharati = String(station || "MAITRI").toUpperCase() === "BHARATI";
 
   // Fullscreen listener
   useEffect(() => {
@@ -44,6 +135,7 @@ export default function DigitalTwin() {
 
   // Reset Camera View
   const handleResetView = () => {
+    setBookmark("overview");
     setResetCount((prev) => prev + 1);
   };
 
@@ -64,12 +156,30 @@ export default function DigitalTwin() {
     }
   };
 
+  const handleBookmarkChange = (bmKey) => {
+    setBookmark(bmKey);
+    if (bmKey === "overview") {
+      setSelectedComponent("habitat");
+    } else if (bmKey === "lounge") {
+      setSelectedComponent("habitat");
+      if (sceneMode === "exterior") setSceneMode("cutaway");
+    } else if (bmKey === "laboratory") {
+      setSelectedComponent("lab");
+      if (sceneMode === "exterior") setSceneMode("cutaway");
+      setFloorMode("lower");
+    } else if (bmKey === "utilities") {
+      setSelectedComponent("powerhouse");
+    } else if (bmKey === "entrance") {
+      setSelectedComponent("habitat");
+    }
+  };
+
   return (
     <div className="dashboard-page digital-twin-page">
       <PageHeader
         eyebrow={`DHRUVNETRA / DIGITAL TWIN · ${stationInfo.coordinates || ""}`}
         title={`${station} 3D DIGITAL TWIN`}
-        description={`INTERACTIVE 3D TELEMETRY TWIN OF ${station} ANTARCTIC RESEARCH STATION (${stationInfo.location})`}
+        description={`INTERACTIVE 3D ARCHITECTURAL & MULTI-PHYSICS TELEMETRY TWIN OF ${station} STATION (${stationInfo.location})`}
         status="DIGITAL TWIN ONLINE"
       />
 
@@ -97,7 +207,7 @@ export default function DigitalTwin() {
           <strong style={{ color: "var(--text-primary)" }}>CLICK ANY 3D BUILDING MODULE TO INSPECT LIVE SUBSYSTEM TELEMETRY</strong>
         </div>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {["powerhouse", "habitat", "lab", "satcom", "fuel", "solar", "helipad"].map((mod) => (
+          {["powerhouse", "habitat", "lab", "satcom", "fuel", "water", "helipad"].map((mod) => (
             <button
               key={mod}
               type="button"
@@ -125,64 +235,195 @@ export default function DigitalTwin() {
       <div className="digital-twin-layout">
         {/* 3D MODEL PANEL - FULL WIDTH PRIMARY VISUAL CENTERPIECE */}
         <section ref={panelRef} className={`station-3d-panel ${isFullscreen ? "is-fullscreen" : ""}`} style={{ position: "relative" }}>
-          <div className="station-3d-header">
+          {/* HEADER WITH CONTROLS */}
+          <div className="station-3d-header" style={{ flexWrap: "wrap", gap: "10px" }}>
             <div>
               <span>LIVE DIGITAL TWIN VIEWPORT</span>
               <strong>{station} / EAST ANTARCTICA</strong>
             </div>
 
-            <div className="model-controls">
-              {/* RESET BUTTON */}
-              <button
-                type="button"
-                className="control-btn reset-btn"
-                onClick={handleResetView}
-                title="Reset 3D camera to default orientation and zoom (↻)"
-              >
-                <span className="control-icon">↻</span>
-                <span>RESET</span>
-              </button>
+            {/* RECONSTRUCTION CONTROLS TOOLBAR */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+              {/* Scene Mode Selector */}
+              <div style={{ display: "flex", background: "var(--surface-secondary)", borderRadius: "4px", padding: "2px", border: "1px solid var(--border-subtle)" }}>
+                {[
+                  { id: "exterior", label: "EXTERIOR" },
+                  { id: "cutaway", label: "CUTAWAY" },
+                  { id: "interior", label: "INTERIOR" },
+                  { id: "structure", label: "STRUCTURE" },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setSceneMode(m.id)}
+                    style={{
+                      background: sceneMode === m.id ? "var(--accent-primary)" : "transparent",
+                      color: sceneMode === m.id ? "#ffffff" : "var(--text-muted)",
+                      border: "none",
+                      padding: "3px 8px",
+                      borderRadius: "3px",
+                      fontSize: "9.5px",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
 
-              {/* FULLSCREEN BUTTON */}
-              <button
-                type="button"
-                className={`control-btn fullscreen-btn ${isFullscreen ? "active" : ""}`}
-                onClick={handleToggleFullscreen}
-                title={isFullscreen ? "Exit Fullscreen (Esc)" : "Expand 3D Viewport to Fullscreen (⛶)"}
-              >
-                <span className="control-icon">{isFullscreen ? "✕" : "⛶"}</span>
-                <span>{isFullscreen ? "EXIT FULLSCREEN" : "FULLSCREEN"}</span>
-              </button>
+              {/* Floor Filter (When in interior / cutaway) */}
+              {(sceneMode === "cutaway" || sceneMode === "interior") && (
+                <div style={{ display: "flex", background: "var(--surface-secondary)", borderRadius: "4px", padding: "2px", border: "1px solid var(--border-subtle)" }}>
+                  {[
+                    { id: "all", label: "ALL" },
+                    { id: "lower", label: isBharati ? "L2" : "LOWER" },
+                    { id: "upper", label: isBharati ? "L3" : "UPPER" },
+                  ].map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setFloorMode(f.id)}
+                      style={{
+                        background: floorMode === f.id ? "var(--accent-primary-light)" : "transparent",
+                        color: floorMode === f.id ? "var(--accent-primary)" : "var(--text-muted)",
+                        border: `1px solid ${floorMode === f.id ? "var(--accent-primary)" : "transparent"}`,
+                        padding: "3px 7px",
+                        borderRadius: "3px",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Lighting Presets */}
+              <div style={{ display: "flex", background: "var(--surface-secondary)", borderRadius: "4px", padding: "2px", border: "1px solid var(--border-subtle)" }}>
+                {[
+                  { id: "day", icon: "☀️", label: "DAY" },
+                  { id: "overcast", icon: "☁️", label: "CLOUDS" },
+                  { id: "night", icon: "🌙", label: "NIGHT" },
+                ].map((l) => (
+                  <button
+                    key={l.id}
+                    type="button"
+                    onClick={() => setLightingMode(l.id)}
+                    title={`Lighting: ${l.label}`}
+                    style={{
+                      background: lightingMode === l.id ? "var(--surface-card)" : "transparent",
+                      color: lightingMode === l.id ? "var(--accent-primary)" : "var(--text-muted)",
+                      border: `1px solid ${lightingMode === l.id ? "var(--border-default)" : "transparent"}`,
+                      padding: "3px 6px",
+                      borderRadius: "3px",
+                      fontSize: "10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {l.icon}
+                  </button>
+                ))}
+              </div>
+
+              {/* RESET & FULLSCREEN BUTTONS */}
+              <div className="model-controls">
+                <button
+                  type="button"
+                  className="control-btn reset-btn"
+                  onClick={handleResetView}
+                  title="Reset 3D camera to overview (↻)"
+                >
+                  <span className="control-icon">↻</span>
+                  <span>RESET</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`control-btn fullscreen-btn ${isFullscreen ? "active" : ""}`}
+                  onClick={handleToggleFullscreen}
+                  title={isFullscreen ? "Exit Fullscreen (Esc)" : "Expand 3D Viewport (⛶)"}
+                >
+                  <span className="control-icon">{isFullscreen ? "✕" : "⛶"}</span>
+                  <span>{isFullscreen ? "EXIT" : "FULLSCREEN"}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="station-3d-view">
-            <StationScene
-              station={station}
-              resetTrigger={resetCount}
-              selectedComponent={selectedComponent}
-              onSelectComponent={setSelectedComponent}
-            />
+          {/* BOOKMARK PRESET VIEWPORT BAR */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              padding: "5px 14px",
+              background: "rgba(241, 245, 249, 0.95)",
+              borderBottom: "1px solid var(--border-subtle)",
+              overflowX: "auto",
+              fontSize: "10px",
+              fontFamily: "monospace",
+              zIndex: 5,
+            }}
+          >
+            <span style={{ color: "var(--text-muted)", fontWeight: 700, marginRight: "4px" }}>CAM PRESETS:</span>
+            {[
+              { id: "overview", label: "01 OVERVIEW" },
+              { id: "north", label: "02 FAÇADE" },
+              { id: "entrance", label: "03 ENTRANCE" },
+              { id: "lounge", label: isBharati ? "04 LOUNGE" : "04 DINING" },
+              { id: "laboratory", label: "05 LABS" },
+              { id: "utilities", label: isBharati ? "06 CHP+WATER" : "06 GENERATORS" },
+              { id: "site", label: "07 FULL SITE" },
+            ].map((bm) => (
+              <button
+                key={bm.id}
+                type="button"
+                onClick={() => handleBookmarkChange(bm.id)}
+                style={{
+                  background: bookmark === bm.id ? "var(--accent-primary-light)" : "transparent",
+                  color: bookmark === bm.id ? "var(--accent-primary)" : "var(--text-secondary)",
+                  border: `1px solid ${bookmark === bm.id ? "var(--accent-primary)" : "transparent"}`,
+                  padding: "2px 7px",
+                  borderRadius: "3px",
+                  fontWeight: bookmark === bm.id ? 800 : 600,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {bm.label}
+              </button>
+            ))}
+          </div>
 
-            {/* FLOATING INTERACTIVE COMPONENT HUD */}
-            {selectedComponent && (
-              <ComponentInfoPanel
+          <div className="station-3d-view">
+            <DigitalTwinErrorBoundary>
+              <StationScene
                 station={station}
-                componentId={selectedComponent}
+                resetTrigger={resetCount}
+                selectedComponent={selectedComponent}
+                onSelectComponent={setSelectedComponent}
                 telemetry={telemetry}
-                onClose={() => setSelectedComponent(null)}
+                sceneMode={sceneMode}
+                floorMode={floorMode}
+                lightingMode={lightingMode}
+                bookmark={bookmark}
               />
-            )}
+            </DigitalTwinErrorBoundary>
           </div>
 
           <div className="station-3d-footer">
             <span>MODEL STATUS : ONLINE ({stationInfo.status || "OPERATIONAL"})</span>
             <span>ELEVATION : {stationInfo.elevation || "117 m"} · EST. {stationInfo.established || "1989"}</span>
-            <span>INTERACTION : CLICK MESH TO INSPECT · DRAG TO ROTATE · SCROLL TO ZOOM</span>
+            <span>INTERACTION : CLICK ANY MESH · DRAG TO ORBIT · SCROLL TO ZOOM · SHIFT+DRAG TO PAN</span>
           </div>
         </section>
 
-        {/* OVERVIEW CARDS: COMPUTED STATION HEALTH & WEATHER TELEMETRY (SIDE-BY-SIDE ON DESKTOP) */}
+        {/* OVERVIEW CARDS: COMPUTED STATION HEALTH & WEATHER TELEMETRY */}
         <div className="digital-twin-cards-grid">
           {/* COMPUTED STATION HEALTH */}
           <section className="dashboard-panel digital-twin-health-panel">

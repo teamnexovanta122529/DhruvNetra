@@ -6,7 +6,6 @@
 
 import { useState } from "react";
 import PageHeader from "../common/PageHeader";
-import StatusBadge from "../common/StatusBadge";
 import { useStation } from "../../../context/StationContext";
 import { useEnvironment } from "../../../context/EnvironmentContext";
 

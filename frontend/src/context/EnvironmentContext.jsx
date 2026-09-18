@@ -23,7 +23,9 @@ export function EnvironmentProvider({ children }) {
 
   // Keep ref of active station to avoid stale closures in timers
   const activeStationRef = useRef(station);
-  activeStationRef.current = station;
+  useEffect(() => {
+    activeStationRef.current = station;
+  }, [station]);
 
   /**
    * Format elapsed time into human-readable label

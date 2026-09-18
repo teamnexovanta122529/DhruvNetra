@@ -48,29 +48,31 @@ function IceChunk({ position, scale, speed, rotationSpeed, mouse }) {
   );
 }
 
+// Deterministic pseudo-random sequence for pure useMemo rendering
+function seededRand(seed) {
+  const x = Math.sin(seed * 9999) * 10000;
+  return x - Math.floor(x);
+}
+
 export default function FloatingIce({ mouse }) {
   const pieces = useMemo(() => {
     return Array.from({ length: 22 }, (_, index) => {
-      const depth = Math.random();
+      const r1 = seededRand(index * 4 + 1);
+      const r2 = seededRand(index * 4 + 2);
+      const r3 = seededRand(index * 4 + 3);
+      const r4 = seededRand(index * 4 + 4);
+      const depth = r1;
 
       return {
         id: index,
-
         position: [
-          (Math.random() - 0.5) * 16,
-          (Math.random() - 0.5) * 9,
+          (r2 - 0.5) * 16,
+          (r3 - 0.5) * 9,
           THREE.MathUtils.lerp(-1, 7, depth),
         ],
-
         scale: THREE.MathUtils.lerp(0.25, 0.75, depth),
-
-        speed: THREE.MathUtils.lerp(0.25, 0.65, Math.random()),
-
-        rotationSpeed: THREE.MathUtils.lerp(
-          0.0008,
-          0.003,
-          Math.random()
-        ),
+        speed: THREE.MathUtils.lerp(0.25, 0.65, r4),
+        rotationSpeed: THREE.MathUtils.lerp(0.0008, 0.003, r1),
       };
     });
   }, []);

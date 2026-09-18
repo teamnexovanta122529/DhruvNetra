@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PageHeader from "../common/PageHeader";
 import MetricCard from "../common/MetricCard";
-import StatusBadge from "../common/StatusBadge";
-import ProgressBar from "../common/ProgressBar";
 import TemperatureChart from "../charts/TemperatureChart";
 import { useStation } from "../../../context/StationContext";
 import { getHvacData } from "../../../services/telemetryService";

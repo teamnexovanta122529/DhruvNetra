@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useStation } from "../../context/StationContext";
 import { getAlertsData } from "../../services/telemetryService";

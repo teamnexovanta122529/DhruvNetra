@@ -2,6 +2,12 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
+// Deterministic pseudo-random helper for pure useMemo
+function seededRand(seed) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
 function SnowParticles({ mouse }) {
   const pointsRef = useRef();
 
@@ -15,18 +21,22 @@ function SnowParticles({ mouse }) {
 
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
+      const r1 = seededRand(i * 6 + 1);
+      const r2 = seededRand(i * 6 + 2);
+      const r3 = seededRand(i * 6 + 3);
+      const r4 = seededRand(i * 6 + 4);
+      const r5 = seededRand(i * 6 + 5);
+      const r6 = seededRand(i * 6 + 6);
 
-      positions[i3] = (Math.random() - 0.5) * 28;
-      positions[i3 + 1] = (Math.random() - 0.5) * 18;
-      positions[i3 + 2] = Math.random() * 18 - 8;
+      positions[i3] = (r1 - 0.5) * 28;
+      positions[i3 + 1] = (r2 - 0.5) * 18;
+      positions[i3 + 2] = r3 * 18 - 8;
 
-      const depth = Math.random();
+      const depth = r4;
 
       sizes[i] = THREE.MathUtils.lerp(0.025, 0.075, depth);
-
-      speeds[i] = THREE.MathUtils.lerp(0.08, 0.22, Math.random());
-
-      drift[i] = THREE.MathUtils.lerp(-0.08, 0.08, Math.random());
+      speeds[i] = THREE.MathUtils.lerp(0.08, 0.22, r5);
+      drift[i] = THREE.MathUtils.lerp(-0.08, 0.08, r6);
     }
 
     return {

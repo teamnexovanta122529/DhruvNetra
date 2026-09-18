@@ -60,19 +60,22 @@
   --status-critical-bg: #fef2f2;
   --status-critical-border: #fecaca;
 
-  /* Elevation Shadows */
+  /* Elevation Shadows - Soft, Multi-Layered Polar Depth */
   --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+  --shadow-sm: 0 2px 4px -1px rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.07), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 22px -3px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+  --shadow-xl: 0 20px 32px -5px rgba(15, 23, 42, 0.09), 0 8px 14px -4px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 0 18px rgba(2, 132, 199, 0.22);
 
-  /* Border Radii */
-  --radius-xs: 3px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  /* Border Radii Scale - Smooth, Modern & Cohesive */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 15px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-pill: 9999px;
 
   background: var(--bg-app);
   color: var(--text-primary);
@@ -374,7 +377,7 @@ canvas {
   font-weight: 700;
   letter-spacing: 0.28em;
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow:
@@ -541,7 +544,7 @@ canvas {
   height: 28px;
   border: 1px solid rgba(2, 132, 199, 0.35);
   background: #ffffff;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 700;
   color: #0284c7;
@@ -897,7 +900,7 @@ canvas {
   padding: 5px 12px;
   background: #ffffff;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   color: #334155;
   font-size: 9.5px;
   letter-spacing: 0.16em;
@@ -1169,7 +1172,7 @@ canvas {
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-xs);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1226,7 +1229,7 @@ canvas {
   padding: 12px 24px;
   background: #ffffff;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: #0f172a;
   font-size: 10.5px;
   font-weight: 700;

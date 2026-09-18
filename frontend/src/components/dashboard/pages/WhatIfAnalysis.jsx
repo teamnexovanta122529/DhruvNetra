@@ -3,6 +3,12 @@ import PageHeader from "../common/PageHeader";
 import { useStation } from "../../../context/StationContext";
 import { simulateWhatIfQuery } from "../../../services/whatIfApi";
 
+let messageCounter = 1000;
+function createMessageId(prefix) {
+  messageCounter += 1;
+  return `msg-${Date.now()}-${messageCounter}-${prefix}`;
+}
+
 export default function WhatIfAnalysis() {
   const { station, stationInfo, setStation } = useStation();
 
@@ -12,18 +18,18 @@ export default function WhatIfAnalysis() {
   const [lastIntent, setLastIntent] = useState(null);
 
   // Chat messages
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState(() => [
     {
       id: "msg-init-1",
       sender: "system",
       text: `DHRUVNETRA AI Operational Intelligence online. Grounded in live ${station} Station telemetry and multi-physics simulation models.`,
-      timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
+      timestamp: "08:00:00",
     },
     {
       id: "msg-init-2",
       sender: "ai",
       text: `**${station.toUpperCase()} MISSION ASSISTANT READY**\n\nI can analyze real-time station operations, telemetry, and hypothetical contingencies.\n\nYou can ask:\n• Direct telemetry: *"What is the condition of Generator 1?"*, *"What is the fuel level till now?"*, *"What is the outdoor temperature?"*\n• What-If scenarios: *"What if Generator 1 is turned off for 8 hours?"*, *"What if G1 and G2 both fail?"*, *"Can Maitri survive without G1?"*\n• Recommendations: *"Should I turn off G1?"*, *"Will shutting G1 save fuel?"*, *"What should I do instead?"*`,
-      timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
+      timestamp: "08:00:01",
       isTelemetry: false,
       suggestions: [
         "What is the condition of Generator 1?",
@@ -117,7 +123,7 @@ export default function WhatIfAnalysis() {
     if (!query || isAnalyzing) return;
 
     const userMsg = {
-      id: `msg-${Date.now()}-u`,
+      id: createMessageId("u"),
       sender: "user",
       text: query,
       timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
@@ -152,7 +158,7 @@ export default function WhatIfAnalysis() {
       const suggestions = getContextualSuggestions(query, liveResult);
 
       const aiMsg = {
-        id: `msg-${Date.now()}-ai`,
+        id: createMessageId("ai"),
         sender: "ai",
         text: liveResult.aiResponse || liveResult.text || liveResult.explanation,
         timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
@@ -171,7 +177,7 @@ export default function WhatIfAnalysis() {
       setErrorMessage(errMsg);
 
       const systemErrorMsg = {
-        id: `msg-${Date.now()}-sys-err`,
+        id: createMessageId("sys-err"),
         sender: "system",
         text: `⚠️ MISSION ADVISORY: ${errMsg}`,
         timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
@@ -185,15 +191,20 @@ export default function WhatIfAnalysis() {
 
   const handleClearSession = () => {
     setActiveScenarioContext(null);
-    setLastQuery(null);
+    setLastQuery("");
     setLastIntent(null);
     setErrorMessage(null);
     setMessages([
       {
-        id: `msg-${Date.now()}-reset`,
-        sender: "system",
-        text: `Scenario context cleared. Mission Assistant reset to baseline ${station} telemetry.`,
+        id: createMessageId("welcome-reset"),
+        sender: "ai",
+        text: `**SESSION RESET**\nConversation history cleared. Ready for new scenario simulations on ${station} Station.`,
         timestamp: new Date().toLocaleTimeString("en-IN", { hour12: false }),
+        suggestions: [
+          `What is the current status of ${station}?`,
+          "What if outside temperature drops to -45°C?",
+          "Simulate generator failure under heavy electrical load",
+        ],
       },
     ]);
   };
@@ -224,7 +235,7 @@ export default function WhatIfAnalysis() {
         return (
           <div key={idx} className="chat-bullet-block">
             {lines.map((line, lIdx) => {
-              const cleanLine = line.replace(/^[•\-]\s*/, "");
+              const cleanLine = line.replace(/^[•-]\s*/, "");
               const isSectionTitle = line.startsWith("**") && line.endsWith("**");
 
               if (isSectionTitle) {

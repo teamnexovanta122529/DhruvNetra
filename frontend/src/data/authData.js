@@ -157,7 +157,8 @@ export async function mockAuthenticate(username, password) {
   }
 
   // Return sanitized user object (omit password)
-  const { password: _, ...sanitizedUser } = user;
+  const sanitizedUser = { ...user };
+  delete sanitizedUser.password;
   return sanitizedUser;
 }
 

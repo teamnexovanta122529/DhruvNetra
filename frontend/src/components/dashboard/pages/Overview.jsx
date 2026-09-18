@@ -13,7 +13,7 @@ export default function Overview() {
   const { environment, isLoading, isUnavailable } = useEnvironment();
   const telemetry = getStationTelemetry(station);
 
-  const { power, fuel, hvac, water, logistics, alerts, health, lastUpdated } = telemetry;
+  const { power, fuel, hvac, water, alerts, health, lastUpdated } = telemetry;
 
   return (
     <div className="dashboard-page overview-page">

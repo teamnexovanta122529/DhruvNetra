@@ -60,7 +60,7 @@ export async function simulateWhatIfQuery(
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
-    } catch (directErr) {
+    } catch {
       // Fallback to relative /api/what-if proxy if direct URL fails
       response = await fetch("/api/what-if", {
         method: "POST",
@@ -237,14 +237,14 @@ export function formatBackendResponse(data, originalQuery) {
     ? timeline_steps
     : (Array.isArray(chartData) && chartData.length > 0 ? chartData : []);
 
-  let chartLabels = [];
-  let currentFuelCurve = [];
-  let projectedFuelCurve = [];
-  let currentPowerCurve = [];
-  let projectedPowerCurve = [];
-  let indoorTempCurve = [];
-  let waterReserveCurve = [];
-  let healthScoreCurve = [];
+  let chartLabels;
+  let currentFuelCurve;
+  let projectedFuelCurve;
+  let currentPowerCurve;
+  let projectedPowerCurve;
+  let indoorTempCurve;
+  let waterReserveCurve;
+  let healthScoreCurve;
 
   if (rawTimeline.length > 0) {
     chartLabels = rawTimeline.map((d) => d.time || `+${d.hour}h`);
@@ -462,10 +462,10 @@ function resolveClientSideFallback(query, station, activeScenario, previousQuery
   }
 
   // 2. Direct Telemetry Resolution
-  let directAnswer = "";
-  let badgeMetric = "Station Telemetry";
-  let badgeVal = "NOMINAL";
-  let badgeComp = "Station Matrix";
+  let directAnswer;
+  let badgeMetric;
+  let badgeVal;
+  let badgeComp;
 
   // Generator identification
   const genNum = text.match(/\b(g|gen(erator)?\s*)([1-4])\b/i)?.[3] || (/g1|generator\s*1/i.test(previousQuery || "") ? "1" : "1");

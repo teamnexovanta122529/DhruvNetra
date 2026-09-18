@@ -5,7 +5,7 @@ import FloatingIce from "./FloatingIce";
 function Scene({ mouse }) {
   const groupRef = useRef();
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     if (!groupRef.current) return;
 
     const targetX = mouse.current.x * 0.12;

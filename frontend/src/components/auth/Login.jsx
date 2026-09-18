@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useStation } from "../../context/StationContext";
 import AntarcticaBackground from "../landing/AntarcticaBackground";
-import AtmosphericEffects from "../landing/AtmosphericEffects";
 import SnowOverlay from "../landing/SnowOverlay";
 import "./Auth.css";
 
