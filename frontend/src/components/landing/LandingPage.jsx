@@ -394,7 +394,11 @@ function LandingHUD() {
                 <div className="hud-brand">
 
                     <span className="hud-brand-mark">
-                        D
+                        <img
+                            src="/dhruvnetra_favicon.svg"
+                            alt="DhruvNetra Logo"
+                            style={{ width: "20px", height: "20px", objectFit: "contain", flexShrink: 0 }}
+                        />
                     </span>
 
                     <div>
